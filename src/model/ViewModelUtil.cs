@@ -1080,7 +1080,8 @@ namespace MbitGate.model
 
         internal async void root()
         {
-            await _dialogCoordinator.ShowMetroDialogAsync(this, _pwdView);
+            if(!Developer)
+                await _dialogCoordinator.ShowMetroDialogAsync(this, _pwdView);
         }
         private string GetSerialPortName(string name)
         {
