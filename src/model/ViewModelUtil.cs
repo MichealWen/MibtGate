@@ -916,7 +916,8 @@ namespace MbitGate.model
             await Task.Factory.StartNew(() => {
                 WaitHandle.WaitAny(new WaitHandle[] { mutex });
                 mutex.Reset();
-                serial.close();
+                if(serial.IsOpen)
+                    serial.close();
             });
         }
         private void toStudy()

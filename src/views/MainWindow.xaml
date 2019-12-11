@@ -84,7 +84,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="10" HorizontalAlignment="Center" >
                 <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Threshold}"  IsEditable="True"/>
+                <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Threshold}"   IsEditable="True"  GotFocus="ComboxThreshold_GetFocus" LostFocus="ComboxThreshold_LostFocus"/>
             </StackPanel>
         </Grid>
         

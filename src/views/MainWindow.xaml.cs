@@ -87,6 +87,16 @@ namespace MbitGate.views
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
         }
+
+        private void ComboxThreshold_LostFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as ComboBox).IsEditable = true;
+        }
+
+        private void ComboxThreshold_GetFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as ComboBox).IsEditable = false;
+        }
     }
 
     public class SerialNameConverter : IValueConverter
