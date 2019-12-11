@@ -1,8 +1,8 @@
 /.vs
-/BinUpdate/bin/*
+/src/bin/*
 /packages/*
 /paket-files/*
-/BinUpdate/obj/*
+/src/obj/*
 /MahApps.Metro/obj/*
 /MahApps.Metro/bin/*
 /backup/*
