@@ -16,6 +16,7 @@
             <ResourceDictionary>
                 <local:RevertCheckedVisibilityConverter x:Key="RevertCheckedVisibilityConverter"/>
                 <local:CheckedVisibilityConverter x:Key="CheckedVisibilityConverter"/>
+                <local:CheckedMultiVisibilityConverter  x:Key="CheckedMultiVisibilityConverter"/>
             </ResourceDictionary>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -87,9 +88,15 @@
             </StackPanel>
         </Grid>
         
-        <Grid Grid.Row="2" Visibility="{Binding Developer, Converter={StaticResource bool2VisibilityConverter}}">
-        <!--<Grid Grid.Row="2"  Visibility="Collapsed">-->
-            <Grid.RowDefinitions>
+        <!--<Grid Grid.Row="2" Visibility="{Binding Developer, Converter={StaticResource bool2VisibilityConverter}}">-->
+        <Grid Grid.Row="2">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource CheckedMultiVisibilityConverter}">
+                    <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
+                    <Binding Path="Developer"/>
+                </MultiBinding>
+            </Grid.Visibility>
+           <Grid.RowDefinitions>
                 <RowDefinition Height="100*"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="30"/>
