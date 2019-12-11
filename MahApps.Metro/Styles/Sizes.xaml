@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:System="clr-namespace:System;assembly=mscorlib">
+
+    <System:Double x:Key="MetroScrollBarHeight">8</System:Double>
+    <System:Double x:Key="MetroScrollBarWidth">8</System:Double>
+
+    <System:Double x:Key="HorizontalScrollBarRepeatButtonWidth">8</System:Double>
+    <System:Double x:Key="VerticalScrollBarRepeatButtonHeight">8</System:Double>
+
+</ResourceDictionary>

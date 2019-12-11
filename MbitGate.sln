@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MbitGate", "src\MbitGate.csproj", "{99D8E7FC-B01C-408B-A2C9-B75BF931F573}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MahApps.Metro", "MahApps.Metro\MahApps.Metro.csproj", "{5B1710D2-5DC8-4754-91B2-19165DE49B3D}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{E8FBC112-62D5-4500-8E37-B9D68BB1A4E0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99D8E7FC-B01C-408B-A2C9-B75BF931F573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99D8E7FC-B01C-408B-A2C9-B75BF931F573}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99D8E7FC-B01C-408B-A2C9-B75BF931F573}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99D8E7FC-B01C-408B-A2C9-B75BF931F573}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B1710D2-5DC8-4754-91B2-19165DE49B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B1710D2-5DC8-4754-91B2-19165DE49B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B1710D2-5DC8-4754-91B2-19165DE49B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B1710D2-5DC8-4754-91B2-19165DE49B3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8FBC112-62D5-4500-8E37-B9D68BB1A4E0}.Debug|Any CPU.ActiveCfg = Debug
+		{E8FBC112-62D5-4500-8E37-B9D68BB1A4E0}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5076DA24-65DC-4964-934C-7AA89C0B96F3}
+	EndGlobalSection
+EndGlobal

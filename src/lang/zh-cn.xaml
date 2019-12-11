@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <!--window-->
+    <s:String  x:Key="MainWindowTitle">道闸设置V2.0</s:String>
+    <s:String  x:Key="SerialModelTitle">升级</s:String>
+    <s:String  x:Key="ConfigModelTitle">设置</s:String>
+    <s:String  x:Key="CANModelTitle">CAN口</s:String>
+    <s:String  x:Key="DeveloperModelTitle">开发设置</s:String>
+    <s:String  x:Key="Serial">串&#160;&#160;&#160;口</s:String>
+    <s:String  x:Key="IP">I&#160;&#160;P</s:String>
+    <s:String  x:Key="Radar">雷达</s:String>
+    <s:String  x:Key="BinFile">固件</s:String>
+    <s:String  x:Key="Update">升级</s:String>
+    <s:String  x:Key="Choose">...</s:String>
+    <s:String  x:Key="Cancel">取消</s:String>
+    <s:String  x:Key="Confirm">确认</s:String>
+    <s:String  x:Key="Updating">正在刷写固件</s:String>
+    <s:String  x:Key="Updated">固件刷写成功</s:String>
+    <s:String  x:Key="Fail">固件刷写失败</s:String>
+    <s:String  x:Key="Config">配置</s:String>
+    <s:String  x:Key="Baud">波特率</s:String>
+    <s:String  x:Key="Distance">&#160;&#160;&#160;&#160;作用距离</s:String>
+    <s:String  x:Key="LRange">作用左范围</s:String>
+    <s:String  x:Key="RRange">作用右范围</s:String>
+    <s:String  x:Key="Position">杆位置</s:String>
+    <s:String  x:Key="Threshold">门&#160;&#160;&#160;&#160;&#160;&#160;&#160;限</s:String>
+    <s:String  x:Key="Delay">&#160;&#160;延时</s:String>
+    <s:String  x:Key="Unit">m</s:String>
+    <s:String  x:Key="Get">获取</s:String>
+    <s:String  x:Key="Set">重设</s:String>
+    <s:String  x:Key="Default">默认</s:String>
+    <s:String  x:Key="Password">密码</s:String>
+    <s:String  x:Key="Verify">验证</s:String>
+    <s:String x:Key="Study">自学习</s:String>
+    <s:String x:Key="AdvertisingFence">广告栅栏道闸</s:String>
+    <s:String x:Key="Advertising">广告道闸</s:String>
+    <s:String x:Key="Straight">直杆道闸</s:String>
+    <s:String x:Key="GateType">道闸类型</s:String>
+</ResourceDictionary>
