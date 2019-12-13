@@ -126,6 +126,7 @@ namespace MbitGate.control
         public const string Error = "Error";
         public const string Success = "success";
         public const string Start = "RadarStart";
+        public const string StudyEnd = "studyend";
     }
     public class ErrorString
     {

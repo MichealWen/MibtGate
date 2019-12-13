@@ -933,7 +933,7 @@ namespace MbitGate.model
                         await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
                     }));
                 }
-                else if (msg.Contains(SerialRadarReply.Start))
+                else if (msg.Contains(SerialRadarReply.StudyEnd))
                 {
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                     {
