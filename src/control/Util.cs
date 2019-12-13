@@ -157,7 +157,7 @@ namespace MbitGate.control
         public const string GetFail = "获取设置失败";
         public const string GetSuccess = "获取设置成功";
         public const string Studying = "正在自学习中";
-        public const string StudySuccess = "自学习结束";
+        public const string StudySuccess = "自学习结束，请重启雷达";
     }
 
     public class GateType
