@@ -1027,6 +1027,23 @@ namespace MbitGate.model
 
         private void ToSet()
         {
+            float distance = float.Parse(Distance);
+            float lrange = float.Parse(LRange);
+            float rrange = float.Parse(RRange);
+            if(distance<0 || lrange < 0 || rrange < 0)
+            {
+                ShowErrorWindow(ErrorString.ParamError);
+                return;
+            }else if(distance > 6)
+            {
+                ShowErrorWindow(ErrorString.DisntacneError);
+                return;
+            }else if(lrange > 1 || rrange > 1)
+            {
+                ShowErrorWindow(ErrorString.RangeError);
+                return;
+            }
+
             string lastOperation = SerialRadarCommands.SensorStop;
             serial.DataReceivedHandler = msg =>
             {

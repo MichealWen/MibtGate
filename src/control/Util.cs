@@ -137,6 +137,8 @@ namespace MbitGate.control
         public const string FileError = "文件错误";
         public const string CANOpenError = "CAN口打开错误";
         public const string RadarError = "雷达标号错误";
+        public const string DisntacneError = "作用距离不能超过6米";
+        public const string RangeError = "左右范围不能超过1米";
     }
 
     public class Tips
