@@ -118,6 +118,7 @@ namespace MbitGate.control
         public const string BoundRate921600 = "921600";
         public const string BoundRate1843200 = "1843200";
         public const string FilterParam = "setFilterPara";
+        public const string FrameCfg = "frameCfg";
     }
 
     public class SerialRadarReply
