@@ -140,7 +140,7 @@ namespace MbitGate.control
         public const string CANOpenError = "CAN口打开错误";
         public const string RadarError = "雷达标号错误";
         public const string DisntacneError = "作用距离不能超过6米";
-        public const string RangeError = "左右范围不能超过1米";
+        public const string RangeError = "左右范围最小0.4米最大1米";
     }
 
     public class Tips
@@ -193,9 +193,9 @@ namespace MbitGate.control
 
     public class ThresholdType
     {
-        public const string Low = @"低门限";
-        public const string Middle = @"中门限";
-        public const string High = @"高门限";
+        public const string Low = @"高灵敏度(不区分人车)";
+        public const string Middle = @"中灵敏度(区分人车)";
+        public const string High = @"低灵敏度(区分电动车)";
         public static List<string> GetAllTypes()
         {
             return new List<string> { Low, Middle, High };

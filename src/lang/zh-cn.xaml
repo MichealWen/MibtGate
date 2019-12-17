@@ -24,7 +24,7 @@
     <s:String  x:Key="LRange">作用左范围</s:String>
     <s:String  x:Key="RRange">作用右范围</s:String>
     <s:String  x:Key="Position">杆位置</s:String>
-    <s:String  x:Key="Threshold">门&#160;&#160;&#160;&#160;&#160;&#160;&#160;限</s:String>
+    <s:String  x:Key="Threshold">人车区分</s:String>
     <s:String  x:Key="Delay">&#160;&#160;延时</s:String>
     <s:String  x:Key="Unit">m</s:String>
     <s:String  x:Key="Get">获取</s:String>

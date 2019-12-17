@@ -1038,7 +1038,7 @@ namespace MbitGate.model
             {
                 ShowErrorWindow(ErrorString.DisntacneError);
                 return;
-            }else if(lrange > 1 || rrange > 1)
+            }else if(lrange < 0.4  || rrange < 0.4 || lrange > 1 || rrange  > 1)
             {
                 ShowErrorWindow(ErrorString.RangeError);
                 return;
