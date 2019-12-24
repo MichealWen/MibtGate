@@ -872,10 +872,11 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.ParamError);
                 return;
             }
-            if (serial == null)
+            if (serial != null)
             {
-                serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
+                serial.close();
             }
+            serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
             serial.Rate = (int)ConfigModel.CustomRate;
             if (!serial.IsOpen)
             {
@@ -1030,15 +1031,17 @@ namespace MbitGate.model
             float distance = float.Parse(Distance);
             float lrange = float.Parse(LRange);
             float rrange = float.Parse(RRange);
-            if(distance<0 || lrange < 0 || rrange < 0)
+            if (distance < 0 || lrange < 0 || rrange < 0)
             {
                 ShowErrorWindow(ErrorString.ParamError);
                 return;
-            }else if(distance > 6)
+            }
+            else if (distance > 6)
             {
                 ShowErrorWindow(ErrorString.DisntacneError);
                 return;
-            }else if(lrange < 0.4  || rrange < 0.4 || lrange > 1 || rrange  > 1)
+            }
+            else if (lrange < 0.4 || rrange < 0.4 || lrange > 1 || rrange > 1)
             {
                 ShowErrorWindow(ErrorString.RangeError);
                 return;
@@ -1049,17 +1052,19 @@ namespace MbitGate.model
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
-                    if(lastOperation == SerialRadarCommands.SensorStop)
+                    if (lastOperation == SerialRadarCommands.SensorStop)
                     {
                         lastOperation = SerialArguments.FrameCfg;
                         if (Gate == control.GateType.Straight)
                         {
                             serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FrameCfg + " 0 1 64 0 30 1 0");
-                        }else
+                        }
+                        else
                         {
                             serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FrameCfg + " 0 1 64 0 100 1 0");
                         }
-                    }else if (lastOperation == SerialArguments.FrameCfg)
+                    }
+                    else if (lastOperation == SerialArguments.FrameCfg)
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (float.Parse(LRange) * 10).ToString("F0") + " 2 2 " + (float.Parse(Distance) * 10).ToString("F0") + " " + (float.Parse(RRange) * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold));
