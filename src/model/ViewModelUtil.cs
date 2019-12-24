@@ -872,19 +872,18 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.ParamError);
                 return;
             }
-            if (serial != null)
+            if (serial == null)
             {
-                serial.close();
+                serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
             }
-            serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
+            serial.PortName = GetSerialPortName(ConfigModel.CustomItem);
             serial.Rate = (int)ConfigModel.CustomRate;
-            if (!serial.IsOpen)
+            if (serial.IsOpen)
+                serial.close();
+            if (!serial.open())
             {
-                if (!serial.open())
-                {
-                    ShowErrorWindow(ErrorString.SerialOpenError);
-                    return;
-                }
+                ShowErrorWindow(ErrorString.SerialOpenError);
+                return;
             }
             if (_settingView.IsVisible)
             {
