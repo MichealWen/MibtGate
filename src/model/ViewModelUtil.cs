@@ -1053,18 +1053,6 @@ namespace MbitGate.model
                 {
                     if (lastOperation == SerialRadarCommands.SensorStop)
                     {
-                        lastOperation = SerialArguments.FrameCfg;
-                        if (Gate == control.GateType.Straight)
-                        {
-                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FrameCfg + " 0 1 64 0 30 1 0");
-                        }
-                        else
-                        {
-                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FrameCfg + " 0 1 64 0 100 1 0");
-                        }
-                    }
-                    else if (lastOperation == SerialArguments.FrameCfg)
-                    {
                         lastOperation = SerialRadarCommands.WriteCLI;
                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (float.Parse(LRange) * 10).ToString("F0") + " 2 2 " + (float.Parse(Distance) * 10).ToString("F0") + " " + (float.Parse(RRange) * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold));
                     }
