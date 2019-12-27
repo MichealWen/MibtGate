@@ -1,7 +1,6 @@
 /.vs
 /src/bin/*
 /packages/*
-/paket-files/*
 /src/obj/*
 /MahApps.Metro/obj/*
 /MahApps.Metro/bin/*
