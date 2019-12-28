@@ -119,6 +119,7 @@ namespace MbitGate.control
         public const string BoundRate1843200 = "1843200";
         public const string FilterParam = "setFilterPara";
         public const string FrameCfg = "frameCfg";
+        public const string BootLoaderFlag = "bootLoaderFlag";
     }
 
     public class SerialRadarReply
@@ -159,6 +160,7 @@ namespace MbitGate.control
         public const string GetSuccess = "获取设置成功";
         public const string Studying = "正在自学习中";
         public const string StudySuccess = "自学习结束，请重启雷达";
+        public const string WaitForOpen = "正在等待雷达重启";
     }
 
     public class GateType

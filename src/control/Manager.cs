@@ -342,6 +342,19 @@ namespace MbitGate.control
             }
         }
 
+        public void Write(byte[] content, int millis = 0)
+        {
+            try
+            {
+                _serial.Write(content, 0, content.Length);
+                System.Threading.Thread.Sleep(millis);
+            }
+            catch (Exception ex)
+            {
+                _serial.Close();
+            }
+        }
+
         public string ReadExisting()
         {
             return _serial.ReadExisting();
