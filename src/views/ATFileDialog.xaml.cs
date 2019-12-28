@@ -39,6 +39,7 @@ namespace MbitGate.views
             //{
             //    getSelectedTreeViewItem(treeview.Items);
             //}
+            dg.CancelEdit(DataGridEditingUnit.Row);
             if(VMATFileDialogModel.Instance.SelectedFileItem != null)
                 if(VMATFileDialogModel.Instance.SelectedFileItem.IsDirectory)
                     VMATFileDialogModel.Instance.SelectedTreeViewItem = VMATFileDialogModel.Instance.SelectedFileItem;
