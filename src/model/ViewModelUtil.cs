@@ -1131,10 +1131,7 @@ namespace MbitGate.model
                                         lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
                                         _progressViewModel.Message = Tips.WaitForOpen;
                                         serial.WriteLine(SerialRadarCommands.SoftReset);
-                                        serial.close();
                                         serial.Type = SerialReceiveType.Bytes;
-                                        serial.Rate = Int32.Parse(BauRate.Rate921600);
-                                        serial.open();
                                         break;
                                 }
                             }
@@ -1257,18 +1254,8 @@ namespace MbitGate.model
                             };
                         };
 
-                        if (serial.Rate == 921600)
-                        {
-                            serial.Type = SerialReceiveType.Bytes;
-                            lastOperation = SerialRadarCommands.FlashErase;
-                            _progressViewModel.Message = Tips.Flashing;
-                            serial.Write(new byte[] { 0x01, 0xCD });
-                        }
-                        else
-                        {
-                            serial.Type = SerialReceiveType.Chars;
-                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
-                        }
+                        serial.Type = SerialReceiveType.Chars;
+                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
                     }
                 }));
             });
