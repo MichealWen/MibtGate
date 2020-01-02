@@ -771,7 +771,6 @@ namespace MbitGate.model
                         {
                             serial.DataReceivedHandler = null;
                             serial.close();
-                            serial = null;
                         }
                     }
                 }
