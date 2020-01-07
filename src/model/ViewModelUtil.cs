@@ -904,6 +904,8 @@ namespace MbitGate.model
                     serial.close();
             }
             serial.Rate = (int)ConfigModel.CustomRate;
+            serial.Type = SerialReceiveType.Chars;
+
             if (!serial.open())
             {
                 ShowErrorWindow(ErrorString.SerialOpenError);
@@ -1253,7 +1255,6 @@ namespace MbitGate.model
                             };
                         };
 
-                        serial.Type = SerialReceiveType.Chars;
                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
                     }
                 }));
