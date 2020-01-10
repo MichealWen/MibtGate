@@ -1107,7 +1107,7 @@ namespace MbitGate.model
 
                     if (_progressCtrl.IsVisible)
                     {
-                        string lastOperation = SerialRadarCommands.WriteCLI;
+                        string lastOperation = SerialRadarCommands.SensorStop;
                         reader = new FileIOManager(BinPath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read);
                         if (reader.Length == -1)
                         {
@@ -1128,6 +1128,10 @@ namespace MbitGate.model
                             {
                                 switch (lastOperation)
                                 {
+                                    case SerialRadarCommands.SensorStop:
+                                        lastOperation = SerialRadarCommands.WriteCLI;
+                                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                                        break;
                                     case SerialRadarCommands.WriteCLI:
                                         lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
                                         _progressViewModel.Message = Tips.WaitForOpen;
@@ -1254,8 +1258,7 @@ namespace MbitGate.model
                                 }
                             };
                         };
-
-                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                        serial.WriteLine(SerialRadarCommands.SensorStop);
                     }
                 }));
             });
