@@ -1,0 +1,8 @@
+1,sensorStop   返回Done
+2,WriteCLI bootLoaderFlag 1    进入升级模式   返回Done
+3,softReset
+4．发送01CD ,  返回 11 CD （擦除）
+5，发送02CD+4个节文件大小  成功返回 12CD
+6.. 发送文件64字节64字节发。 每发送一帧返回13CD,结束返回23 CD
+7. 校验04CD+4字节            成功14CD
+8. 重启05CD
