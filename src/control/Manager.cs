@@ -167,7 +167,7 @@ namespace MbitGate.control
             _serial.ReadTimeout = 1000;
             _serial.DataReceived += OnSerialDataReceived;
             Type = type;
-            EndStr = "";
+            EndStr = "Done";
             EndBytes = new byte[] { };
             CompareEndString = true;
         }
@@ -188,7 +188,7 @@ namespace MbitGate.control
             PortName = name;
             _serial.DataReceived += OnSerialDataReceived;
             Type = type;
-            EndStr = "";
+            EndStr = "Done";
             EndBytes = new byte[] { };
             CompareEndString = true;
         }
@@ -237,7 +237,7 @@ namespace MbitGate.control
                                 {
                                     if (_receivedStr.Contains("\n\r"))
                                     {
-                                        if (_receivedStr.Contains("Done") || _receivedStr.Contains("Error") || _receivedStr.Contains(EndStr))
+                                        if ( _receivedStr.Contains("Error") || _receivedStr.Contains(EndStr))
                                         {
                                             DataReceivedHandler(_receivedStr);
                                             _receivedStr = string.Empty;
