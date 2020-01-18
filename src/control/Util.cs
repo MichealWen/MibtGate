@@ -94,6 +94,7 @@ namespace MbitGate.control
         public const string T = "T";
         public const string CRC = "CRC";
         public const string Output = "clioutput";
+        public const string Version = "ver.";
     }
 
     public class ExtraSerialRadarCommands

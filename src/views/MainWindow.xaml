@@ -106,11 +106,10 @@
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
-            <!--<StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Position}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="Position" Text="{Binding Position}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <TextBlock Text="{StaticResource Unit}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </StackPanel>-->
+            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="188,0">
+                <TextBlock Text="{StaticResource Version}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox x:Name="Version" Text="{Binding Version}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" IsReadOnly="True"/>
+            </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" Margin="188,0">
                 <TextBlock Text="{StaticResource Threshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                 <TextBox x:Name="Thresold" Text="{Binding Threshold}" Width="200" FontFamily="Microsoft YaHei"  FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
@@ -148,10 +147,10 @@
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-                <Button Content="{StaticResource Get}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetCmd}" />
-                <Button Content="{StaticResource Set}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="10 0"/>
-                <Button Content="{StaticResource Default}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 10 0"/>
-                <Button Content="{StaticResource Study}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 10 0"/>
+                <Button Content="{StaticResource Get}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetCmd}"  ToolTip="{StaticResource FuncGet}"/>
+                <Button Content="{StaticResource Set}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncSet}"/>
+                <Button Content="{StaticResource Default}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncReset}"/>
+                <Button Content="{StaticResource Study}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncStudy}"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -37,6 +37,22 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type ScrollBar}" >
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="{DynamicResource MetroScrollBarHeight}" />
+                    <Setter Property="Template" Value="{DynamicResource HorizontalScrollBar}" />
+                    <Setter Property="Width" Value="Auto" />
+                </Trigger>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Height" Value="Auto" />
+                    <Setter Property="Template" Value="{DynamicResource VerticalScrollBar}" />
+                    <Setter Property="Width" Value="13" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <!--<DataTemplate DataType="{x:Type Model:FileFolderInfo}">
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=Path}" />
         </DataTemplate>-->
@@ -81,7 +97,7 @@
                 </StackPanel>
                 <TreeView Name="treeview" ItemsSource="{Binding Drives}" helpers:TreeViewHelper.Attach="True"  VirtualizingStackPanel.IsVirtualizing="True" helpers:TreeViewHelper.SelectedItem="{Binding Path=SelectedTreeViewItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <DataGrid Name="dg" Grid.Column="1" AutoGenerateColumns="False" SelectedItem="{Binding SelectedFileItem}" CanUserAddRows="False" ItemsSource="{Binding SelectedTreeViewItem.FileFolders}" IsSynchronizedWithCurrentItem="True" MouseDoubleClick="dg_MouseDoubleClick" Margin="0 0 3 0">
+            <DataGrid Name="dg" Grid.Column="1" AutoGenerateColumns="False" SelectedItem="{Binding SelectedFileItem}" CanUserAddRows="False" ItemsSource="{Binding SelectedTreeViewItem.FileFolders}" IsSynchronizedWithCurrentItem="True" MouseDoubleClick="dg_MouseDoubleClick" Margin="0 0 3 0" >
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="文件名" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
@@ -113,6 +129,7 @@
             MouseAction="LeftDoubleClick"
             Command="{Binding DataGridDoubleClickCommand}"  CommandParameter="{Binding ElementName=dg, Path=SelectedItem}"/>
                 </DataGrid.InputBindings>-->
+
             </DataGrid>
         </Grid>
         <Grid Grid.Row="2">

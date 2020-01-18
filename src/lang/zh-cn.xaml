@@ -37,4 +37,9 @@
     <s:String x:Key="Advertising">广告道闸</s:String>
     <s:String x:Key="Straight">直杆道闸</s:String>
     <s:String x:Key="GateType">道闸类型</s:String>
+    <s:String x:Key="FuncGet">获取雷达当前参数</s:String>
+    <s:String x:Key="FuncSet">设置雷达新参数</s:String>
+    <s:String x:Key="FuncReset">设置雷达成默认参数</s:String>
+    <s:String x:Key="FuncStudy">雷达学习识别区分栏杆运行</s:String>
+    <s:String x:Key="Version">&#160;&#160;&#160;版本号</s:String>
 </ResourceDictionary>

@@ -752,6 +752,8 @@ namespace MbitGate.model
         public string Threshold { get; set; }
         public string Delay { get; set; }
 
+        public string Version { get; set; }
+
         public string BinPath { get; set; }
 
         public List<string> GateTypes { get { return control.GateType.GetAllTypes(); } }
@@ -800,7 +802,10 @@ namespace MbitGate.model
                          if (!Developer)
                              ShowErrorWindow("密码错误");
                          else
+                         {
                              _dialogCoordinator.HideMetroDialogAsync(this, _pwdView);
+                             SerialWork(() => ToGetVer());
+                         }
                          OnPropertyChanged("Developer");
                      }
                  }
@@ -1071,6 +1076,17 @@ namespace MbitGate.model
                 }
             };
             serial.WriteLine(SerialRadarCommands.SensorStop);
+        }
+
+        private void ToGetVer()
+        {
+            serial.DataReceivedHandler = msg =>
+            {
+                Version = msg.Substring(0, msg.IndexOf("Done"));
+                OnPropertyChanged("Version");
+                mutex.Set();
+            };
+            serial.WriteLine(SerialRadarCommands.Version);
         }
 
         internal async void start()
