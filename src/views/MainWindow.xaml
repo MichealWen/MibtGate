@@ -44,7 +44,7 @@
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <TextBlock Text="{Binding Version}" FontSize="14"  Foreground="#FFFFFF" Margin="0 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <!--<TextBlock Text="{Binding Version}" FontSize="14"  Foreground="#FFFFFF" Margin="0 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Right"/>-->
         </DockPanel>
 
         <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
