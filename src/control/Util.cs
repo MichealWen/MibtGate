@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace MbitGate.control
 {
@@ -134,40 +135,42 @@ namespace MbitGate.control
     public class ErrorString
     {
         public const string Error = "[Error]";
-        public const string ParamError = "参数错误";
-        public const string BinPathError = "固件路径错误";
-        public const string SerialError = "串口错误";
-        public const string SerialOpenError = "串口打开错误";
-        public const string FileError = "文件错误";
-        public const string CANOpenError = "CAN口打开错误";
-        public const string RadarError = "雷达标号错误";
-        public const string DisntacneError = "作用距离不能超过6米";
-        public const string RangeError = "左右范围最小0.4米最大1米";
+        public static string ParamError = Application.Current.Resources["ParamsError"].ToString();
+        public static string BinPathError = Application.Current.Resources["ParamsError"].ToString();
+        public static string SerialError = Application.Current.Resources["SerialError"].ToString();
+        public static string SerialOpenError = Application.Current.Resources["SerialOpenError"].ToString();
+        public static string FileError = Application.Current.Resources["FileError"].ToString();
+        public static string CANOpenError = Application.Current.Resources["CANOpenError"].ToString();
+        public static string RadarError = Application.Current.Resources["RadarError"].ToString();
+        public static string DisntacneError = Application.Current.Resources["DisntacneError"].ToString();
+        public static string RangeError = Application.Current.Resources["RangeError"].ToString();
     }
 
     public class Tips
     {
-        public const string Opening = "正在打开串口";
-        public const string Initializing = "正在初始化设置";
-        public const string Updating = "正在刷写固件";
-        public const string Updated = "固件刷写成功";
-        public const string UpdateFail = "固件刷写失败";
-        public const string Flashing = "正在格式化Flash";
-        public const string CRCing = "正在校验";
-        public const string Rating = "正在修改波特率";
-        public const string ConfigSuccess = "设置成功";
-        public const string ConfigFail = "设置失败";
-        public const string GetFail = "获取设置失败";
-        public const string GetSuccess = "获取设置成功";
-        public const string Studying = "正在自学习中";
-        public const string StudySuccess = "自学习结束，请重启雷达";
-        public const string WaitForOpen = "正在等待雷达重启";
+        public static string Opening = Application.Current.Resources["Opening"].ToString();
+        public static string Initializing = Application.Current.Resources["Initializing"].ToString();
+        public static string Updating = Application.Current.Resources["Updating"].ToString();
+        public static string Updated = Application.Current.Resources["Updated"].ToString();
+        public static string UpdateFail = Application.Current.Resources["UpdateFail"].ToString();
+        public static string Flashing = Application.Current.Resources["Flashing"].ToString();
+        public static string CRCing = Application.Current.Resources["CRCing"].ToString();
+        public static string Rating = Application.Current.Resources["Rating"].ToString();
+        public static string ConfigSuccess = Application.Current.Resources["ConfigSuccess"].ToString();
+        public static string ConfigFail = Application.Current.Resources["ConfigFail"].ToString();
+        public static string GetFail = Application.Current.Resources["GetFail"].ToString();
+        public static string GetSuccess = Application.Current.Resources["GetSuccess"].ToString();
+        public static string Studying = Application.Current.Resources["Studying"].ToString();
+        public static string StudySuccess = Application.Current.Resources["StudySuccess"].ToString();
+        public static string StudyEnd = Application.Current.Resources["StudyEnd"].ToString();
+        public static string WaitForOpen = Application.Current.Resources["WaitForOpen"].ToString();
+        public static string ManualReboot = Application.Current.Resources["ManualReboot"].ToString();
     }
 
     public class GateType
     {
-        public const string Straight = @"直杆";
-        public const string AdvertisingFence = @"广告栅栏";
+        public static string Straight = Application.Current.Resources["Straight"].ToString();
+        public static string AdvertisingFence = Application.Current.Resources["AdvertisingFence"].ToString();
 
         public static List<string> GetAllTypes()
         {
@@ -196,9 +199,9 @@ namespace MbitGate.control
 
     public class ThresholdType
     {
-        public const string Low = @"高灵敏度(不区分人车)";
-        public const string Middle = @"中灵敏度(区分人车)";
-        public const string High = @"低灵敏度(区分电动车)";
+        public static string Low = Application.Current.Resources["LowSensibility"].ToString();
+        public static string Middle = Application.Current.Resources["MiddleSensibility"].ToString();
+        public static string High = Application.Current.Resources["HighSensibility"].ToString();
         public static List<string> GetAllTypes()
         {
             return new List<string> { Low, Middle, High };
@@ -206,17 +209,20 @@ namespace MbitGate.control
 
         public static string GetValue(string type)
         {
-            switch(type)
+            if (type == Low)
             {
-                case Low:
-                    return "4500";
-                case Middle:
-                    return "3500";
-                case High:
-                    return "0";
-                default:
-                    return type;
+                return "4500";
             }
+            else if (type == Middle)
+            {
+                return "3500";
+            }
+            else if (type == High)
+            {
+                return "0";
+            }
+            else
+                return type;
         }
 
         public static string GetType(string value)

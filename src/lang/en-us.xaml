@@ -1,0 +1,84 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    <!--window-->
+    <s:String  x:Key="MainWindowTitle">Radar V2.0</s:String>
+    <s:String  x:Key="SerialModelTitle">Update</s:String>
+    <s:String  x:Key="ConfigModelTitle">Config</s:String>
+    <s:String  x:Key="CANModelTitle">CAN</s:String>
+    <s:String  x:Key="DeveloperModelTitle">Develop</s:String>
+    <s:String  x:Key="Serial">Serial</s:String>
+    <s:String  x:Key="IP">I&#160;&#160;P</s:String>
+    <s:String  x:Key="Radar">Radar</s:String>
+    <s:String  x:Key="BinFile">Bin</s:String>
+    <s:String  x:Key="Update">Update</s:String>
+    <s:String  x:Key="Choose">...</s:String>
+    <s:String  x:Key="Cancel">Cancel</s:String>
+    <s:String  x:Key="Confirm">Confirm</s:String>
+    <s:String  x:Key="Updating">Flashing</s:String>
+    <s:String  x:Key="Updated">Flash Success</s:String>
+    <s:String  x:Key="Fail">Flash Fail</s:String>
+    <s:String  x:Key="Config">Config</s:String>
+    <s:String  x:Key="Baud">Baud</s:String>
+    <s:String  x:Key="Distance">&#160;&#160;&#160;&#160;&#160;&#160;Distance</s:String>
+    <s:String  x:Key="LRange">Left &#160;&#160;Range</s:String>
+    <s:String  x:Key="RRange">Right Range</s:String>
+    <s:String  x:Key="Position">Rod Position</s:String>
+    <s:String  x:Key="Threshold">Threshold</s:String>
+    <s:String  x:Key="Delay">&#160;&#160;Delay</s:String>
+    <s:String  x:Key="Unit">m</s:String>
+    <s:String  x:Key="Get">Get</s:String>
+    <s:String  x:Key="Set">Set</s:String>
+    <s:String  x:Key="Default">Default</s:String>
+    <s:String  x:Key="Password">Password</s:String>
+    <s:String  x:Key="Verify">Verify</s:String>
+    <s:String x:Key="Study">Study</s:String>
+    <s:String x:Key="AdvertisingFence">AdvertisingFence</s:String>
+    <s:String x:Key="Advertising">Advertising</s:String>
+    <s:String x:Key="Straight">Straight</s:String>
+    <s:String x:Key="GateType">GateType</s:String>
+    <s:String x:Key="FuncGet">To Get The Current Parameters Of Radar</s:String>
+    <s:String x:Key="FuncSet">To Set The new Parameters Of Radar</s:String>
+    <s:String x:Key="FuncReset">To Set The Parameters Of Radar To Default</s:String>
+    <s:String x:Key="FuncStudy">Study To Distinguish The Movement Of Rod</s:String>
+    <s:String x:Key="Version">&#160;&#160;&#160;Version</s:String>
+    
+    <!--提示-->
+    <s:String x:Key="ParamsError">Parameters Error</s:String>
+    <s:String x:Key="BinPathError">Bint Path Error</s:String>
+    <s:String x:Key="SerialError">Serial Error</s:String>
+    <s:String x:Key="SerialOpenError">Serial Open Error</s:String>
+    <s:String x:Key="FileError">File Error</s:String>
+    <s:String x:Key="CANOpenError">CAN Open Error</s:String>
+    <s:String x:Key="RadarError">Radar Error</s:String>
+    <s:String x:Key="DisntacneError">Distance should less than 6 meters</s:String>
+    <s:String x:Key="RangeError">Either Side shoule between [0.4 ~1]</s:String>
+    <s:String x:Key="Opening">Serial Opening</s:String>
+    <s:String x:Key="Initializing">Initializing</s:String>
+    <s:String x:Key="UpdateFail">Update Fail</s:String>
+    <s:String x:Key="Flashing">Flashing</s:String>
+    <s:String x:Key="CRCing">Verifying</s:String>
+    <s:String x:Key="Rating">To change rate</s:String>
+    <s:String x:Key="ConfigSuccess">Success</s:String>
+    <s:String x:Key="ConfigFail">Fail</s:String>
+    <s:String x:Key="GetFail">Fail</s:String>
+    <s:String x:Key="GetSuccess">Success</s:String>
+    <s:String x:Key="Studying">Studying</s:String>
+    <s:String x:Key="StudySuccess">Study Success</s:String>
+    <s:String x:Key="StudyEnd">Study End</s:String>
+    <s:String x:Key="WaitForOpen">Wait for radar start</s:String>
+    <s:String x:Key="ManualReboot">Reboot radar</s:String>
+
+    <s:String x:Key="Error">Error</s:String>
+    <s:String x:Key="NoImplementation">Not Implementation</s:String>
+    <s:String x:Key="Warnning">Warnning</s:String>
+    <s:String x:Key="BinChoose">Bin Choose</s:String>
+    <s:String x:Key="FileName">FileName</s:String>
+    <s:String x:Key="LastModify">LastModify</s:String>
+    <s:String x:Key="BinType">Bin (*.bin;)|*.bin!{0}|*.*</s:String>
+    <s:String x:Key="PasswordTip">Input Password(Defaut 123)</s:String>
+    <!--ThresholdType-->
+    <s:String x:Key="LowSensibility">Low Sensibility</s:String>
+    <s:String x:Key="MiddleSensibility">Middle Sensibility</s:String>
+    <s:String x:Key="HighSensibility">High Sensibility</s:String>
+</ResourceDictionary>

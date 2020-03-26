@@ -8,7 +8,7 @@
         xmlns:Model="clr-namespace:MbitGate.model"
         xmlns:helpers="clr-namespace:MbitGate.helper"
         mc:Ignorable="d"
-        Title="选择固件" Height="400" Width="600" WindowStartupLocation="CenterScreen">
+       Title="{DynamicResource BinChoose}" Height="400" Width="600" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.Resources>
         <HierarchicalDataTemplate DataType="{x:Type Model:FileFolderInfo}"
                                   ItemsSource="{Binding FileFolders}">
@@ -99,7 +99,7 @@
             </StackPanel>
             <DataGrid Name="dg" Grid.Column="1" AutoGenerateColumns="False" SelectedItem="{Binding SelectedFileItem}" CanUserAddRows="False" ItemsSource="{Binding SelectedTreeViewItem.FileFolders}" IsSynchronizedWithCurrentItem="True" MouseDoubleClick="dg_MouseDoubleClick" Margin="0 0 3 0" >
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="文件名" Width="*">
+                    <DataGridTemplateColumn Header="{DynamicResource FileName}" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -122,7 +122,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="最后修改" Binding="{Binding DateModified}" Width="Auto"/>
+                    <DataGridTextColumn  Header="{DynamicResource LastModify}" Binding="{Binding DateModified}" Width="Auto"/>
                 </DataGrid.Columns>
                 <!--<DataGrid.InputBindings>
                     <MouseBinding

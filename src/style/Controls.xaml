@@ -719,7 +719,7 @@
         <Setter Property="MetroControls:TextBoxHelper.ClearTextButton" Value="True" />
         <Setter Property="MetroControls:TextBoxHelper.IsWaitingForData" Value="True" />
         <Setter Property="MaxLength" Value="20"/>
-        <Setter Property="MetroControls:TextBoxHelper.Watermark" Value="请输入密码(默认密码123)"/>
+        <Setter Property="MetroControls:TextBoxHelper.Watermark" Value="{StaticResource PasswordTip}"/>
         <Setter Property="MetroControls:PasswordBoxHelper.CapsLockIcon" Value="！"/>
         <Setter Property="MetroControls:PasswordBoxHelper.CapsLockWarningToolTip">
             <Setter.Value>

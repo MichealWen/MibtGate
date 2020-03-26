@@ -9,7 +9,7 @@
         xmlns:MetroControl="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{StaticResource MainWindowTitle}" Height="450" Width="800" ResizeMode="CanMinimize"
+        Title="{StaticResource MainWindowTitle}" Height="450" Width="800" ResizeMode="CanMinimize"  Icon="/MbitGate;component/image/ZKTECO.png"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded">
     <Grid x:Name="MainWin">
         <Grid.Resources>

@@ -305,7 +305,7 @@ namespace MbitGate.model
                 MessageControl _dialog = new MessageControl();
                 _dialog.DataContext = new MessageDialogViewModel()
                 {
-                    Title = "警告",
+                    Title = Application.Current.Resources["Warnning"].ToString(),
                     Message = message,
                     Confirm = new SimpleCommand()
                     {
@@ -329,7 +329,7 @@ namespace MbitGate.model
                     MessageControl _dialog = new MessageControl();
                     _dialog.DataContext = new MessageDialogViewModel()
                     {
-                        Title = "错误",
+                        Title = Application.Current.Resources["Error"].ToString(),
                         Message = message,
                         Confirm = new SimpleCommand()
                         {
@@ -800,7 +800,7 @@ namespace MbitGate.model
                          if(!Developer)
                             Developer = PasswordModel.verify();
                          if (!Developer)
-                             ShowErrorWindow("密码错误");
+                             ShowErrorWindow(Application.Current.Resources["Error"].ToString());
                          else
                          {
                              _dialogCoordinator.HideMetroDialogAsync(this, _pwdView);
@@ -1305,7 +1305,7 @@ namespace MbitGate.model
 
         protected override void ToDo()
         {
-            ShowWarnWindow("暂未实现");
+            ShowWarnWindow(Application.Current.Resources["NoImplementation"].ToString());
         }
     }
 }

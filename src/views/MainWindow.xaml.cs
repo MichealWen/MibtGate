@@ -34,8 +34,8 @@ namespace MbitGate.views
 
         private void Choose_Click(object sender, RoutedEventArgs e)
         {
-            ATFileDialog dialog = new ATFileDialog("请选择bin文件", "固件 (*.bin;)|*.bin!{0}|*.*", false, "");
-            if(dialog.ShowDialog() == true)
+            ATFileDialog dialog = new ATFileDialog(Application.Current.Resources["BinChoose"].ToString(), Application.Current.Resources["BinType"].ToString(), false, "");
+            if (dialog.ShowDialog() == true)
             {
                 PathText.Text = model.VMATFileDialogModel.Instance.SelectedFileItem.Path;
             }

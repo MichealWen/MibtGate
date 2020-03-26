@@ -45,8 +45,8 @@
             </StackPanel>
 
             <StackPanel x:Name="CommandPanel" Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Center">
-                <Button Content="确认" Width="60"  Style="{StaticResource Style_Button_Ok}" Margin="0,0,30,0" Command="{Binding ConfirmCommand}" CommandParameter="{Binding}"/>
-                <Button Content="取消" Width="60" Height="30"   Style="{StaticResource STYLE_Button}" Command="{Binding CancelCommand}"/>
+                <Button Content="{DynamicResource Confirm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Margin="0,0,30,0" Command="{Binding ConfirmCommand}" CommandParameter="{Binding}"/>
+                <Button Content="{DynamicResource Cancel}" Width="60" Height="30"   Style="{StaticResource STYLE_Button}" Command="{Binding CancelCommand}"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>
