@@ -151,6 +151,7 @@
                 <Button Content="{StaticResource Set}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncSet}"/>
                 <Button Content="{StaticResource Default}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncReset}"/>
                 <Button Content="{StaticResource Study}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncStudy}"/>
+                <Button Content="{StaticResource Reboot}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncReboot}"/>
             </StackPanel>
         </Grid>
     </Grid>

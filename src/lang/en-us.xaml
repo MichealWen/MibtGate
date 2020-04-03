@@ -41,7 +41,10 @@
     <s:String x:Key="FuncSet">To Set The new Parameters Of Radar</s:String>
     <s:String x:Key="FuncReset">To Set The Parameters Of Radar To Default</s:String>
     <s:String x:Key="FuncStudy">Study To Distinguish The Movement Of Rod</s:String>
+    <s:String x:Key="FuncReboot">Radar Reboot</s:String>
     <s:String x:Key="Version">&#160;&#160;&#160;Version</s:String>
+    <s:String x:Key="Reboot">Reboot</s:String>
+    <s:String x:Key="RebootSuccess">Reboot Done</s:String>
     
     <!--提示-->
     <s:String x:Key="ParamsError">Parameters Error</s:String>

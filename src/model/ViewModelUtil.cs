@@ -867,6 +867,13 @@ namespace MbitGate.model
                 }
             };
 
+            RebootCmd = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    SerialWork(() => toReboot());
+                }
+            };
             _progressViewModel.CancelCommand = new SimpleCommand()
             {
                 ExecuteDelegate = param =>
@@ -973,6 +980,16 @@ namespace MbitGate.model
                 }
             };
             serial.WriteLine(SerialRadarCommands.Output + " 4");
+        }
+
+        private void toReboot()
+        {
+            serial.DataReceivedHandler = msg =>
+            {
+                ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
+                mutex.Set();
+            };
+            serial.WriteLine(SerialRadarCommands.SoftReset);
         }
 
         private void ToReset()
@@ -1340,6 +1357,8 @@ namespace MbitGate.model
         public ICommand DefaultCmd { get; set; }
 
         public ICommand StudyCmd { get; set; }
+
+        public ICommand RebootCmd { get; set; }
         public override void Dispose()
         {
             base.Dispose();

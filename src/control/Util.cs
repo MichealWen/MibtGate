@@ -166,6 +166,7 @@ namespace MbitGate.control
         public static string StudyEnd = Application.Current.Resources["StudyEnd"].ToString();
         public static string WaitForOpen = Application.Current.Resources["WaitForOpen"].ToString();
         public static string ManualReboot = Application.Current.Resources["ManualReboot"].ToString();
+        public static string RebootSuccess = Application.Current.Resources["RebootSuccess"].ToString();
     }
 
     public class GateType

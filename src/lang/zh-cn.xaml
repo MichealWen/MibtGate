@@ -41,7 +41,9 @@
     <s:String x:Key="FuncSet">设置雷达新参数</s:String>
     <s:String x:Key="FuncReset">设置雷达成默认参数</s:String>
     <s:String x:Key="FuncStudy">雷达学习识别区分栏杆运行</s:String>
+    <s:String x:Key="FuncReboot">雷达进行软重启</s:String>
     <s:String x:Key="Version">&#160;&#160;&#160;版本号</s:String>
+    <s:String x:Key="Reboot">软重启</s:String>
     
     <!--提示-->
     <s:String x:Key="ParamsError">参数错误</s:String>
@@ -69,6 +71,7 @@
     <s:String x:Key="WaitForOpen">正在等待雷达重启</s:String>
     <s:String x:Key="ManualReboot">请进行雷达断电重启</s:String>
     <s:String x:Key="SmallVersion">bin文件版本问题，请选择正确的更新版本的bin文件</s:String>
+    <s:String x:Key="RebootSuccess">雷达已进行软重启</s:String>
 
     <s:String x:Key="Error">错误</s:String>
     <s:String x:Key="NoImplementation">暂未实现</s:String>
