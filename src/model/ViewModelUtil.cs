@@ -403,6 +403,28 @@ namespace MbitGate.model
                 await _dialogCoordinator.ShowMetroDialogAsync(this, _dialog);
             }));
         }
+
+        protected void ShowConfirmWindow(string message, string title)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
+            {
+                MessageControl _dialog = new MessageControl();
+                _dialog.DataContext = new MessageDialogViewModel()
+                {
+                    Title = title,
+                    Message = message,
+                    Confirm = new SimpleCommand()
+                    {
+                        ExecuteDelegate = param =>
+                        {
+                            _dialogCoordinator.HideMetroDialogAsync(this, _dialog);
+                        }
+                    }
+                };
+
+                await _dialogCoordinator.ShowMetroDialogAsync(this, _dialog);
+            }));
+        }
         #endregion
         public virtual void Dispose() { Items.Clear(); }
         protected virtual void ToDo() { }
@@ -978,7 +1000,7 @@ namespace MbitGate.model
                         OnPropertyChanged("Gate");
                         OnPropertyChanged("Threshold");
                         serial.WriteLine(SerialRadarCommands.SoftReset);
-                        ShowSplashWindow(Tips.ConfigSuccess, 1000);
+                        ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
                         mutex.Set();
                     }
                 }
@@ -1065,7 +1087,7 @@ namespace MbitGate.model
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
                         serial.WriteLine(SerialRadarCommands.SoftReset);
-                        ShowSplashWindow(Tips.ConfigSuccess, 1000);
+                        ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
                         mutex.Set();
                     }
                 }
