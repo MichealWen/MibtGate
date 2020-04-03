@@ -1158,6 +1158,12 @@ namespace MbitGate.model
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
+                        if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(32))))
+                        {
+                            _progressViewModel.Message = ErrorString.SmallVersion;
+                            reader.Close();
+                            return;
+                        }
                         reader.ReadBytes(8);
 
                         serial.DataReceivedHandler = msg =>
@@ -1300,6 +1306,33 @@ namespace MbitGate.model
                     }
                 }));
             });
+        }
+
+        private bool compareVersion(string ver)
+        {
+            try
+            {
+                if (!ver.Contains("485"))
+                    return false;
+                int startpos = ver.IndexOf('.') - 1;
+                int endpos = ver.LastIndexOf('_') - 7;
+                Version binVersion = new Version(ver.Substring(startpos, endpos - startpos));
+                try
+                {
+                    startpos = Version.IndexOf('.') - 1;
+                    endpos = ver.LastIndexOf('_') - 7;
+                    Version radarVersion = new Version(Version.Substring(startpos, endpos - startpos));
+                    return (binVersion >= radarVersion);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public ICommand GetCmd { get; set; }

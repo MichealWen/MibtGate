@@ -144,6 +144,7 @@ namespace MbitGate.control
         public static string RadarError = Application.Current.Resources["RadarError"].ToString();
         public static string DisntacneError = Application.Current.Resources["DisntacneError"].ToString();
         public static string RangeError = Application.Current.Resources["RangeError"].ToString();
+        public static string SmallVersion = Application.Current.Resources["SmallVersion"].ToString();
     }
 
     public class Tips

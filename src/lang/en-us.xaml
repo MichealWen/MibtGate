@@ -68,6 +68,7 @@
     <s:String x:Key="StudyEnd">Study End</s:String>
     <s:String x:Key="WaitForOpen">Wait for radar start</s:String>
     <s:String x:Key="ManualReboot">Reboot radar</s:String>
+    <s:String x:Key="SmallVersion">Wrong Version</s:String>
 
     <s:String x:Key="Error">Error</s:String>
     <s:String x:Key="NoImplementation">Not Implementation</s:String>
