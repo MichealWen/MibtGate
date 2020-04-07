@@ -1157,10 +1157,12 @@ namespace MbitGate.model
                 string lastMessage = string.Empty;
                 overTimer = new Timer(obj =>
                 {
-                    lastMessage = _progressViewModel.Message;
                     if (_progressViewModel.Message != Tips.Updating && lastMessage == _progressViewModel.Message)
                     {
                         _progressViewModel.Message = ErrorString.OverTime;
+                    }else
+                    {
+                        lastMessage = _progressViewModel.Message;
                     }
                 }, null, 0, 5000);
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
