@@ -1072,6 +1072,12 @@ namespace MbitGate.model
 
         private void ToSet()
         {
+            if(Distance == string.Empty || LRange == string.Empty || RRange == string.Empty)
+            {
+                ShowErrorWindow(Tips.GetFail);
+                mutex.Set();
+                return;
+            }
             float distance = float.Parse(Distance);
             float lrange = float.Parse(LRange);
             float rrange = float.Parse(RRange);
