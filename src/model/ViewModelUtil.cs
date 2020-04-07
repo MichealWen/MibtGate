@@ -923,20 +923,17 @@ namespace MbitGate.model
                 _dialogCoordinator.HideMetroDialogAsync(this, _settingView);
             }
             serial.close();
+            SerialWork(() => ToGetVer());
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
         private async void SerialWork(Action towork)
         {
-            if (serial == null)
+            if (serial != null)
             {
-                serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
+                serial.close();
             }
-            else
-            {
-                if (serial.IsOpen)
-                    serial.close();
-            }
+            serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
             serial.Rate = (int)ConfigModel.CustomRate;
             serial.Type = SerialReceiveType.Chars;
 
@@ -1105,7 +1102,7 @@ namespace MbitGate.model
                     if (lastOperation == SerialRadarCommands.SensorStop)
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
-                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (float.Parse(LRange) * 10).ToString("F0") + " 2 2 " + (float.Parse(Distance) * 10).ToString("F0") + " " + (float.Parse(RRange) * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold) + " 0");
+                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (float.Parse(LRange) * 10).ToString("F0") + " 2 2 " + (float.Parse(Distance) * 10).ToString("F0") + " " + (float.Parse(RRange) * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold));
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
@@ -1168,7 +1165,7 @@ namespace MbitGate.model
 
                     if (_progressCtrl.IsVisible)
                     {
-                        string lastOperation = SerialRadarCommands.SensorStop;
+                        string lastOperation = SerialRadarCommands.WriteCLI;
                         reader = new FileIOManager(BinPath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read);
                         if (reader.Length == -1)
                         {
@@ -1326,7 +1323,8 @@ namespace MbitGate.model
                                 }
                             };
                         };
-                        serial.WriteLine(SerialRadarCommands.SensorStop);
+                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                        //serial.WriteLine(SerialRadarCommands.SensorStop);
                     }
                 }));
             });
@@ -1344,7 +1342,7 @@ namespace MbitGate.model
                 try
                 {
                     startpos = Version.IndexOf('.') - 1;
-                    endpos = ver.LastIndexOf('_') - 7;
+                    endpos = Version.LastIndexOf('_') - 7;
                     Version radarVersion = new Version(Version.Substring(startpos, endpos - startpos));
                     return (binVersion >= radarVersion);
                 }
