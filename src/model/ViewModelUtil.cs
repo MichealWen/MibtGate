@@ -1319,6 +1319,7 @@ namespace MbitGate.model
                                                 {
                                                     await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                                                 }
+                                                SerialWork(() => ToGetVer());
                                             }));
                                             break;
                                     }
@@ -1329,7 +1330,6 @@ namespace MbitGate.model
                     }
                 }));
             });
-            SerialWork(() => ToGetVer());
         }
 
         private bool compareVersion(string ver)
