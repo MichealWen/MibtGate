@@ -1086,12 +1086,12 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.ParamError);
                 return;
             }
-            else if (distance > 6)
+            else if (distance > 6.0 || distance < 1.0)
             {
                 ShowErrorWindow(ErrorString.DisntacneError);
                 return;
             }
-            else if (lrange < 0.4 || rrange < 0.4 || lrange > 1 || rrange > 1)
+            else if (lrange < 0.5 || rrange < 0.5 || lrange > 1 || rrange > 1)
             {
                 ShowErrorWindow(ErrorString.RangeError);
                 return;

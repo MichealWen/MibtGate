@@ -53,8 +53,8 @@
     <s:String x:Key="FileError">文件错误</s:String>
     <s:String x:Key="CANOpenError">CAN口打开错误</s:String>
     <s:String x:Key="RadarError">雷达标号错误</s:String>
-    <s:String x:Key="DisntacneError">作用距离不能超过6米</s:String>
-    <s:String x:Key="RangeError">左右范围最小0.4米最大1米</s:String>
+    <s:String x:Key="DisntacneError">作用距离1~6米</s:String>
+    <s:String x:Key="RangeError">左右范围0.5~1米</s:String>
     <s:String x:Key="Opening">正在打开串口</s:String>
     <s:String x:Key="Initializing">正在初始化设置</s:String>
     <s:String x:Key="UpdateFail">固件刷写失败</s:String>
