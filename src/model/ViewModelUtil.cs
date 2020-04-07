@@ -945,8 +945,6 @@ namespace MbitGate.model
             {
                 WaitHandle.WaitAny(new WaitHandle[] { mutex });
                 mutex.Reset();
-                if (serial.IsOpen)
-                    serial.close();
             });
         }
         private void toStudy()
@@ -980,6 +978,7 @@ namespace MbitGate.model
 
         private void toReboot()
         {
+            serial.EndStr = SerialRadarReply.Start;
             serial.DataReceivedHandler = msg =>
             {
                 ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
