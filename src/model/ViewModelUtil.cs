@@ -1329,6 +1329,7 @@ namespace MbitGate.model
                     }
                 }));
             });
+            SerialWork(() => ToGetVer());
         }
 
         private bool compareVersion(string ver)
