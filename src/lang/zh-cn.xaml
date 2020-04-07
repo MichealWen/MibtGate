@@ -70,8 +70,9 @@
     <s:String x:Key="StudyEnd">自学习结束 ，请重启并检查雷达状态</s:String>
     <s:String x:Key="WaitForOpen">正在等待雷达重启</s:String>
     <s:String x:Key="ManualReboot">请进行雷达断电重启</s:String>
-    <s:String x:Key="SmallVersion">bin文件版本过低</s:String>
+    <s:String x:Key="SmallVersion">Bin文件异常，请选择正确的最新版本文件</s:String>
     <s:String x:Key="RebootSuccess">雷达已进行软重启</s:String>
+    <s:String x:Key="OverTime">超时无回应，请手动断电重启雷达再进行升级</s:String>
 
     <s:String x:Key="Error">错误</s:String>
     <s:String x:Key="NoImplementation">暂未实现</s:String>

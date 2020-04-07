@@ -116,7 +116,7 @@ namespace MbitGate.model
         public string Password { get; set; }
         public bool verify()
         {
-            if(Password != null && Password == "Mbit")
+            if (Password != null && Password == "Mbit")
             {
                 return true;
             }
@@ -253,7 +253,7 @@ namespace MbitGate.model
                         Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                         {
                             if (_progressCtrl.IsVisible)
-                                if(work != null)
+                                if (work != null)
                                     work();
                         }));
                     },
@@ -428,7 +428,7 @@ namespace MbitGate.model
         #endregion
         public virtual void Dispose() { Items.Clear(); }
         protected virtual void ToDo() { }
-        
+
     }
     public class CANMainViewModel : MainViewModel
     {
@@ -442,13 +442,13 @@ namespace MbitGate.model
             }
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     ConfigModel.Rate = value.RateValue;
                     _selectedRate = value;
                     GetRadars();
                 }
-                
+
             }
         }
         private string _version;
@@ -487,7 +487,7 @@ namespace MbitGate.model
             Items.Clear();
             if (_canger == null)
                 _canger = new CANManager(Devices.VCI_USBCAN_2E_U, 0, 0, ConfigModel.Rate);
-            if(_canger.IsStart)
+            if (_canger.IsStart)
             {
                 foreach (uint id in radarID)
                 {
@@ -520,7 +520,7 @@ namespace MbitGate.model
                             case CANRadarCommands.Version:
                                 if (data[0].Data[0] == 0x82)
                                 {
-                                    Version = "V  " + BitConverter.ToString(new byte[] {data[0].Data[1], data[0].Data[2], data[0].Data[3] }).Replace("-", " : ");
+                                    Version = "V  " + BitConverter.ToString(new byte[] { data[0].Data[1], data[0].Data[2], data[0].Data[3] }).Replace("-", " : ");
                                     _canger.DataReceivedHandler = null;
                                     _canger.Send(data[0].ID - 1, new byte[] { 0x84, 0x01 });
                                     _canger.Close();
@@ -541,9 +541,13 @@ namespace MbitGate.model
             }
         }
 
-        public CANMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
+        public CANMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator) : base(dialogCoordinator)
         {
-            _progressViewModel = new ProgressViewModel() { CancelCommand = new SimpleCommand() { ExecuteDelegate = param => 
+            _progressViewModel = new ProgressViewModel()
+            {
+                CancelCommand = new SimpleCommand()
+                {
+                    ExecuteDelegate = param =>
                     {
                         _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                         if (_canger != null)
@@ -553,7 +557,8 @@ namespace MbitGate.model
                             _canger = null;
                         }
                     }
-            } };
+                }
+            };
             _progressCtrl.DataViewModel = _progressViewModel;
 
             ConfigModel = new UpdateModel();
@@ -593,7 +598,7 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.ParamError);
                 return;
             }
-            else if(_canger == null)
+            else if (_canger == null)
             {
                 _canger = new CANManager(Devices.VCI_USBCAN_2E_U, 0, 0, ConfigModel.Rate);
             }
@@ -623,7 +628,7 @@ namespace MbitGate.model
                             //uint radar = (uint)(0x300 + Convert.ToByte(ConfigModel.Item, 16) * 0x10);
                             uint radar = (uint)0x300;
                             string lastOperation = CANRadarCommands.Synchronize;
-                            _canger.DataReceivedHandler = 
+                            _canger.DataReceivedHandler =
                                 data =>
                                     {
                                         unsafe
@@ -634,7 +639,7 @@ namespace MbitGate.model
                                                 case CANRadarCommands.StopOutput:
                                                     foreach (VCI_CAN_OBJ obj in data)
                                                     {
-                                                        if(obj.ID == sendID + 1)
+                                                        if (obj.ID == sendID + 1)
                                                         {
                                                             if (obj.Data[0] == 0x84)
                                                             {
@@ -645,7 +650,7 @@ namespace MbitGate.model
                                                     }
                                                     break;
                                                 case CANRadarCommands.Synchronize:
-                                                    foreach(VCI_CAN_OBJ obj in data)
+                                                    foreach (VCI_CAN_OBJ obj in data)
                                                     {
                                                         if (obj.ID == radar + 1)
                                                         {
@@ -694,7 +699,7 @@ namespace MbitGate.model
                                                     }
                                                     break;
                                                 case CANRadarCommands.CMDFILETRANS:
-                                                    if(data[0].Data[0] == 0x0C)
+                                                    if (data[0].Data[0] == 0x0C)
                                                     {
                                                         _progressViewModel.Message = Tips.CRCing;
                                                         lastOperation = CANRadarCommands.CMDFILESUMCRC;
@@ -702,7 +707,7 @@ namespace MbitGate.model
                                                     }
                                                     break;
                                                 case CANRadarCommands.CMDFILESUMCRC:
-                                                    if(data[0].Data[0] == 0x0D)
+                                                    if (data[0].Data[0] == 0x0D)
                                                     {
                                                         lastOperation = CANRadarCommands.CMDFILEPREFIXCRC;
                                                         result = _canger.Send(radar, filePrefix);
@@ -716,7 +721,7 @@ namespace MbitGate.model
                                                     }
                                                     break;
                                             }
-                                            if(!result)
+                                            if (!result)
                                             {
                                                 _canger.Close();
                                                 _canger = null;
@@ -742,7 +747,7 @@ namespace MbitGate.model
                                             }
                                         }
                                     };
-                            if(!_canger.Send(radar, new byte[] { 0x01, 0x00}))
+                            if (!_canger.Send(radar, new byte[] { 0x01, 0x00 }))
                             {
                                 _progressViewModel.Message = ErrorString.CANOpenError;
                             }
@@ -782,7 +787,7 @@ namespace MbitGate.model
         public string Gate { get; set; }
         public List<string> ThresholdTypes { get { return control.ThresholdType.GetAllTypes(); } }
         public bool Developer { get; set; }
-        public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
+        public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator) : base(dialogCoordinator)
         {
             _progressViewModel = new ProgressViewModel()
             {
@@ -790,12 +795,19 @@ namespace MbitGate.model
                 {
                     ExecuteDelegate = param =>
                     {
-                        _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
-                        if (serial != null)
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                         {
-                            serial.DataReceivedHandler = null;
-                            serial.close();
-                        }
+                            if (serial != null)
+                            {
+                                serial.CompareEndString = true;
+                                serial.Rate = (int)ConfigModel.CustomRate;
+                                serial.close();
+                            }
+                            if (overTimer != null)
+                                overTimer.Dispose();
+                            await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                            mutex.Set();
+                        }));
                     }
                 }
             };
@@ -803,7 +815,7 @@ namespace MbitGate.model
 
             ConfigModel = new ConfigViewModel(
                 cancel => { Dispose(); Application.Current.Shutdown(); },
-                confirm => { connect();  }
+                confirm => { connect(); }
                 );
             RateEditable = true;
             ItemSourceName = Application.Current.Resources["Serial"].ToString();
@@ -814,23 +826,26 @@ namespace MbitGate.model
             Developer = false;
             PasswordModel = new PwdViewModel()
             {
-                CancelCommand = new SimpleCommand() {
-                    ExecuteDelegate = arg => {  _dialogCoordinator.HideMetroDialogAsync(this, _pwdView); }
+                CancelCommand = new SimpleCommand()
+                {
+                    ExecuteDelegate = arg => { _dialogCoordinator.HideMetroDialogAsync(this, _pwdView); }
                 },
-                 CheckCommand = new SimpleCommand() {
-                     ExecuteDelegate  = arg => {
-                         if(!Developer)
+                CheckCommand = new SimpleCommand()
+                {
+                    ExecuteDelegate = arg =>
+                    {
+                        if (!Developer)
                             Developer = PasswordModel.verify();
-                         if (!Developer)
-                             ShowErrorWindow(Application.Current.Resources["Error"].ToString());
-                         else
-                         {
-                             _dialogCoordinator.HideMetroDialogAsync(this, _pwdView);
-                             SerialWork(() => ToGetVer());
-                         }
-                         OnPropertyChanged("Developer");
-                     }
-                 }
+                        if (!Developer)
+                            ShowErrorWindow(Application.Current.Resources["Error"].ToString());
+                        else
+                        {
+                            _dialogCoordinator.HideMetroDialogAsync(this, _pwdView);
+                            SerialWork(() => ToGetVer());
+                        }
+                        OnPropertyChanged("Developer");
+                    }
+                }
             };
             _pwdView = new PasswordView();
             _pwdView.DataContext = PasswordModel;
@@ -839,7 +854,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>ToSet());
+                    SerialWork(() => ToSet());
                 }
             };
 
@@ -847,7 +862,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>ToGet());
+                    SerialWork(() => ToGet());
                 }
             };
 
@@ -855,7 +870,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>ToReset());
+                    SerialWork(() => ToReset());
                 }
             };
 
@@ -863,7 +878,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>toStudy());
+                    SerialWork(() => toStudy());
                 }
             };
 
@@ -872,23 +887,6 @@ namespace MbitGate.model
                 ExecuteDelegate = param =>
                 {
                     SerialWork(() => toReboot());
-                }
-            };
-            _progressViewModel.CancelCommand = new SimpleCommand()
-            {
-                ExecuteDelegate = param =>
-                {
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
-                    {
-                        if (serial != null)
-                        {
-                            serial.CompareEndString = true;
-                            serial.Rate = (int)ConfigModel.CustomRate;
-                            serial.close();
-                        }
-                        await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
-                        mutex.Set();
-                    }));
                 }
             };
         }
@@ -943,10 +941,11 @@ namespace MbitGate.model
                 return;
             }
             await Task.Factory.StartNew(towork);
-            await Task.Factory.StartNew(() => {
+            await Task.Factory.StartNew(() =>
+            {
                 WaitHandle.WaitAny(new WaitHandle[] { mutex });
                 mutex.Reset();
-                if(serial.IsOpen)
+                if (serial.IsOpen)
                     serial.close();
             });
         }
@@ -1069,7 +1068,7 @@ namespace MbitGate.model
 
         private void ToSet()
         {
-            if(Distance == string.Empty || LRange == string.Empty || RRange == string.Empty)
+            if (Distance == string.Empty || LRange == string.Empty || RRange == string.Empty)
             {
                 ShowErrorWindow(Tips.GetFail);
                 mutex.Set();
@@ -1138,22 +1137,32 @@ namespace MbitGate.model
 
         internal async void root()
         {
-            if(!Developer)
+            if (!Developer)
                 await _dialogCoordinator.ShowMetroDialogAsync(this, _pwdView);
         }
         private string GetSerialPortName(string name)
         {
             int pos = name.IndexOf("  ");
-            if(pos > 0)
+            if (pos > 0)
                 return name.Substring(0, name.IndexOf("  "));
             return name;
         }
 
         FileIOManager reader = null;
+        Timer overTimer = null;
         protected override void ToDo()
         {
             SerialWork(() =>
             {
+                string lastMessage = string.Empty;
+                overTimer = new Timer(obj =>
+                {
+                    lastMessage = _progressViewModel.Message;
+                    if (_progressViewModel.Message != Tips.Updating && lastMessage == _progressViewModel.Message)
+                    {
+                        _progressViewModel.Message = ErrorString.OverTime;
+                    }
+                }, null, 0, 5000);
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                 {
                     serial.CompareEndString = false;
@@ -1217,6 +1226,7 @@ namespace MbitGate.model
                                         serial.Rate = (int)ConfigModel.CustomRate;
                                         mutex.Set();
                                     }
+                                    overTimer.Dispose();
                                 }
                                 else
                                 {
@@ -1244,6 +1254,7 @@ namespace MbitGate.model
                                         serial.Rate = (int)ConfigModel.CustomRate;
                                         mutex.Set();
                                     }
+                                    overTimer.Dispose();
                                 }
                                 else
                                 {
@@ -1316,6 +1327,7 @@ namespace MbitGate.model
                                                 {
                                                     await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                                                 }
+                                                overTimer.Dispose();
                                                 SerialWork(() => ToGetVer());
                                             }));
                                             break;
@@ -1375,7 +1387,7 @@ namespace MbitGate.model
     public class WifiMainViewModel : MainViewModel
     {
         public UpdateModel ConfigModel { get; set; }
-        public WifiMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
+        public WifiMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator) : base(dialogCoordinator)
         {
             ConfigModel = new UpdateModel();
             RateEditable = true;
