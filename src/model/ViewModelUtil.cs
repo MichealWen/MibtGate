@@ -947,11 +947,25 @@ namespace MbitGate.model
                 mutex.Reset();
             });
         }
+
         private void toStudy()
         {
+            serial.EndStr = "\n\r";
             serial.DataReceivedHandler = msg =>
             {
-                if (msg.Contains(SerialRadarReply.Done))
+                if (msg.Contains(SerialRadarReply.StudyEnd))
+                {
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
+                    {
+                        await TaskEx.Delay(500);
+                        if (_progressCtrl.IsVisible)
+                        {
+                            await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                        }
+                        ShowConfirmWindow(Tips.StudySuccess, string.Empty);
+                    }));
+                    mutex.Set();
+                }else if (msg.Contains(SerialRadarReply.Done))
                 {
                     _progressViewModel.Message = Tips.Studying;
                     _progressViewModel.IsIndeterminate = true;
@@ -962,15 +976,9 @@ namespace MbitGate.model
                         await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
                     }));
                 }
-                else if (msg.Contains(SerialRadarReply.StudyEnd))
+                else
                 {
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
-                    {
-                        _progressViewModel.Message = Tips.StudySuccess;
-                        await TaskEx.Delay(1000);
-                        await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
-                    }));
-                    mutex.Set();
+                    _progressViewModel.Message = Tips.Studying + ":    " + msg.Trim('\n','\r');
                 }
             };
             serial.WriteLine(SerialRadarCommands.Output + " 4");
@@ -1203,6 +1211,7 @@ namespace MbitGate.model
                                 switch (lastOperation)
                                 {
                                     case SerialRadarCommands.SensorStop:
+                                        Thread.Sleep(1000);
                                         lastOperation = SerialRadarCommands.WriteCLI;
                                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
                                         break;
