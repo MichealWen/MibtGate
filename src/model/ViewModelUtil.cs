@@ -1358,14 +1358,10 @@ namespace MbitGate.model
             {
                 if (!ver.Contains("485"))
                     return false;
-                int startpos = ver.IndexOf('.') - 1;
-                int endpos = ver.LastIndexOf('_') - 7;
-                Version binVersion = new Version(ver.Substring(startpos, endpos - startpos));
+                Version binVersion = new Version(System.Text.RegularExpressions.Regex.Match(ver, @"\d+\.\d+\.\d+").Value);
                 try
                 {
-                    startpos = Version.IndexOf('.') - 1;
-                    endpos = Version.LastIndexOf('_') - 7;
-                    Version radarVersion = new Version(Version.Substring(startpos, endpos - startpos));
+                    Version radarVersion = new Version(System.Text.RegularExpressions.Regex.Match(Version, @"\d+\.\d+\.\d+").Value);
                     return (binVersion >= radarVersion);
                 }
                 catch
