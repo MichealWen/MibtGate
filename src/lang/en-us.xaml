@@ -71,7 +71,7 @@
     <s:String x:Key="RadarError">Radar Error</s:String>
     <s:String x:Key="DisntacneError">Distance should less than 6 meters</s:String>
     <s:String x:Key="RangeError">Either Side shoule between [0.4 ~1]</s:String>
-    <s:String x:Key="DelayError">Delay Must Less Ten Minutes</s:String>
+    <s:String x:Key="DelayError">Delay Must Between 2~300 Seconds</s:String>
     <s:String x:Key="Opening">Serial Opening</s:String>
     <s:String x:Key="Initializing">Initializing</s:String>
     <s:String x:Key="UpdateFail">Update Fail</s:String>

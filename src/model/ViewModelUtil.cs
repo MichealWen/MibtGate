@@ -1202,20 +1202,23 @@ namespace MbitGate.model
         }
         private void ToSetDelay(bool reset=false)
         {
-            if (Delay == string.Empty)
+            int delay = 6;
+            try
             {
-                ShowErrorWindow(Tips.GetFail);
+                if (!reset)
+                    delay = int.Parse(Delay);
+                if (delay < 1 || delay > 300)
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception)
+            {
+                ShowErrorWindow(ErrorString.DelayError);
                 mutex.Set();
                 return;
             }
-            int delay = 6;
-            if(!reset)
-                delay = int.Parse(Delay);
-            if (delay < 0 || delay > 600)
-            {
-                ShowErrorWindow(ErrorString.DelayError);
-                return;
-            }
+           
            
             string lastOperation = SerialRadarCommands.SensorStop;
             serial.DataReceivedHandler = msg =>
@@ -1339,7 +1342,7 @@ namespace MbitGate.model
                         OnPropertyChanged("Record");
                         mutex.Set();
                         if (DelayVisible)
-                            ToSetDelay(true);
+                            SerialWork(()=>ToSetDelay(true));
                         else
                         {
                             serial.WriteLine(SerialRadarCommands.SoftReset);
@@ -1391,7 +1394,7 @@ namespace MbitGate.model
                         }
                         mutex.Set();
                         if (DelayVisible) 
-                            ToGetDelay();
+                            SerialWork(()=>ToGetDelay());
                     }
                 }
                 else if (msg.Contains(SerialRadarReply.Error))
@@ -1405,31 +1408,47 @@ namespace MbitGate.model
 
         private void ToSet()
         {
-            if (Distance == string.Empty || LRange == string.Empty || RRange == string.Empty)
+            float distance = 0.0f, lrange = 0.0f, rrange = 0.0f;
+            try
             {
-                ShowErrorWindow(Tips.GetFail);
+                distance = float.Parse(Distance);
+                lrange = float.Parse(LRange);
+                rrange = float.Parse(RRange);
+                string error = string.Empty;
+                if (distance < 0 || lrange < 0 || rrange < 0)
+                {
+                    error = ErrorString.ParamError;
+                    throw new Exception(error);
+                }
+                else if (distance > 6.0 || distance < 1.0)
+                {
+                    error = ErrorString.DisntacneError;
+                    throw new Exception(error);
+                }
+                else if(Gate == control.GateType.Straight)
+                {
+                    if (lrange < 0.4 || rrange < 0.4 || lrange > 1 || rrange > 1)
+                    {
+                        error = ErrorString.RangeError1;
+                        throw new Exception(error);
+                    }
+                }
+                else if (Gate == control.GateType.AdvertisingFence)
+                {
+                    if (lrange < 0.7 || rrange < 0.7 || lrange > 1 || rrange > 1)
+                    {
+                        error = ErrorString.RangeError2;
+                        throw new Exception(error);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                ShowErrorWindow(e.Message);
                 mutex.Set();
                 return;
             }
-            float distance = float.Parse(Distance);
-            float lrange = float.Parse(LRange);
-            float rrange = float.Parse(RRange);
-            if (distance < 0 || lrange < 0 || rrange < 0)
-            {
-                ShowErrorWindow(ErrorString.ParamError);
-                return;
-            }
-            else if (distance > 6.0 || distance < 1.0)
-            {
-                ShowErrorWindow(ErrorString.DisntacneError);
-                return;
-            }
-            else if (lrange < 0.5 || rrange < 0.5 || lrange > 1 || rrange > 1)
-            {
-                ShowErrorWindow(ErrorString.RangeError);
-                return;
-            }
-            OnPropertyChanged("Record");
+            
             string lastOperation = SerialRadarCommands.SensorStop;
             serial.DataReceivedHandler = msg =>
             {
@@ -1442,9 +1461,10 @@ namespace MbitGate.model
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
+                        OnPropertyChanged("Record");
                         mutex.Set();
                         if (DelayVisible) 
-                            ToSetDelay();
+                            SerialWork(()=>ToSetDelay());
                         else
                         {
                             serial.WriteLine(SerialRadarCommands.SoftReset);

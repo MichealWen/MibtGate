@@ -149,7 +149,8 @@ namespace MbitGate.control
         public static string CANOpenError = Application.Current.Resources["CANOpenError"].ToString();
         public static string RadarError = Application.Current.Resources["RadarError"].ToString();
         public static string DisntacneError = Application.Current.Resources["DisntacneError"].ToString();
-        public static string RangeError = Application.Current.Resources["RangeError"].ToString();
+        public static string RangeError1 = Application.Current.Resources["RangeError1"].ToString();
+        public static string RangeError2 = Application.Current.Resources["RangeError2"].ToString();
         public static string SmallVersion = Application.Current.Resources["SmallVersion"].ToString();
         public static string OverTime = Application.Current.Resources["OverTime"].ToString();
         public static string DelayError = Application.Current.Resources["DelayError"].ToString();
