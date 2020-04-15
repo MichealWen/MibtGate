@@ -86,6 +86,7 @@ namespace MbitGate.control
     {
         public const string SoftReset = "softReset";
         public const string SensorStop = "sensorStop";
+        public const string SensorStart = "sensorStart";
         public const string WriteCLI = "WriteCLI";
         public const string ReadCLI = "ReadCLI";
         public const string ResetCLI = "ResetCLI";
@@ -96,6 +97,10 @@ namespace MbitGate.control
         public const string CRC = "CRC";
         public const string Output = "clioutput";
         public const string Version = "ver.";
+        public const string GetTIme = "ReadTime";
+        public const string SetTime = "setTime";
+        public const string ClearTime = "TimeErase";
+        public const string SearchTime = "DalayFilpTime";
     }
 
     public class ExtraSerialRadarCommands
@@ -122,6 +127,7 @@ namespace MbitGate.control
         public const string FilterParam = "setFilterPara";
         public const string FrameCfg = "frameCfg";
         public const string BootLoaderFlag = "bootLoaderFlag";
+        public const string DelayTimeParam = "setDelayTimeParas";
     }
 
     public class SerialRadarReply
@@ -146,6 +152,7 @@ namespace MbitGate.control
         public static string RangeError = Application.Current.Resources["RangeError"].ToString();
         public static string SmallVersion = Application.Current.Resources["SmallVersion"].ToString();
         public static string OverTime = Application.Current.Resources["OverTime"].ToString();
+        public static string DelayError = Application.Current.Resources["DelayError"].ToString();
     }
 
     public class Tips
@@ -168,6 +175,18 @@ namespace MbitGate.control
         public static string WaitForOpen = Application.Current.Resources["WaitForOpen"].ToString();
         public static string ManualReboot = Application.Current.Resources["ManualReboot"].ToString();
         public static string RebootSuccess = Application.Current.Resources["RebootSuccess"].ToString();
+        public const string GetTimeFail = "获取雷达时间失败";
+        public const string GetTimeSuccess = "获取雷达时间成功";
+        public const string SetTimeFail = "设置雷达时间失败";
+        public const string SetTimeSuccess = "设置雷达时间成功";
+        public const string ClearTiming = "正在清除雷达时间";
+        public const string ClearTimeFail = "清除雷达时间失败";
+        public const string ClearTimeSuccess = "清除雷达时间成功";
+        public const string SearchTimeFail = "查询数据失败";
+        public const string SearchTimeSuccess = "查询数据成功";
+        public const string SearchTimeGetNone = "查询数据为空";
+        public const string Searching = "正在查询数据";
+        public const string SearchTimeEnd = "查询数据结束";
     }
 
     public class GateType
@@ -198,6 +217,46 @@ namespace MbitGate.control
             else
                 return type;
         }
+    }
+
+    public class RecordKind
+    {
+        public const string Persistence = @"记录(雷达时间戳)";
+        public const string Ignore = @"不记录(雷达时间戳)";
+
+        public static List<string> GetAllTypes()
+        {
+            return new List<string>() { Persistence, Ignore };
+        }
+
+        public static string GetType(string value)
+        {
+            if (value == "0")
+                return Ignore;
+            else if (value == "1")
+                return Persistence;
+            else
+                return value;
+        }
+
+        public static string GetValue(string type)
+        {
+            if (type == Ignore)
+                return "0";
+            else if (type == Persistence)
+                return "1";
+            else
+                return type;
+        }
+    }
+
+    public class OperationType
+    {
+        public const string Up = "\t抬杆";
+        public const string Down = "\t降杆";
+
+        public const string UpValue = @"Dalay:1";
+        public const string DownValue = @"Dalay:0";
     }
 
     public class ThresholdType

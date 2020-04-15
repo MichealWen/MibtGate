@@ -2,11 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">道闸RS485设置V2.0</s:String>
+    <s:String  x:Key="MainWindowTitle">道闸RS485雷达设置V2.2.0</s:String>
     <s:String  x:Key="SerialModelTitle">升级</s:String>
     <s:String  x:Key="ConfigModelTitle">设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
     <s:String  x:Key="DeveloperModelTitle">开发设置</s:String>
+    <s:String x:Key="RecordModelTitle">雷达数据</s:String>
     <s:String  x:Key="Serial">串&#160;&#160;&#160;口</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
     <s:String  x:Key="Radar">雷达</s:String>
@@ -25,14 +26,16 @@
     <s:String  x:Key="RRange">作用右范围</s:String>
     <s:String  x:Key="Position">杆位置</s:String>
     <s:String  x:Key="Threshold">人车区分</s:String>
-    <s:String  x:Key="Delay">&#160;&#160;延时</s:String>
-    <s:String  x:Key="Unit">m</s:String>
+    <s:String  x:Key="Delay">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;延时</s:String>
+    <s:String  x:Key="UnitM">m</s:String>
+    <s:String  x:Key="UnitS">秒</s:String>
     <s:String  x:Key="Get">获取</s:String>
     <s:String  x:Key="Set">重设</s:String>
     <s:String  x:Key="Default">默认</s:String>
     <s:String  x:Key="Password">密码</s:String>
     <s:String  x:Key="Verify">验证</s:String>
     <s:String x:Key="Study">自学习</s:String>
+    <s:String x:Key="Reboot">软重启</s:String>
     <s:String x:Key="AdvertisingFence">广告栅栏道闸</s:String>
     <s:String x:Key="Advertising">广告道闸</s:String>
     <s:String x:Key="Straight">直杆道闸</s:String>
@@ -41,10 +44,22 @@
     <s:String x:Key="FuncSet">设置雷达新参数</s:String>
     <s:String x:Key="FuncReset">设置雷达成默认参数</s:String>
     <s:String x:Key="FuncStudy">雷达学习识别区分栏杆运行</s:String>
-    <s:String x:Key="FuncReboot">雷达进行软重启</s:String>
-    <s:String x:Key="Version">&#160;&#160;&#160;版本号</s:String>
-    <s:String x:Key="Reboot">软重启</s:String>
-    
+    <s:String x:Key="FuncReboot">发送命令进行雷达软重启</s:String>
+    <s:String x:Key="Version">当前版本</s:String>
+    <s:String x:Key="Time">雷达时间</s:String>
+    <s:String x:Key="StartTime">查询起始时间</s:String>
+    <s:String x:Key="EndTime">查询结束时间</s:String>
+    <s:String x:Key="Record">雷达日志</s:String>
+    <s:String x:Key="GetTime">获取时间</s:String>
+    <s:String x:Key="SetTime">设置时间</s:String>
+    <s:String x:Key="ClearTime">清除时间</s:String>
+    <s:String x:Key="Search">查询记录</s:String>
+    <s:String x:Key="SearchResult">查询结果</s:String>
+    <s:String x:Key="FuncGetTime">获取雷达当前时间</s:String>
+    <s:String x:Key="FuncSetTime">同步雷达当前时间</s:String>
+    <s:String x:Key="FuncClearTime">清除雷达当前时间</s:String>
+    <s:String x:Key="FuncRecord">查询雷达在起止时间中的数据</s:String>
+
     <!--提示-->
     <s:String x:Key="ParamsError">参数错误</s:String>
     <s:String x:Key="BinPathError">固件路径错误</s:String>
@@ -55,6 +70,7 @@
     <s:String x:Key="RadarError">雷达标号错误</s:String>
     <s:String x:Key="DisntacneError">作用距离1~6米</s:String>
     <s:String x:Key="RangeError">左右范围0.5~1米</s:String>
+    <s:String x:Key="DelayError">延时不能超过10分钟</s:String>
     <s:String x:Key="Opening">正在打开串口</s:String>
     <s:String x:Key="Initializing">正在初始化设置</s:String>
     <s:String x:Key="UpdateFail">固件刷写失败</s:String>

@@ -235,13 +235,10 @@ namespace MbitGate.control
                                 _receivedStr += _serial.ReadExisting();
                                 if(CompareEndString)
                                 {
-                                    if (_receivedStr.Contains("\n\r"))
+                                    if (_receivedStr.Contains("Error") || _receivedStr.Contains(EndStr))
                                     {
-                                        if ( _receivedStr.Contains("Error") || _receivedStr.Contains(EndStr))
-                                        {
-                                            DataReceivedHandler(_receivedStr);
-                                            _receivedStr = string.Empty;
-                                        }
+                                        DataReceivedHandler(_receivedStr);
+                                        _receivedStr = string.Empty;
                                     }
                                 }
                                 else
@@ -255,7 +252,9 @@ namespace MbitGate.control
                 }
             }
             catch (Exception ex)
-            { }
+            {
+                _receivedStr = string.Empty;
+            }
         }
 
         public bool IsOpen
@@ -362,8 +361,15 @@ namespace MbitGate.control
 
         public void close()
         {
-            if (_serial.IsOpen)
-                _serial.Close();
+            try
+            {
+                if (_serial.IsOpen)
+                    _serial.Close();
+                _receivedStr = string.Empty;
+                DataReceivedHandler = null;
+                BytesDataReceivedHandler = null;
+            }
+            catch{ }
         }
     }
 }

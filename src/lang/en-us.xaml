@@ -25,8 +25,9 @@
     <s:String  x:Key="RRange">Right Range</s:String>
     <s:String  x:Key="Position">Rod Position</s:String>
     <s:String  x:Key="Threshold">Threshold</s:String>
-    <s:String  x:Key="Delay">&#160;&#160;Delay</s:String>
-    <s:String  x:Key="Unit">m</s:String>
+    <s:String  x:Key="Delay">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Delay</s:String>
+    <s:String  x:Key="UnitM">m</s:String>
+    <s:String  x:Key="UnitS">s</s:String>
     <s:String  x:Key="Get">Get</s:String>
     <s:String  x:Key="Set">Set</s:String>
     <s:String  x:Key="Default">Default</s:String>
@@ -45,6 +46,20 @@
     <s:String x:Key="Version">&#160;&#160;&#160;Version</s:String>
     <s:String x:Key="Reboot">Reboot</s:String>
     <s:String x:Key="RebootSuccess">Reboot Done</s:String>
+    <s:String x:Key="RecordModelTitle">Radar Data</s:String>
+    <s:String x:Key="Time">Radar Time</s:String>
+    <s:String x:Key="StartTime">Start Time</s:String>
+    <s:String x:Key="EndTime">End Time</s:String>
+    <s:String x:Key="Record">&#160;&#160;&#160;&#160;Record</s:String>
+    <s:String x:Key="GetTime">GetTime</s:String>
+    <s:String x:Key="SetTime">SetTime</s:String>
+    <s:String x:Key="ClearTime">ClearTime</s:String>
+    <s:String x:Key="Search">Search</s:String>
+    <s:String x:Key="SearchResult">Result</s:String>
+    <s:String x:Key="FuncGetTime">Get Current Time In Radar</s:String>
+    <s:String x:Key="FuncSetTime">synchronize Radar Time</s:String>
+    <s:String x:Key="FuncClearTime">Clear Radar Time</s:String>
+    <s:String x:Key="FuncRecord">Get Records In Radar</s:String>
     
     <!--提示-->
     <s:String x:Key="ParamsError">Parameters Error</s:String>
@@ -56,6 +71,7 @@
     <s:String x:Key="RadarError">Radar Error</s:String>
     <s:String x:Key="DisntacneError">Distance should less than 6 meters</s:String>
     <s:String x:Key="RangeError">Either Side shoule between [0.4 ~1]</s:String>
+    <s:String x:Key="DelayError">Delay Must Less Ten Minutes</s:String>
     <s:String x:Key="Opening">Serial Opening</s:String>
     <s:String x:Key="Initializing">Initializing</s:String>
     <s:String x:Key="UpdateFail">Update Fail</s:String>

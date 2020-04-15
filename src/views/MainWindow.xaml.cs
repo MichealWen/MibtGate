@@ -71,6 +71,7 @@ namespace MbitGate.views
             ic_tab_config.IsChecked = false;
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = true;
+            ic_tab_search.IsChecked = false;
             mainVModel?.root();
         }
 
@@ -79,6 +80,7 @@ namespace MbitGate.views
             ic_tab_config.IsChecked = false;
             ic_tab_update.IsChecked = true;
             ic_tab_develop.IsChecked = false;
+            ic_tab_search.IsChecked = false;
         }
 
         private void Config_Choose_Click(object sender, RoutedEventArgs e)
@@ -86,6 +88,7 @@ namespace MbitGate.views
             ic_tab_config.IsChecked = true;
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
+            ic_tab_search.IsChecked = false;
         }
 
         private void ComboxThreshold_LostFocus(object sender, RoutedEventArgs e)
@@ -96,6 +99,14 @@ namespace MbitGate.views
         private void ComboxThreshold_GetFocus(object sender, RoutedEventArgs e)
         {
             (sender as ComboBox).IsEditable = false;
+        }
+
+        private void Record_Choose_Click(object sender, RoutedEventArgs e)
+        {
+            ic_tab_config.IsChecked = false;
+            ic_tab_update.IsChecked = false;
+            ic_tab_develop.IsChecked = false;
+            ic_tab_search.IsChecked = true;
         }
     }
 
@@ -116,6 +127,22 @@ namespace MbitGate.views
                 return name.Substring(startpos+1, endpos - startpos - 1);
             }
             return "";
+        }
+    }
+
+    public class SearchModelVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string type = value?.ToString();
+            if (type == null || type == control.RecordKind.Ignore)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -150,6 +177,43 @@ namespace MbitGate.views
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class RevertVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Visibility adversary = (Visibility)value;
+            if (adversary == Visibility.Visible)
+            {
+                return Visibility.Hidden;
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MultiRevertCheckedVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool checkedValue1 = (bool)values[0];
+            bool checkedValue2 = (bool)values[1];
+            if(checkedValue1 || checkedValue2)
+            {
+                return Visibility.Hidden;
+            }
+            return Visibility.Visible;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
