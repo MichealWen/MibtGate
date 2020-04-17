@@ -895,7 +895,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>ToStudy());
+                    SerialWork(()=>ToStudy(), -1);
                 }
             };
 
@@ -1152,7 +1152,7 @@ namespace MbitGate.model
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
-        private async void SerialWork(Action towork)
+        private async void SerialWork(Action towork, int waitmillionseoconds = 5000)
         {
             if (serial != null)
             {
@@ -1166,12 +1166,15 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.SerialOpenError);
                 return;
             }
-            await Task.Factory.StartNew(towork);
-            if(!mutex.WaitOne(5000))
-            {
-                ShowErrorWindow(ErrorString.OverTime);
-            }
-            mutex.Reset();
+            await Task.Factory.StartNew(
+                ()=> { 
+                    towork();
+                    if (!mutex.WaitOne(waitmillionseoconds))
+                    {
+                        ShowErrorWindow(ErrorString.OverTime);
+                    }
+                    mutex.Reset();
+                });
         }
         private void ToGetDelay()
         {
@@ -1793,7 +1796,7 @@ namespace MbitGate.model
             }
             catch
             {
-                return false;
+                return false; 
             }
         }
 
