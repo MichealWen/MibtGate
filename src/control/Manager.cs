@@ -332,6 +332,7 @@ namespace MbitGate.control
         {
             try
             {
+                _serial.DiscardOutBuffer();
                 _serial.WriteLine(content);
                 System.Threading.Thread.Sleep(millis);
             }

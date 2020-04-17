@@ -1167,10 +1167,11 @@ namespace MbitGate.model
                 return;
             }
             await Task.Factory.StartNew(towork);
-            await Task.Factory.StartNew(() => {
-                WaitHandle.WaitAny(new WaitHandle[] { mutex });
-                mutex.Reset();
-            });
+            if(!mutex.WaitOne(5000))
+            {
+                ShowErrorWindow(ErrorString.OverTime);
+            }
+            mutex.Reset();
         }
         private void ToGetDelay()
         {
@@ -1182,12 +1183,15 @@ namespace MbitGate.model
                     if (lastOperation == SerialRadarCommands.SensorStop)
                     {
                         lastOperation = SerialRadarCommands.ReadCLI;
+                        Thread.Sleep(300);
                         serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.DelayTimeParam);
                     }
                     else if (lastOperation == SerialRadarCommands.ReadCLI)
                     {
-                        Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d").Value;
+                        Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d+").Value;
                         OnPropertyChanged("Delay");
+                        Thread.Sleep(300);
+                        serial.EndStr = SerialRadarReply.Start;
                         serial.WriteLine(SerialRadarCommands.SoftReset);
                         mutex.Set();
                     }
@@ -1196,6 +1200,9 @@ namespace MbitGate.model
                 {
                     ShowErrorWindow(Tips.GetFail);
                     mutex.Set();
+                }
+                else if(msg.Contains(SerialRadarReply.Start))
+                {
                 }
             };
             serial.WriteLine(SerialRadarCommands.SensorStop);
@@ -1207,7 +1214,7 @@ namespace MbitGate.model
             {
                 if (!reset)
                     delay = int.Parse(Delay);
-                if (delay < 1 || delay > 300)
+                if (delay < 1.99999 || delay > 300.00001)
                 {
                     throw new Exception();
                 }
@@ -1228,17 +1235,20 @@ namespace MbitGate.model
                     if (lastOperation == SerialRadarCommands.SensorStop)
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
+                        Thread.Sleep(300);
                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.DelayTimeParam + " " + delay.ToString());
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
-                        if(reset)
+                        if (reset)
                         {
                             Delay = delay.ToString();
                             OnPropertyChanged("Delay");
                         }
-                        serial.WriteLine(SerialRadarCommands.SoftReset);
                         ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
+                        Thread.Sleep(300);
+                        serial.EndStr = SerialRadarReply.Start;
+                        serial.WriteLine(SerialRadarCommands.SoftReset);
                         mutex.Set();
                     }
                 }
@@ -1246,6 +1256,9 @@ namespace MbitGate.model
                 {
                     ShowErrorWindow(Tips.ConfigFail);
                     mutex.Set();
+                }
+                else if (msg.Contains(SerialRadarReply.Start))
+                {
                 }
             };
             serial.WriteLine(SerialRadarCommands.SensorStop);
@@ -1290,14 +1303,10 @@ namespace MbitGate.model
         }
         private void ToReboot()
         {
-            serial.EndStr = SerialRadarReply.Start;
-            serial.DataReceivedHandler = msg =>
-            {
-                ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
-                serial.DataReceivedHandler = null;
-                mutex.Set();
-            };
             serial.WriteLine(SerialRadarCommands.SoftReset);
+            ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
+            serial.DataReceivedHandler = null;
+            mutex.Set();
         }
         private void Timekeeper_Tick(object sender, EventArgs e)
         {
@@ -1324,6 +1333,7 @@ namespace MbitGate.model
                     if (lastOperation == SerialRadarCommands.SensorStop)
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
+                        Thread.Sleep(300);
                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 5 2 2 30 5 32 0 0 0");
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
@@ -1342,11 +1352,13 @@ namespace MbitGate.model
                         OnPropertyChanged("Record");
                         mutex.Set();
                         if (DelayVisible)
-                            SerialWork(()=>ToSetDelay(true));
+                        {
+                            SerialWork(() => ToSetDelay(true));
+                        }
                         else
                         {
+                            serial.EndStr = SerialRadarReply.Start;
                             serial.WriteLine(SerialRadarCommands.SoftReset);
-                            ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
                         }
                     }
                 }
@@ -1354,6 +1366,10 @@ namespace MbitGate.model
                 {
                     ShowErrorWindow(Tips.ConfigFail);
                     mutex.Set();
+                }
+                else if(msg.Contains(SerialRadarReply.Start))
+                {
+                    ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
                 }
             };
             serial.WriteLine(SerialRadarCommands.SensorStop);
@@ -1393,8 +1409,10 @@ namespace MbitGate.model
                             ShowErrorWindow(Tips.GetFail);
                         }
                         mutex.Set();
-                        if (DelayVisible) 
-                            SerialWork(()=>ToGetDelay());
+                        if (DelayVisible)
+                        {
+                            SerialWork(() => ToGetDelay());
+                        }
                     }
                 }
                 else if (msg.Contains(SerialRadarReply.Error))
@@ -1427,7 +1445,7 @@ namespace MbitGate.model
                 }
                 else if(Gate == control.GateType.Straight)
                 {
-                    if (lrange < 0.4 || rrange < 0.4 || lrange > 1 || rrange > 1)
+                    if (lrange < 0.39999 || rrange < 0.39999 || lrange > 1.00001 || rrange > 1.00001)
                     {
                         error = ErrorString.RangeError1;
                         throw new Exception(error);
@@ -1435,7 +1453,7 @@ namespace MbitGate.model
                 }
                 else if (Gate == control.GateType.AdvertisingFence)
                 {
-                    if (lrange < 0.7 || rrange < 0.7 || lrange > 1 || rrange > 1)
+                    if (lrange < 0.69999 || rrange < 0.69999 || lrange > 1.00001 || rrange > 1.00001)
                     {
                         error = ErrorString.RangeError2;
                         throw new Exception(error);
@@ -1457,18 +1475,21 @@ namespace MbitGate.model
                     if (lastOperation == SerialRadarCommands.SensorStop)
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
+                        Thread.Sleep(300);
                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (float.Parse(LRange) * 10).ToString("F0") + " 2 2 " + (float.Parse(Distance) * 10).ToString("F0") + " " + (float.Parse(RRange) * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold) + " " + control.RecordKind.GetValue(Record));
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
                         OnPropertyChanged("Record");
                         mutex.Set();
-                        if (DelayVisible) 
-                            SerialWork(()=>ToSetDelay());
+                        if (DelayVisible)
+                        {
+                            SerialWork(() => ToSetDelay());
+                        }
                         else
                         {
+                            serial.EndStr = SerialRadarReply.Start;
                             serial.WriteLine(SerialRadarCommands.SoftReset);
-                            ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
                         }
                     }
                 }
@@ -1476,6 +1497,10 @@ namespace MbitGate.model
                 {
                     ShowErrorWindow(Tips.ConfigFail);
                     mutex.Set();
+                }
+                else if(msg.Contains(SerialRadarReply.Start))
+                {
+                    ShowConfirmWindow(Tips.ManualReboot, Tips.ConfigSuccess);
                 }
             };
             serial.WriteLine(SerialRadarCommands.SensorStop);
