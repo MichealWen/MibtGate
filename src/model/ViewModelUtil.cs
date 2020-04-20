@@ -1753,7 +1753,7 @@ namespace MbitGate.model
                         serial.WriteLine(SerialRadarCommands.SensorStop);
                     }
                 }));
-            });
+            }, -1);
         }
 
         private bool compareVersion(string ver)
