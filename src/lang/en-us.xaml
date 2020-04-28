@@ -2,11 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">Radar V2.0</s:String>
+    <s:String  x:Key="MainWindowTitle">Radar RS485 V2.3.0</s:String>
     <s:String  x:Key="SerialModelTitle">Update</s:String>
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
     <s:String  x:Key="DeveloperModelTitle">Develop</s:String>
+    <s:String x:Key="RecordModelTitle">雷达数据</s:String>
     <s:String  x:Key="Serial">Serial</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
     <s:String  x:Key="Radar">Radar</s:String>
@@ -34,6 +35,7 @@
     <s:String  x:Key="Password">Password</s:String>
     <s:String  x:Key="Verify">Verify</s:String>
     <s:String x:Key="Study">Study</s:String>
+    <s:String x:Key="Reboot">Reboot</s:String>
     <s:String x:Key="AdvertisingFence">AdvertisingFence</s:String>
     <s:String x:Key="Advertising">Advertising</s:String>
     <s:String x:Key="Straight">Straight</s:String>
@@ -44,9 +46,6 @@
     <s:String x:Key="FuncStudy">Study To Distinguish The Movement Of Rod</s:String>
     <s:String x:Key="FuncReboot">Radar Reboot</s:String>
     <s:String x:Key="Version">&#160;&#160;&#160;Version</s:String>
-    <s:String x:Key="Reboot">Reboot</s:String>
-    <s:String x:Key="RebootSuccess">Reboot Done</s:String>
-    <s:String x:Key="RecordModelTitle">Radar Data</s:String>
     <s:String x:Key="Time">Radar Time</s:String>
     <s:String x:Key="StartTime">Start Time</s:String>
     <s:String x:Key="EndTime">End Time</s:String>
@@ -70,7 +69,8 @@
     <s:String x:Key="CANOpenError">CAN Open Error</s:String>
     <s:String x:Key="RadarError">Radar Error</s:String>
     <s:String x:Key="DisntacneError">Distance should less than 6 meters</s:String>
-    <s:String x:Key="RangeError">Either Side shoule between [0.4 ~1]</s:String>
+    <s:String x:Key="RangeError1">Either Side shoule between 0.4 ~1 meter</s:String>
+    <s:String x:Key="RangeError2">Either Side shoule between 0.7 ~1 meter</s:String>
     <s:String x:Key="DelayError">Delay Must Between 2~300 Seconds</s:String>
     <s:String x:Key="Opening">Serial Opening</s:String>
     <s:String x:Key="Initializing">Initializing</s:String>
@@ -88,7 +88,27 @@
     <s:String x:Key="WaitForOpen">Wait for radar start</s:String>
     <s:String x:Key="ManualReboot">Reboot radar</s:String>
     <s:String x:Key="SmallVersion">Wrong Version</s:String>
+    <s:String x:Key="RebootSuccess">Reboot Done</s:String>
     <s:String x:Key="OverTime">No Response，ReElectric Radar Manual</s:String>
+    <s:String x:Key="GetTimeFail">Get Time Fail</s:String>
+    <s:String x:Key="GetTimeSuccess">Get Time Success</s:String>
+    <s:String x:Key="SetTimeFail">Set Time Fail</s:String>
+    <s:String x:Key="SetTimeSuccess">Set Time Success</s:String>
+    <s:String x:Key="ClearTiming">Clearing Time</s:String>
+    <s:String x:Key="ClearTimeFail">Clear Time Fail</s:String>
+    <s:String x:Key="ClearTimeSuccess">Clear Time Success</s:String>
+    <s:String x:Key="SearchTimeFail">Search Time Fail</s:String>
+    <s:String x:Key="SearchTimeSuccess">Search Time Success</s:String>
+    <s:String x:Key="SearchTimeGetNone">Get Data None</s:String>
+    <s:String x:Key="Searching">Searching...</s:String>
+    <s:String x:Key="SearchTimeEnd">Search Finished</s:String>
+    <s:String x:Key="Persistence">Persistence(Radar TimeStamp)</s:String>
+    <s:String x:Key="Ignore">Ignore(Radar TimeStamp)</s:String>
+    <s:String x:Key="Up">\tUp</s:String>
+    <s:String x:Key="Down">\tDown</s:String>
+    <s:String x:Key="UpValue">Dalay:1</s:String>
+    <s:String x:Key="DownValue">Dalay:0</s:String>
+    <s:String x:Key="Exception">异常</s:String>
 
     <s:String x:Key="Error">Error</s:String>
     <s:String x:Key="NoImplementation">Not Implementation</s:String>

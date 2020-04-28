@@ -176,18 +176,18 @@ namespace MbitGate.control
         public static string WaitForOpen = Application.Current.Resources["WaitForOpen"].ToString();
         public static string ManualReboot = Application.Current.Resources["ManualReboot"].ToString();
         public static string RebootSuccess = Application.Current.Resources["RebootSuccess"].ToString();
-        public const string GetTimeFail = "获取雷达时间失败";
-        public const string GetTimeSuccess = "获取雷达时间成功";
-        public const string SetTimeFail = "设置雷达时间失败";
-        public const string SetTimeSuccess = "设置雷达时间成功";
-        public const string ClearTiming = "正在清除雷达时间";
-        public const string ClearTimeFail = "清除雷达时间失败";
-        public const string ClearTimeSuccess = "清除雷达时间成功";
-        public const string SearchTimeFail = "查询数据失败";
-        public const string SearchTimeSuccess = "查询数据成功";
-        public const string SearchTimeGetNone = "查询数据为空";
-        public const string Searching = "正在查询数据";
-        public const string SearchTimeEnd = "查询数据结束";
+        public static string GetTimeFail = Application.Current.Resources["GetTimeFail"].ToString();
+        public static string GetTimeSuccess = Application.Current.Resources["GetTimeSuccess"].ToString();
+        public static string SetTimeFail = Application.Current.Resources["SetTimeFail"].ToString();
+        public static string SetTimeSuccess = Application.Current.Resources["SetTimeSuccess"].ToString();
+        public static string ClearTiming = Application.Current.Resources["ClearTiming"].ToString();
+        public static string ClearTimeFail = Application.Current.Resources["ClearTimeFail"].ToString();
+        public static string ClearTimeSuccess = Application.Current.Resources["ClearTimeSuccess"].ToString();
+        public static string SearchTimeFail = Application.Current.Resources["SearchTimeFail"].ToString();
+        public static string SearchTimeSuccess = Application.Current.Resources["SearchTimeSuccess"].ToString();
+        public static string SearchTimeGetNone = Application.Current.Resources["SearchTimeGetNone"].ToString();
+        public static string Searching = Application.Current.Resources["Searching"].ToString();
+        public static string SearchTimeEnd = Application.Current.Resources["SearchTimeEnd"].ToString();
     }
 
     public class GateType
@@ -222,8 +222,8 @@ namespace MbitGate.control
 
     public class RecordKind
     {
-        public const string Persistence = @"记录(雷达时间戳)";
-        public const string Ignore = @"不记录(雷达时间戳)";
+        public static string Persistence = Application.Current.Resources["Persistence"].ToString();
+        public static string Ignore = Application.Current.Resources["Ignore"].ToString();
 
         public static List<string> GetAllTypes()
         {
@@ -253,8 +253,8 @@ namespace MbitGate.control
 
     public class OperationType
     {
-        public const string Up = "\t抬杆";
-        public const string Down = "\t降杆";
+        public static string Up = Application.Current.Resources["Up"].ToString();
+        public static string Down = Application.Current.Resources["Down"].ToString();
 
         public const string UpValue = @"Dalay:1";
         public const string DownValue = @"Dalay:0";
