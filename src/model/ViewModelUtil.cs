@@ -1531,23 +1531,46 @@ namespace MbitGate.model
         private async void ToResetBaudRate()
         {
             serial.Rate = int.Parse(BauRate.Rate115200);
-            _progressViewModel.Message = Tips.GetVersion;
+            string lastOperation = SerialRadarCommands.SensorStop;
             serial.DataReceivedHandler = async msg =>
             {
-                mutex.Set();
-                await TaskEx.Delay(500);
-                SerialWork(() => ToGetVer());
-                await TaskEx.Delay(1000);
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () =>
+                if (msg.Contains(SerialRadarReply.Done))
                 {
-                    if (_progressCtrl.IsVisible)
+                    if (lastOperation == SerialRadarCommands.SensorStop)
                     {
-                        await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                        lastOperation = SerialRadarCommands.WriteBaudRate;
+                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
                     }
-                }));
+                    else if(lastOperation == SerialRadarCommands.WriteBaudRate)
+                    {
+                        lastOperation = SerialRadarCommands.SoftReset;
+                        serial.CompareEndString = false;
+                        await TaskEx.Delay(500);
+                        serial.WriteLine(SerialRadarCommands.SoftReset);
+                    }
+                }
+                else
+                {
+                    if(lastOperation == SerialRadarCommands.SoftReset)
+                    {
+                        lastOperation = string.Empty;
+                        mutex.Set();
+                        await TaskEx.Delay(2000);
+                        _progressViewModel.Message = Tips.GetVersion;
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () =>
+                        {
+                            if (_progressCtrl.IsVisible)
+                            {
+                                await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                            }
+                            ShowConfirmWindow(Tips.ManualReboot, Tips.Updated);
+                        }));
+                        SerialWork(() => ToGetVer());
+                    }
+                }
             };
-            await TaskEx.Delay(300);
-            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
+            await TaskEx.Delay(500);
+            serial.WriteLine(SerialRadarCommands.SensorStop);
         }
 
         internal async void start()
