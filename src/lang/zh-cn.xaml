@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">道闸RS485雷达设置V2.3.0</s:String>
+    <s:String  x:Key="MainWindowTitle">道闸RS485雷达设置V2.4.0</s:String>
     <s:String  x:Key="SerialModelTitle">升级</s:String>
     <s:String  x:Key="ConfigModelTitle">设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
@@ -104,11 +104,12 @@
     <s:String x:Key="SearchTimeEnd">查询数据结束</s:String>
     <s:String x:Key="Persistence">记录(雷达时间戳)</s:String>
     <s:String x:Key="Ignore">不记录(雷达时间戳</s:String>
-    <s:String x:Key="Up">\t抬杆</s:String>
-    <s:String x:Key="Down">\t降杆</s:String>
+    <s:String x:Key="Up">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;抬杆</s:String>
+    <s:String x:Key="Down">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;降杆</s:String>
     <s:String x:Key="UpValue">Dalay:1</s:String>
     <s:String x:Key="DownValue">Dalay:0</s:String>
     <s:String x:Key="Exception">异常</s:String>
+    <s:String x:Key="GetVersion">正在获取版本号</s:String>
 
     <s:String x:Key="Error">错误</s:String>
     <s:String x:Key="NoImplementation">暂未实现</s:String>

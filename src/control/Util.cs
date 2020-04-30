@@ -101,6 +101,7 @@ namespace MbitGate.control
         public const string SetTime = "setTime";
         public const string ClearTime = "TimeErase";
         public const string SearchTime = "DalayFilpTime";
+        public const string WriteBaudRate = "commandBaudRate ";
     }
 
     public class ExtraSerialRadarCommands
@@ -188,6 +189,7 @@ namespace MbitGate.control
         public static string SearchTimeGetNone = Application.Current.Resources["SearchTimeGetNone"].ToString();
         public static string Searching = Application.Current.Resources["Searching"].ToString();
         public static string SearchTimeEnd = Application.Current.Resources["SearchTimeEnd"].ToString();
+        public static string GetVersion = Application.Current.Resources["GetVersion"].ToString();
     }
 
     public class GateType
