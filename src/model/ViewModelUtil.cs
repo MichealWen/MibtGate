@@ -1194,8 +1194,7 @@ namespace MbitGate.model
                         Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d+").Value;
                         OnPropertyChanged("Delay");
                         await TaskEx.Delay(300);
-                        serial.EndStr = SerialRadarReply.Start;
-                        serial.WriteLine(SerialRadarCommands.SoftReset);
+                        serial.WriteLine(SerialRadarCommands.SensorStart);
                         mutex.Set();
                     }
                 }
