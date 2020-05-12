@@ -994,7 +994,7 @@ namespace MbitGate.model
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
-                    ShowSplashWindow(Tips.ConfigSuccess, 1000);
+                    StrongestWeakPoints.Clear();
                 }
                 else
                 {
@@ -1061,7 +1061,6 @@ namespace MbitGate.model
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
-                    ShowSplashWindow(Tips.ConfigSuccess, 1000);
                     StrongestWeakPoints.Clear();
                 }
                 else
