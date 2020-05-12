@@ -959,7 +959,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => CancelGetWeakPoints());
+                    SerialWork(() => toCancelGetWeakPoints());
                 }
             };
             RemoveWeakPointsCmd = new SimpleCommand()
@@ -980,7 +980,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toCancelRemoveWeakPoints());
+                    SerialWork(() => toCancelRemoveWeakPoints(), -1);
                 }
             };
 
@@ -988,7 +988,7 @@ namespace MbitGate.model
             RemovedWeakPoints = new ChartValues<ObservablePoint>();
         }
 
-        private void CancelGetWeakPoints()
+        private void toCancelGetWeakPoints()
         {
             serial.DataReceivedHandler = msg =>
             {
@@ -1035,14 +1035,23 @@ namespace MbitGate.model
                 if (msg.Contains(SerialRadarReply.Done))
                 {
                     RemovedWeakPoints.Clear();
-                    ShowSplashWindow(Tips.ConfigSuccess, 1000);
                 }
-                else
+                else if (msg.Contains("X"))
                 {
-                    ShowErrorWindow(Tips.ConfigFail);
+                    StrongestWeakPoints.Clear();
+                    var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
+                    if (collection.Count > 1)
+                    {
+                        StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
+                    }
                 }
-                mutex.Set();
+                //else 
+                //{
+                //    ShowErrorWindow(Tips.ConfigFail);
+                //    mutex.Set();
+                //}
             };
+            serial.CompareEndString = false;
             serial.WriteLine(SerialRadarCommands.AlarmOrder3);
         }
 
@@ -1053,6 +1062,7 @@ namespace MbitGate.model
                 if (msg.Contains(SerialRadarReply.Done))
                 {
                     ShowSplashWindow(Tips.ConfigSuccess, 1000);
+                    StrongestWeakPoints.Clear();
                 }
                 else
                 {
@@ -1993,7 +2003,10 @@ namespace MbitGate.model
         {
             base.Dispose();
             if (serial != null)
+            {
+                serial.WriteLine(SerialRadarCommands.AlarmOrder4);
                 serial.close();
+            }
         }
     }
 
