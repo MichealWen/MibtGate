@@ -60,11 +60,13 @@
     <s:String x:Key="FuncSetTime">synchronize Radar Time</s:String>
     <s:String x:Key="FuncClearTime">Clear Radar Time</s:String>
     <s:String x:Key="FuncRecord">Get Records In Radar</s:String>
-    <s:String x:Key="ConfirmAlarm">Weak</s:String>
+    <s:String x:Key="ConfirmAlarm">Show</s:String>
+    <s:String x:Key="CancelAlarm">Stop</s:String>
     <s:String x:Key="RemoveAlarm">Remove</s:String>
     <s:String x:Key="RegetAlarm">Reget</s:String>
     <s:String x:Key="CancelRemoveAlarm">Cancel</s:String>
     <s:String x:Key="FunConfirmAlarm">Show The Strongest Weak Point</s:String>
+    <s:String x:Key="FuncCancelAlarm">Stop Show The Strongest Weak Point</s:String>
     <s:String x:Key="FunRemoveAlarm">Remove All Weak Point</s:String>
     <s:String x:Key="FunRegetAlarm">Get All Removed Weak Point</s:String>
     <s:String x:Key="FunCancelRemoveAlarm">Cancel Remove Weak Point</s:String>

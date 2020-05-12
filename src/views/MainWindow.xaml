@@ -60,7 +60,7 @@
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 10 0" HorizontalAlignment="Right"/>
         </DockPanel>
 
         <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
@@ -206,10 +206,10 @@
                         <LiveChart:ScatterSeries Values="{Binding RemovedWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource SeriesRemovedWeakPoints}"/>
                     </LiveChart:CartesianChart.Series>
                     <LiveChart:CartesianChart.AxisX >
-                        <LiveChart:Axis Unit="1"/>
+                        <LiveChart:Axis Unit="0.1"/>
                     </LiveChart:CartesianChart.AxisX>
                     <LiveChart:CartesianChart.AxisY>
-                        <LiveChart:Axis Unit="1"/>
+                        <LiveChart:Axis Unit="0.1"/>
                     </LiveChart:CartesianChart.AxisY>
                 </LiveChart:CartesianChart>
             </DockPanel>
@@ -254,9 +254,10 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                 <Button Content="{StaticResource ConfirmAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetWeakPointsCmd}"  ToolTip="{StaticResource FuncConfirmAlarm}"/>
-                <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
-                <Button Content="{StaticResource RegetAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
-                <Button Content="{StaticResource CancelRemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
+                <Button Content="{StaticResource CancelAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelGetWeakPointsCmd}"  Margin="5 0" ToolTip="{StaticResource FuncCancelAlarm}"/>
+                <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="20 0 0 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
+                <Button Content="{StaticResource RegetAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
+                <Button Content="{StaticResource CancelRemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
             </StackPanel>
         </Grid>
     </Grid>

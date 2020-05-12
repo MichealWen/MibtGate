@@ -61,10 +61,12 @@
     <s:String x:Key="FuncClearTime">清除雷达当前时间</s:String>
     <s:String x:Key="FuncRecord">查询雷达在起止时间中的数据</s:String>
     <s:String x:Key="ConfirmAlarm">显示虚警</s:String>
+    <s:String x:Key="CancelAlarm">取消虚警</s:String>
     <s:String x:Key="RemoveAlarm">剔除虚警</s:String>
     <s:String x:Key="RegetAlarm">显示剔除</s:String>
     <s:String x:Key="CancelRemoveAlarm">取消剔除</s:String>
     <s:String x:Key="FuncConfirmAlarm">显示最强虚警点</s:String>
+    <s:String x:Key="FuncCancelAlarm">取消显示虚警点</s:String>
     <s:String x:Key="FuncRemoveAlarm">剔除视场内的虚警点</s:String>
     <s:String x:Key="FuncRegetAlarm">获取已经剔除的虚警点</s:String>
     <s:String x:Key="FuncCancelRemoveAlarm">取消剔除虚警点</s:String>

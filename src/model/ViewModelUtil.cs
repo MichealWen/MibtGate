@@ -801,6 +801,7 @@ namespace MbitGate.model
         public ICommand RebootCmd { get; set; }
 
         public ICommand GetWeakPointsCmd { get; set; }
+        public ICommand CancelGetWeakPointsCmd { get; set; }
         public ICommand RemoveWeakPointsCmd { get; set; }
         public ICommand RegetWeakPointsCmd { get; set; }
         public ICommand CancelRemoveWeakPointsCmd { get; set; }
@@ -951,7 +952,14 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toGetWeakPoints());
+                    SerialWork(() => toGetWeakPoints(), -1);
+                }
+            };
+            CancelGetWeakPointsCmd  = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    SerialWork(() => CancelGetWeakPoints());
                 }
             };
             RemoveWeakPointsCmd = new SimpleCommand()
@@ -976,45 +984,48 @@ namespace MbitGate.model
                 }
             };
 
-            var r = new Random();
             StrongestWeakPoints = new ChartValues<ObservablePoint>();
             RemovedWeakPoints = new ChartValues<ObservablePoint>();
+        }
 
-            for (var i = 0; i < 20; i++)
+        private void CancelGetWeakPoints()
+        {
+            serial.DataReceivedHandler = msg =>
             {
-                StrongestWeakPoints.Add(new ObservablePoint(r.NextDouble() * 10, r.NextDouble() * 10));
-                RemovedWeakPoints.Add(new ObservablePoint(r.NextDouble() * 10, r.NextDouble() * 10));
-            }
+                if (msg.Contains(SerialRadarReply.Done))
+                {
+                    ShowSplashWindow(Tips.ConfigSuccess, 1000);
+                }
+                else
+                {
+                    ShowErrorWindow(Tips.ConfigFail);
+                }
+                mutex.Set();
+            };
+            serial.WriteLine(SerialRadarCommands.AlarmOrder4);
         }
 
         private void toGetWeakPoints()
         {
-            //serial.DataReceivedHandler = msg =>
-            //{
-            //    StrongestWeakPoints.Clear();
-            //   if(msg.Contains("X"))
-            //    {
-            //        var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"\d+");
-            //        if(collection.Count > 1)
-            //        {
-            //            StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
-            //        }
-            //    }
-            //    else
-            //    {
-            //        ShowErrorWindow(Tips.ConfigFail);
-            //        mutex.Set();
-            //    }
-            //};
-            //serial.WriteLine(SerialRadarCommands.AlarmOrder0);
-            var r = new Random();
-            for (var i = 0; i < 20; i++)
+            serial.DataReceivedHandler = msg =>
             {
-                StrongestWeakPoints[i].X = r.NextDouble() * 10;
-                StrongestWeakPoints[i].Y = r.NextDouble() * 10;
-                RemovedWeakPoints[i].X = r.NextDouble() * 10;
-                RemovedWeakPoints[i].Y = r.NextDouble() * 10;
-            }
+                StrongestWeakPoints.Clear();
+                if (msg.Contains("X"))
+                {
+                    var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
+                    if (collection.Count > 1)
+                    {
+                        StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
+                    }
+                }
+                //else
+                //{
+                //    ShowErrorWindow(Tips.ConfigFail);
+                //    mutex.Set();
+                //}
+            };
+            serial.CompareEndString = false;
+            serial.WriteLine(SerialRadarCommands.AlarmOrder0);
         }
 
         private void toCancelRemoveWeakPoints()
@@ -1023,6 +1034,7 @@ namespace MbitGate.model
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
+                    RemovedWeakPoints.Clear();
                     ShowSplashWindow(Tips.ConfigSuccess, 1000);
                 }
                 else
@@ -1046,21 +1058,22 @@ namespace MbitGate.model
                 {
                     ShowErrorWindow(Tips.ConfigFail);
                 }
+                mutex.Set();
             };
             serial.WriteLine(SerialRadarCommands.AlarmOrder1);
-            mutex.Set();
         }
 
         private void toGetRemovedWeakPoints()
         {
             serial.DataReceivedHandler = msg =>
             {
+                RemovedWeakPoints.Clear();
                 if (msg.Contains(SerialRadarReply.Done))
                 {
-                    var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"\d+");
-                    foreach(System.Text.RegularExpressions.Match match in collection)
+                    var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
+                    for(int i=0; i<collection.Count; i+=2)
                     {
-                        StrongestWeakPoints.Add(new ObservablePoint(double.Parse(match.Value), double.Parse(match.Value)));
+                        RemovedWeakPoints.Add(new ObservablePoint(double.Parse(collection[i].Value), double.Parse(collection[i+1].Value)));
                     }
                 }
                 else

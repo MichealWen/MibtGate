@@ -106,6 +106,7 @@ namespace MbitGate.control
         public const string AlarmOrder1 = "falseAlarmOrder 1";
         public const string AlarmOrder2 = "falseAlarmOrder 2";
         public const string AlarmOrder3 = "falseAlarmOrder 3";
+        public const string AlarmOrder4 = "falseAlarmOrder 4";
     }
 
     public class ExtraSerialRadarCommands
