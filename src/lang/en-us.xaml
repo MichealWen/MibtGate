@@ -7,7 +7,8 @@
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
     <s:String  x:Key="DeveloperModelTitle">Develop</s:String>
-    <s:String x:Key="RecordModelTitle">雷达数据</s:String>
+    <s:String x:Key="RecordModelTitle">Record</s:String>
+    <s:String x:Key="AlarmModelTitile">Weak</s:String>
     <s:String  x:Key="Serial">Serial</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
     <s:String  x:Key="Radar">Radar</s:String>
@@ -59,7 +60,17 @@
     <s:String x:Key="FuncSetTime">synchronize Radar Time</s:String>
     <s:String x:Key="FuncClearTime">Clear Radar Time</s:String>
     <s:String x:Key="FuncRecord">Get Records In Radar</s:String>
-    
+    <s:String x:Key="ConfirmAlarm">Weak</s:String>
+    <s:String x:Key="RemoveAlarm">Remove</s:String>
+    <s:String x:Key="RegetAlarm">Reget</s:String>
+    <s:String x:Key="CancelRemoveAlarm">Cancel</s:String>
+    <s:String x:Key="FunConfirmAlarm">Show The Strongest Weak Point</s:String>
+    <s:String x:Key="FunRemoveAlarm">Remove All Weak Point</s:String>
+    <s:String x:Key="FunRegetAlarm">Get All Removed Weak Point</s:String>
+    <s:String x:Key="FunCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
+    <s:String x:Key="SeriesStrongestWeakPoints">Strongest</s:String>
+    <s:String x:Key="SeriesRemovedWeakPoints">Removed</s:String>
+
     <!--提示-->
     <s:String x:Key="ParamsError">Parameters Error</s:String>
     <s:String x:Key="BinPathError">Bint Path Error</s:String>

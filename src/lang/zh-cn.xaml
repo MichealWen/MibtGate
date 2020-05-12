@@ -8,6 +8,7 @@
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
     <s:String  x:Key="DeveloperModelTitle">开发设置</s:String>
     <s:String x:Key="RecordModelTitle">雷达数据</s:String>
+    <s:String x:Key="AlarmModelTitile">虚警处理</s:String>
     <s:String  x:Key="Serial">串&#160;&#160;&#160;口</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
     <s:String  x:Key="Radar">雷达</s:String>
@@ -59,7 +60,17 @@
     <s:String x:Key="FuncSetTime">同步雷达当前时间</s:String>
     <s:String x:Key="FuncClearTime">清除雷达当前时间</s:String>
     <s:String x:Key="FuncRecord">查询雷达在起止时间中的数据</s:String>
-
+    <s:String x:Key="ConfirmAlarm">显示虚警</s:String>
+    <s:String x:Key="RemoveAlarm">剔除虚警</s:String>
+    <s:String x:Key="RegetAlarm">显示剔除</s:String>
+    <s:String x:Key="CancelRemoveAlarm">取消剔除</s:String>
+    <s:String x:Key="FuncConfirmAlarm">显示最强虚警点</s:String>
+    <s:String x:Key="FuncRemoveAlarm">剔除视场内的虚警点</s:String>
+    <s:String x:Key="FuncRegetAlarm">获取已经剔除的虚警点</s:String>
+    <s:String x:Key="FuncCancelRemoveAlarm">取消剔除虚警点</s:String>
+    <s:String x:Key="SeriesStrongestWeakPoints">最强点</s:String>
+    <s:String x:Key="SeriesRemovedWeakPoints">剔除点</s:String>
+    
     <!--提示-->
     <s:String x:Key="ParamsError">参数错误</s:String>
     <s:String x:Key="BinPathError">固件路径错误</s:String>

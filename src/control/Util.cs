@@ -102,6 +102,10 @@ namespace MbitGate.control
         public const string ClearTime = "TimeErase";
         public const string SearchTime = "DalayFilpTime";
         public const string WriteBaudRate = "commandBaudRate ";
+        public const string AlarmOrder0 = "falseAlarmOrder 0";
+        public const string AlarmOrder1 = "falseAlarmOrder 1";
+        public const string AlarmOrder2 = "falseAlarmOrder 2";
+        public const string AlarmOrder3 = "falseAlarmOrder 3";
     }
 
     public class ExtraSerialRadarCommands

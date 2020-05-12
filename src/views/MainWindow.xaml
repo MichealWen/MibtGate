@@ -9,7 +9,8 @@
         xmlns:MetroControl="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{StaticResource MainWindowTitle}" Height="450" Width="800" ResizeMode="CanMinimize"
+        xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        Title="{StaticResource MainWindowTitle}" Height="450" Width="900" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded">
     <Grid x:Name="MainWin">
         <Grid.Resources>
@@ -30,26 +31,32 @@
         </Grid.RowDefinitions>
         <DockPanel Height="48" VerticalAlignment="Top" Background="#202020" Grid.Row="0">
             <ToggleButton x:Name="ic_tab_config" Style="{StaticResource STYLE_TabToggle}" Click="Config_Choose_Click">
-                <DockPanel Width="160">
-                    <Image Source="/MbitGate;component/image/config.png"  DockPanel.Dock="Left" Margin="24 12 12 12"/>
+                <DockPanel Width="120">
+                    <Image Source="/MbitGate;component/image/config.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource ConfigModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_update" Style="{StaticResource STYLE_TabToggle}" Click="Update_Choose_Click">
-                <DockPanel Width="160">
-                    <Image Source="/MbitGate;component/image/update.png"  DockPanel.Dock="Left" Margin="24 12 12 12"/>
+                <DockPanel Width="120">
+                    <Image Source="/MbitGate;component/image/update.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource SerialModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_search" Style="{StaticResource STYLE_TabToggle}" Click="Record_Choose_Click" Visibility="{Binding Record, Converter={StaticResource SearchModelVisibilityConverter}}">
-                <DockPanel Width="160">
-                    <Image Source="/MbitGate;component/image/search.png"  DockPanel.Dock="Left" Margin="24 12 12 12"/>
+                <DockPanel Width="120">
+                    <Image Source="/MbitGate;component/image/search.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource RecordModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
+            <ToggleButton x:Name="ic_tab_alarm" Style="{StaticResource STYLE_TabToggle}" Click="Alarm_Choose_Click" Visibility="Visible">
+                <DockPanel Width="120">
+                    <Image Source="/MbitGate;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Label Content="{StaticResource AlarmModelTitile}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+                </DockPanel>
+            </ToggleButton>
             <ToggleButton x:Name="ic_tab_develop" Style="{StaticResource STYLE_TabToggle}" Click="Develop_Choose_Click">
-                <DockPanel Width="160">
-                    <Image Source="/MbitGate;component/image/develop.png"  DockPanel.Dock="Left" Margin="24 12 12 12"/>
+                <DockPanel Width="120">
+                    <Image Source="/MbitGate;component/image/develop.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
@@ -184,12 +191,36 @@
                 <ListBox BorderThickness="5" BorderBrush="AliceBlue" Width="300"  ItemsSource="{Binding SearchResult}"/>
             </StackPanel>
         </Grid>
+        <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
+            <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="250*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
 
-        <Grid Grid.Row="3">
+            <DockPanel Grid.Row="1" Margin="50 0">
+                <LiveChart:CartesianChart LegendLocation="Bottom">
+                    <LiveChart:CartesianChart.Series>
+                        <LiveChart:ScatterSeries Values="{Binding StrongestWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}" Title="{DynamicResource SeriesStrongestWeakPoints}"/>
+                        <LiveChart:ScatterSeries Values="{Binding RemovedWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource SeriesRemovedWeakPoints}"/>
+                    </LiveChart:CartesianChart.Series>
+                    <LiveChart:CartesianChart.AxisX >
+                        <LiveChart:Axis Unit="1"/>
+                    </LiveChart:CartesianChart.AxisX>
+                    <LiveChart:CartesianChart.AxisY>
+                        <LiveChart:Axis Unit="1"/>
+                    </LiveChart:CartesianChart.AxisY>
+                </LiveChart:CartesianChart>
+            </DockPanel>
+        </Grid>
+
+        <Grid Grid.Row="3" x:Name="ConfigGrid">
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource MultiRevertCheckedVisibilityConverter}">
                     <Binding Path="IsChecked" ElementName="ic_tab_search"/>
                     <Binding Path="IsChecked" ElementName="ic_tab_update"/>
+                    <Binding Path="IsChecked" ElementName="ic_tab_alarm"/>
                 </MultiBinding>
             </Grid.Visibility>
             <Grid.RowDefinitions>
@@ -204,7 +235,7 @@
                 <Button Content="{StaticResource Reboot}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncReboot}"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="3"  x:Name="TimeButtons" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
+        <Grid Grid.Row="3"  x:Name="RecordGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="30"/>
@@ -214,6 +245,18 @@
                 <Button Content="{StaticResource SetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetTimeCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncSetTime}"/>
                 <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearTimeCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncClearTime}"/>
                 <Button Content="{StaticResource Search}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCmd}" Margin="50 0 10 0"  ToolTip="{StaticResource FuncRecord}"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="3"  x:Name="AlarmGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                <Button Content="{StaticResource ConfirmAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetWeakPointsCmd}"  ToolTip="{StaticResource FuncConfirmAlarm}"/>
+                <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
+                <Button Content="{StaticResource RegetAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
+                <Button Content="{StaticResource CancelRemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
             </StackPanel>
         </Grid>
     </Grid>

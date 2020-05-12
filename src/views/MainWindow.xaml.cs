@@ -72,6 +72,7 @@ namespace MbitGate.views
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = true;
             ic_tab_search.IsChecked = false;
+            ic_tab_alarm.IsChecked = false;
             mainVModel?.root();
         }
 
@@ -81,6 +82,7 @@ namespace MbitGate.views
             ic_tab_update.IsChecked = true;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
+            ic_tab_alarm.IsChecked = false;
         }
 
         private void Config_Choose_Click(object sender, RoutedEventArgs e)
@@ -89,6 +91,7 @@ namespace MbitGate.views
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
+            ic_tab_alarm.IsChecked = false;
         }
 
         private void ComboxThreshold_LostFocus(object sender, RoutedEventArgs e)
@@ -107,6 +110,16 @@ namespace MbitGate.views
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = true;
+            ic_tab_alarm.IsChecked = false;
+        }
+
+        private void Alarm_Choose_Click(object sender, RoutedEventArgs e)
+        {
+            ic_tab_config.IsChecked = false;
+            ic_tab_update.IsChecked = false;
+            ic_tab_develop.IsChecked = false;
+            ic_tab_search.IsChecked = false;
+            ic_tab_alarm.IsChecked = true;
         }
     }
 
@@ -206,7 +219,8 @@ namespace MbitGate.views
         {
             bool checkedValue1 = (bool)values[0];
             bool checkedValue2 = (bool)values[1];
-            if(checkedValue1 || checkedValue2)
+            bool checkedValue3 = (bool)values[2];
+            if(checkedValue1 || checkedValue2 || checkedValue3)
             {
                 return Visibility.Hidden;
             }
