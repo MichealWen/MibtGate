@@ -1009,13 +1009,20 @@ namespace MbitGate.model
         {
             serial.DataReceivedHandler = msg =>
             {
-                StrongestWeakPoints.Clear();
                 if (msg.Contains("X"))
                 {
                     var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
                     if (collection.Count > 1)
                     {
-                        StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
+                        if(StrongestWeakPoints.Count > 0)
+                        {
+                            StrongestWeakPoints[0].X = double.Parse(collection[0].Value);
+                            StrongestWeakPoints[0].Y = double.Parse(collection[1].Value);
+                        }
+                        else
+                        {
+                            StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
+                        }
                     }
                 }
                 //else
@@ -1038,11 +1045,18 @@ namespace MbitGate.model
                 }
                 else if (msg.Contains("X"))
                 {
-                    StrongestWeakPoints.Clear();
                     var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
                     if (collection.Count > 1)
                     {
-                        StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
+                        if (StrongestWeakPoints.Count > 0)
+                        {
+                            StrongestWeakPoints[0].X = double.Parse(collection[0].Value);
+                            StrongestWeakPoints[0].Y = double.Parse(collection[1].Value);
+                        }
+                        else
+                        {
+                            StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
+                        }
                     }
                 }
                 //else 
