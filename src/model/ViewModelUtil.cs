@@ -986,6 +986,17 @@ namespace MbitGate.model
 
             StrongestWeakPoints = new ChartValues<ObservablePoint>();
             RemovedWeakPoints = new ChartValues<ObservablePoint>();
+
+            pointsDataReceiveTimer = new Timer(param => {
+                if (showStrongestPoints)
+                {
+                    showStrongestPoints = false;
+                }
+                else
+                {
+                    StrongestWeakPoints.Clear();
+                }
+            }, null, 0, 1000);
         }
 
         private void toCancelGetWeakPoints()
@@ -1005,6 +1016,8 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.AlarmOrder4);
         }
 
+        Timer pointsDataReceiveTimer = null;
+        bool showStrongestPoints = false;
         private void toGetWeakPoints()
         {
             serial.DataReceivedHandler = msg =>
@@ -1024,6 +1037,11 @@ namespace MbitGate.model
                             StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
                         }
                     }
+                    showStrongestPoints = true;
+                }
+                else if(string.IsNullOrEmpty(msg))
+                {
+                    StrongestWeakPoints.Clear();
                 }
                 //else
                 //{
@@ -1037,6 +1055,7 @@ namespace MbitGate.model
 
         private void toCancelRemoveWeakPoints()
         {
+
             serial.DataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
@@ -1058,6 +1077,11 @@ namespace MbitGate.model
                             StrongestWeakPoints.Add(new ObservablePoint(double.Parse(collection[0].Value), double.Parse(collection[1].Value)));
                         }
                     }
+                    showStrongestPoints = true;
+                }
+                else if(string.IsNullOrEmpty(msg))
+                {
+                    StrongestWeakPoints.Clear();
                 }
                 //else 
                 //{
