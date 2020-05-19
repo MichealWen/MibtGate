@@ -184,9 +184,9 @@
             <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" >
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <TextBlock Text="{StaticResource StartTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <MetroControl:DateTimePicker   Width="150" FontSize="14" Foreground="#333333" Culture="zh-cn"  SelectedDate="{Binding StartTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" />
+                    <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333" Culture="zh-cn"  SelectedDate="{Binding StartTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True"/>
                     <TextBlock Text="{StaticResource EndTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <MetroControl:DateTimePicker   Width="150" FontSize="14" Foreground="#333333"  Culture="zh-cn" SelectedDate="{Binding EndTime,Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All"/>
+                    <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333"  Culture="zh-cn" SelectedDate="{Binding EndTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True" />
                 </StackPanel>
                 <ListBox BorderThickness="5" BorderBrush="AliceBlue" Width="300"  ItemsSource="{Binding SearchResult}"/>
             </StackPanel>

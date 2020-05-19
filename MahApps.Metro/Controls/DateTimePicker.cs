@@ -79,6 +79,11 @@
             typeof(ICollection<int>),
             typeof(DateTimePicker),
             new FrameworkPropertyMetadata(Enumerable.Range(0, 60).ToList(), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, CoerceSource60));
+        public static readonly DependencyProperty IsMilitaryTimeProperty = DependencyProperty.Register(
+            "IsMilitaryTime",
+            typeof(bool),
+            typeof(DateTimePicker),
+            new PropertyMetadata(true, OnMilitaryValueChanged));
         private const string ElementAmPmSwitcher = "PART_AmPmSwitcher";
         private const string ElementButton = "PART_Button";
         private const string ElementCalendar = "PART_Calendar";
@@ -237,7 +242,8 @@
         /// </summary>
         public bool IsMilitaryTime
         {
-            get { return string.IsNullOrEmpty(SpecificCultureInfo.DateTimeFormat.AMDesignator); }
+            get { return (bool)GetValue(IsMilitaryTimeProperty); }
+            set { SetValue(IsMilitaryTimeProperty, value); }
         }
 
         /// <summary>
@@ -439,6 +445,13 @@
         private static void OnClockVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             d.CoerceValue(OrientationProperty);
+        }
+
+        private static void OnMilitaryValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var dateTimePicker = (DateTimePicker)d;
+            dateTimePicker.IsMilitaryTime = (bool)e.NewValue;
+            dateTimePicker.SetAmPmVisibility();
         }
 
         private static void OnCultureChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

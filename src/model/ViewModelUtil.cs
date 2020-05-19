@@ -997,6 +997,10 @@ namespace MbitGate.model
                     StrongestWeakPoints.Clear();
                 }
             }, null, 0, 1000);
+
+            CurrentTime = DateTime.Now;
+            StartTime = DateTime.Now;
+            EndTime = DateTime.Now;
         }
 
         private void toCancelGetWeakPoints()
