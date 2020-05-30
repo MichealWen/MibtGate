@@ -887,7 +887,14 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => { ToGet(); }) ;
+                    if(string.IsNullOrEmpty(Version))
+                    {
+                        SerialWork(() => { ToGetVer(() => { SerialWork(() => { ToGet(); }); }); });
+                    }
+                    else
+                    {
+                        SerialWork(() => { ToGet(); });
+                    }
                 }
             };
 
@@ -1711,7 +1718,7 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.SensorStop);
         }
 
-        private void ToGetVer()
+        private void ToGetVer(Action proceedToDo= null)
         {
             serial.DataReceivedHandler = msg =>
             {
@@ -1726,6 +1733,8 @@ namespace MbitGate.model
                 OnPropertyChanged("Version");
                 OnPropertyChanged("DelayVisible");
                 mutex.Set();
+                if (proceedToDo != null)
+                    proceedToDo();
             };
             serial.WriteLine(SerialRadarCommands.Version);
         }
