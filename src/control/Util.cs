@@ -143,6 +143,7 @@ namespace MbitGate.control
         public const string Success = "success";
         public const string Start = "RadarStart";
         public const string StudyEnd = "studyend";
+        public const string NotRecognized = "not recognized";
     }
     public class ErrorString
     {
