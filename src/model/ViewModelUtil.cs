@@ -910,7 +910,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>ToStudy(), -1);
+                    SerialWork(()=>ToStudy(), true, -1);
                 }
             };
 
@@ -959,7 +959,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toGetWeakPoints(), -1);
+                    SerialWork(() => toGetWeakPoints(), true, -1);
                 }
             };
             CancelGetWeakPointsCmd  = new SimpleCommand()
@@ -987,7 +987,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toCancelRemoveWeakPoints(), -1);
+                    SerialWork(() => toCancelRemoveWeakPoints(), true, -1);
                 }
             };
 
@@ -1353,11 +1353,11 @@ namespace MbitGate.model
                 _dialogCoordinator.HideMetroDialogAsync(this, _settingView);
             }
             serial.close();
-            SerialWork(() => ToGetVer());
+            SerialWork(() => ToGetVer(), false);
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
-        private async void SerialWork(Action towork, int waitmillionseoconds = 3000)
+        private async void SerialWork(Action towork, bool toShowOverTimeTip = true, int waitmillionseoconds = 3000)
         {
             if (serial != null)
             {
@@ -1376,7 +1376,8 @@ namespace MbitGate.model
                     towork();
                     if (!mutex.WaitOne(waitmillionseoconds))
                     {
-                        ShowErrorWindow(ErrorString.OverTime);
+                        if(toShowOverTimeTip)
+                            ShowErrorWindow(ErrorString.OverTime);
                     }
                     mutex.Reset();
                 });
@@ -2040,7 +2041,7 @@ namespace MbitGate.model
                         serial.WriteLine(SerialRadarCommands.SensorStop);
                     }
                 }));
-            }, -1);
+            }, true, -1);
         }
 
         private bool compareVersion(string ver)
