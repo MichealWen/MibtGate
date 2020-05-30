@@ -1979,7 +1979,7 @@ namespace MbitGate.model
                                             break;
                                         case SerialRadarCommands.BootLoader:
                                         case SerialRadarCommands.T:
-                                            await TaskEx.Delay(2);
+                                            await TaskEx.Delay(1);
                                             if (lastOperation == SerialRadarCommands.BootLoader)
                                             {
                                                 if (data[0] == 0x12 && data[1] == 0xCD)
@@ -1994,7 +1994,7 @@ namespace MbitGate.model
                                                 lastOperation = SerialRadarCommands.T;
                                                 if ((pos >= reader.Length - 1))
                                                 {
-                                                    if(data[0] == 0x23 && data[1] == 0xCD)
+                                                    if(data[data.Length-2] == 0x23 && data[data.Length-1] == 0xCD)
                                                     {
                                                         await TaskEx.Delay(100);
                                                         lastOperation = SerialRadarCommands.CRC;
