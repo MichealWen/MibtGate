@@ -364,7 +364,7 @@ namespace MbitGate.control
         {
             try
             {
-                if (_serial.IsOpen)
+                if(_serial != null)
                     _serial.Close();
                 _receivedStr = string.Empty;
                 DataReceivedHandler = null;
