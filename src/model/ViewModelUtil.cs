@@ -1805,6 +1805,7 @@ namespace MbitGate.model
 
         FileIOManager reader = null;
         Timer overTimer = null;
+        byte[] dataTmp = null;
         protected override void ToDo()
         {
             SerialWork(() =>
@@ -1944,7 +1945,8 @@ namespace MbitGate.model
                                             return;
                                         case SerialRadarCommands.BootLoader:
                                         case SerialRadarCommands.T:
-                                            break;
+                                            serial.Write(dataTmp);
+                                            return;
                                         case SerialRadarCommands.CRC:
                                             byte[] tmp1 = BitConverter.GetBytes(sum);
                                             serial.Write(new byte[] { 0x04, 0xCD, tmp1[0], tmp1[1], tmp1[2], tmp1[3] });
@@ -1952,18 +1954,7 @@ namespace MbitGate.model
                                         case SerialRadarCommands.SoftReset:
                                             serial.Write(new byte[] { 0x05, 0xCD });
                                             return;
-
                                     }
-                                    _progressViewModel.Message = ErrorString.Error + lastOperation;
-                                    if (reader != null)
-                                        reader.Close();
-                                    if (serial != null)
-                                    {
-                                        serial.CompareEndString = true;
-                                        serial.Rate = (int)ConfigModel.CustomRate;
-                                        mutex.Set();
-                                    }
-                                    overTimer.Dispose();
                                 }
                                 else
                                 {
@@ -2014,9 +2005,9 @@ namespace MbitGate.model
                                                 }
                                                 else
                                                 {
-                                                    byte[] tmp2 = reader.ReadBytes(ReadBytesNumber);
-                                                    Array.ForEach<byte>(tmp2, b => { sum += b; });
-                                                    serial.Write(tmp2);
+                                                    dataTmp = reader.ReadBytes(ReadBytesNumber);
+                                                    Array.ForEach<byte>(dataTmp, b => { sum += b; });
+                                                    serial.Write(dataTmp);
                                                 }
                                                 pos += ReadBytesNumber;
                                                 _progressViewModel.Value += 1;
