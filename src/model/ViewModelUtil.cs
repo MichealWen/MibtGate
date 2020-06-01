@@ -1837,7 +1837,7 @@ namespace MbitGate.model
                 }, null, 0, 5000);
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                 {
-                    serial.CompareEndString = false;
+                    //serial.CompareEndString = false;
                     _progressViewModel.Message = Tips.Initializing;
                     _progressViewModel.IsIndeterminate = true;
                     _progressViewModel.MaxValue = 100;
@@ -1930,9 +1930,10 @@ namespace MbitGate.model
                             }
                         };
                         bool toContinue = false;
+                        serial.CompareEndBytesCount = 2;
                         serial.BytesDataReceivedHandler = async data =>
                         {
-                            if (data.Length > 0)
+                            if (data.Length > 1)
                             {
                                 if (data[0] == 0xEE && data[1] == 0xCD)
                                 {
@@ -1969,14 +1970,17 @@ namespace MbitGate.model
                                             serial.Write(new byte[] { 0x01, 0xCD });
                                             break;
                                         case SerialRadarCommands.FlashErase:
-                                            await TaskEx.Delay(500);
-                                            lastOperation = SerialRadarCommands.BootLoader;
-                                            _progressViewModel.Message = Tips.Updating;
-                                            int times = (int)((reader.Length - 8) / 64 + ((reader.Length - 8) % 64 == 0 ? 0 : 1));
-                                            byte[] tmp = BitConverter.GetBytes(times);
-                                            _progressViewModel.MaxValue = (uint)times;
-                                            _progressViewModel.Value = 0;
-                                            serial.Write(new byte[] { 0x02, 0xCD, tmp[0], tmp[1], tmp[2], tmp[3] });
+                                            if(data[0] == 0x11 && data[1] == 0xCD)
+                                            {
+                                                await TaskEx.Delay(500);
+                                                lastOperation = SerialRadarCommands.BootLoader;
+                                                _progressViewModel.Message = Tips.Updating;
+                                                int times = (int)((reader.Length - 8) / 64 + ((reader.Length - 8) % 64 == 0 ? 0 : 1));
+                                                byte[] tmp = BitConverter.GetBytes(times);
+                                                _progressViewModel.MaxValue = (uint)times;
+                                                _progressViewModel.Value = 0;
+                                                serial.Write(new byte[] { 0x02, 0xCD, tmp[0], tmp[1], tmp[2], tmp[3] });
+                                            }
                                             break;
                                         case SerialRadarCommands.BootLoader:
                                         case SerialRadarCommands.T:
@@ -2015,7 +2019,7 @@ namespace MbitGate.model
                                             }
                                             break;
                                         case SerialRadarCommands.CRC:
-                                            await TaskEx.Delay(1500);
+                                            await TaskEx.Delay(500);
                                             lastOperation = SerialRadarCommands.SoftReset;
                                             _progressViewModel.Value = _progressViewModel.MaxValue;
                                             _progressViewModel.Message = Tips.WaitForOpen;
@@ -2035,6 +2039,19 @@ namespace MbitGate.model
                                             break;
                                     }
                                 }
+                            }
+                            else
+                            {
+                                _progressViewModel.Message = Tips.UpdateFail;
+                                if (reader != null)
+                                    reader.Close();
+                                if (serial != null)
+                                {
+                                    serial.CompareEndString = true;
+                                    serial.Rate = (int)ConfigModel.CustomRate;
+                                    mutex.Set();
+                                }
+                                overTimer.Dispose();
                             }
 
                         };

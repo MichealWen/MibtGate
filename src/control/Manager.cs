@@ -164,12 +164,14 @@ namespace MbitGate.control
             _serial.Parity = System.IO.Ports.Parity.None;
             _serial.DtrEnable = false;
             _serial.RtsEnable = false;
+            _serial.ReceivedBytesThreshold = 2;
             _serial.ReadTimeout = 1000;
             _serial.DataReceived += OnSerialDataReceived;
             Type = type;
             EndStr = "Done";
             EndBytes = new byte[] { };
             CompareEndString = true;
+            CompareEndBytesCount = 1;
         }
 
         public Action<string> DataReceivedHandler { get; set; }
@@ -184,6 +186,7 @@ namespace MbitGate.control
             _serial.Parity = System.IO.Ports.Parity.None;
             _serial.DtrEnable = false;
             _serial.RtsEnable = false;
+            _serial.ReceivedBytesThreshold = 2;
             _serial.ReadTimeout = 1000;
             PortName = name;
             _serial.DataReceived += OnSerialDataReceived;
@@ -191,6 +194,7 @@ namespace MbitGate.control
             EndStr = "Done";
             EndBytes = new byte[] { };
             CompareEndString = true;
+            CompareEndBytesCount = 1;
         }
         private string _receivedStr = string.Empty;
 
@@ -198,6 +202,7 @@ namespace MbitGate.control
         public byte[] EndBytes { get; set; }
 
         public bool CompareEndString { get; set; }
+        public int CompareEndBytesCount { get; set; }
         private void OnSerialDataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             try
@@ -209,18 +214,24 @@ namespace MbitGate.control
                         {
                             try
                             {
+                                //if(_serial.BytesToRead >= CompareEndBytesCount)
+                                //{
+                                //    byte[] data = new byte[_serial.BytesToRead];
+                                //    _serial.Read(data, 0, data.Length);
+                                //    if (data.Length > 0)
+                                //    {
+                                //        BytesDataReceivedHandler(data);
+                                //    }
+                                //}
                                 byte[] data = new byte[_serial.BytesToRead];
                                 _serial.Read(data, 0, data.Length);
-                                if (data.Length > 0)
-                                {
-                                    //if (EndBytes.Length > 0)
-                                    //    for (int i = (data.Length - EndBytes.Length), j = 0; i < data.Length; i++, j++)
-                                    //    {
-                                    //        if (data[i] != EndBytes[j])
-                                    //            return;
-                                    //    }
-                                    BytesDataReceivedHandler(data);
-                                }
+                                //if (EndBytes.Length > 0)
+                                //    for (int i = (data.Length - EndBytes.Length), j = 0; i < data.Length; i++, j++)
+                                //    {
+                                //        if (data[i] != EndBytes[j])
+                                //            return;
+                                //    }
+                                BytesDataReceivedHandler(data);
                             }
                             catch (Exception ex)
                             {
