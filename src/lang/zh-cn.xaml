@@ -96,8 +96,8 @@
     <s:String x:Key="GetFail">获取设置失败</s:String>
     <s:String x:Key="GetSuccess">获取设置成功</s:String>
     <s:String x:Key="Studying">正在自学习中</s:String>
-    <s:String x:Key="StudySuccess">自学习结束</s:String>
-    <s:String x:Key="StudyEnd">自学习结束</s:String>
+    <s:String x:Key="StudySuccess">自学习结束，请重启雷达</s:String>
+    <s:String x:Key="StudyEnd">自学习结束，请重启雷达</s:String>
     <s:String x:Key="WaitForOpen">正在等待雷达重启</s:String>
     <s:String x:Key="ManualReboot">请进行雷达断电重启</s:String>
     <s:String x:Key="SmallVersion">Bin文件异常，请选择正确的最新版本文件</s:String>

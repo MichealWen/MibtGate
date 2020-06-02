@@ -96,8 +96,8 @@
     <s:String x:Key="GetFail">Fail</s:String>
     <s:String x:Key="GetSuccess">Success</s:String>
     <s:String x:Key="Studying">Studying</s:String>
-    <s:String x:Key="StudySuccess">Study Success</s:String>
-    <s:String x:Key="StudyEnd">Study End</s:String>
+    <s:String x:Key="StudySuccess">Study Success，Reboot Radar</s:String>
+    <s:String x:Key="StudyEnd">Study End, Reboot Radar</s:String>
     <s:String x:Key="WaitForOpen">Wait for radar start</s:String>
     <s:String x:Key="ManualReboot">Reboot radar</s:String>
     <s:String x:Key="SmallVersion">Wrong Version</s:String>
