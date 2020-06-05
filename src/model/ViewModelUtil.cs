@@ -1479,7 +1479,7 @@ namespace MbitGate.model
         DispatcherTimer timekeeper = new DispatcherTimer();
         private void ToStudy()
         {
-            serial.EndStr = "\n\r";
+            serial.EndStr = "\n";
             serial.DataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.StudyEnd))
