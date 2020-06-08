@@ -1724,7 +1724,7 @@ namespace MbitGate.model
             serial.DataReceivedHandler = msg =>
             {
                 Version = msg.Substring(0, msg.IndexOf("Done"));
-                if(compareVersion2("485_ITS_1.1.1"))
+                if(compareVersion2("1.1.1"))
                 {
                     DelayVisible = true;
                 }else
@@ -2065,8 +2065,6 @@ namespace MbitGate.model
         {
             try
             {
-                if (!ver.Contains("485"))
-                    return false;
                 Version binVersion = new Version(System.Text.RegularExpressions.Regex.Match(ver, @"\d+\.\d+\.\d+").Value);
                 try
                 {
@@ -2086,8 +2084,6 @@ namespace MbitGate.model
         {
             try
             {
-                if (!ver.Contains("485"))
-                    return false;
                 Version delayVersion = new Version(System.Text.RegularExpressions.Regex.Match(ver, @"\d+\.\d+\.\d+").Value);
                 try
                 {
