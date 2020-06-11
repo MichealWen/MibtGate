@@ -12,15 +12,15 @@
         <Grid x:Name="Setting" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"  />
-                <RowDefinition Height="20"  />
+                <RowDefinition Height="8"  />
                 <RowDefinition Height="26"  />
                 <RowDefinition Height="8"   />
-                <RowDefinition Height="5"   />
+                <RowDefinition Height="26"   />
                 <RowDefinition Height="8"   />
                 <RowDefinition Height="26"  />
-                <RowDefinition Height="15"  />
+                <RowDefinition Height="8"  />
                 <RowDefinition Height="30"  />
-                <RowDefinition Height="18"  />
+                <RowDefinition Height="8"  />
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Background="#ededed"/>
             <TextBlock FontSize="16" Foreground="#333333" Grid.Row="0" Style="{StaticResource STYLE_CONFIGVIEWTITLE}"  Text="{DynamicResource Config}"/>
@@ -38,12 +38,15 @@
                     </i:Interaction.Triggers>
                 </ComboBox>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center">
                 <TextBlock Text="{DynamicResource Baud}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                 <!--<TextBox x:Name="Description" Text="{Binding Description}" Width="250" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_ChineseTextBox}"/>-->
                 <ComboBox x:Name="RateCombo" FontSize="14" Foreground="#333333" Width="240" ItemsSource="{Binding Rates}" SelectedItem="{Binding SelectedRate}" Text="{Binding CustomRate}" SelectedValuePath="RateValue" DisplayMemberPath="RateKey" IsEditable="True"/>
             </StackPanel>
-
+            <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center">
+                <TextBlock Text="{DynamicResource RadarType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox FontSize="14" Foreground="#333333" Width="240" ItemsSource="{Binding Types}" Text="{Binding SelectedRadarType}"/>
+            </StackPanel>
             <StackPanel x:Name="CommandPanel" Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Center">
                 <Button Content="{DynamicResource Confirm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Margin="0,0,30,0" Command="{Binding ConfirmCommand}" CommandParameter="{Binding}"/>
                 <Button Content="{DynamicResource Cancel}" Width="60" Height="30"   Style="{StaticResource STYLE_Button}" Command="{Binding CancelCommand}"/>

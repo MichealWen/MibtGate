@@ -10,7 +10,7 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" Height="450" Width="900" ResizeMode="CanMinimize"
+        Title="{StaticResource MainWindowTitle}" Height="420" Width="850" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded">
     <Grid x:Name="MainWin">
         <Grid.Resources>
@@ -25,8 +25,7 @@
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
-            <RowDefinition Height="32"/>
-            <RowDefinition Height="310*"/>
+            <RowDefinition Height="312*"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
         <DockPanel Height="48" VerticalAlignment="Top" Background="#202020" Grid.Row="0">
@@ -63,60 +62,56 @@
             <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 10 0" HorizontalAlignment="Right"/>
         </DockPanel>
 
-        <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
-        <!--<Grid Grid.Row="2" Visibility="Visible">-->
+        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
+        <!--<Grid Grid.Row="1" Visibility="Visible">-->
             <Grid.RowDefinitions>
-                <RowDefinition Height="100*"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="100*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="290*"/> 
+                <RowDefinition Height="10*"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Distance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="Distance" Text="{Binding Distance}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="LRange" Text="{Binding LRange,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True,Mode=TwoWay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="5" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource RRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="RRange" Text="{Binding RRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="7" HorizontalAlignment="Center" >
-                <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="9" HorizontalAlignment="Center" >
-                <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Threshold}"   IsEditable="True"  GotFocus="ComboxThreshold_GetFocus" LostFocus="ComboxThreshold_LostFocus"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="11" HorizontalAlignment="Center" >
-                <TextBlock Text="{StaticResource Record}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox  ItemsSource="{Binding RecordTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Record}"   IsEditable="True" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="13" HorizontalAlignment="Center"  Visibility="{Binding DelayVisible,Converter={StaticResource bool2VisibilityConverter}}">
-                <TextBlock Text="{StaticResource Delay}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox  Text="{Binding Delay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <TextBlock Text="{StaticResource UnitS}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
+                    <TextBlock Text="{StaticResource Distance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox x:Name="Distance" Text="{Binding Distance}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
+                    <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox x:Name="LRange" Text="{Binding LRange,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True,Mode=TwoWay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
+                    <TextBlock Text="{StaticResource RRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox x:Name="RRange" Text="{Binding RRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                    <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
+                    <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Threshold}"   IsEditable="True"  GotFocus="ComboxThreshold_GetFocus" LostFocus="ComboxThreshold_LostFocus"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                    <TextBlock Text="{StaticResource Record}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox  ItemsSource="{Binding RecordTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Record}"   IsEditable="True" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource CheckedMultiVisibilityConverter}">
+                            <Binding Path="DelayVisible" />
+                            <Binding Path="IsHoldRadarType" />
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+                    <TextBlock Text="{StaticResource Delay}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox  Text="{Binding Delay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                    <TextBlock Text="{StaticResource UnitS}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
         <!--<Grid Grid.Row="2" Visibility="{Binding Developer, Converter={StaticResource bool2VisibilityConverter}}">-->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource CheckedMultiVisibilityConverter}">
                     <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
@@ -148,7 +143,7 @@
                 <TextBlock Text="{StaticResource Unit}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </StackPanel>-->
         </Grid>
-        <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_update, Converter={StaticResource CheckedVisibilityConverter}}">
+        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_update, Converter={StaticResource CheckedVisibilityConverter}}">
         <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="100*"/>
@@ -167,7 +162,7 @@
                 <Button Content="{StaticResource Update}" Width="130"  Style="{StaticResource Style_Button_Ok}" Command="{Binding UpdateCmd}"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
+        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
         <!--<Grid Grid.Row="2" Visibility="Visible">-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*"/>
@@ -191,7 +186,7 @@
                 <ListBox BorderThickness="5" BorderBrush="AliceBlue" Width="300"  ItemsSource="{Binding SearchResult}"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="2" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
+        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
             <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*"/>
@@ -229,10 +224,10 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                 <Button Content="{StaticResource Get}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetCmd}"  ToolTip="{StaticResource FuncGet}"/>
-                <Button Content="{StaticResource Set}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncSet}"/>
-                <Button Content="{StaticResource Default}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncReset}"/>
-                <Button Content="{StaticResource Study}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncStudy}"/>
-                <Button Content="{StaticResource Reboot}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 10 0"  ToolTip="{StaticResource FuncReboot}"/>
+                <Button Content="{StaticResource Set}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSet}"/>
+                <Button Content="{StaticResource Default}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncReset}"/>
+                <Button Content="{StaticResource Study}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncStudy}" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}"/>
+                <Button Content="{StaticResource Reboot}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="3"  x:Name="RecordGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
@@ -242,9 +237,9 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                 <Button Content="{StaticResource GetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetTimeCmd}"  ToolTip="{StaticResource FuncGetTime}"/>
-                <Button Content="{StaticResource SetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetTimeCmd}"  Margin="10 0"  ToolTip="{StaticResource FuncSetTime}"/>
-                <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearTimeCmd}" Margin="0 0 10 0" ToolTip="{StaticResource FuncClearTime}"/>
-                <Button Content="{StaticResource Search}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCmd}" Margin="50 0 10 0"  ToolTip="{StaticResource FuncRecord}"/>
+                <Button Content="{StaticResource SetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetTimeCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSetTime}"/>
+                <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearTimeCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncClearTime}"/>
+                <Button Content="{StaticResource Search}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCmd}" Margin="60 0 10 0"  ToolTip="{StaticResource FuncRecord}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="3"  x:Name="AlarmGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
@@ -255,7 +250,7 @@
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                 <Button Content="{StaticResource ConfirmAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetWeakPointsCmd}"  ToolTip="{StaticResource FuncConfirmAlarm}"/>
                 <Button Content="{StaticResource CancelAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelGetWeakPointsCmd}"  Margin="5 0" ToolTip="{StaticResource FuncCancelAlarm}"/>
-                <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="50 0 0 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
+                <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="100 0 0 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
                 <Button Content="{StaticResource RegetAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
                 <Button Content="{StaticResource CancelRemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
             </StackPanel>

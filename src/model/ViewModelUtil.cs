@@ -62,9 +62,18 @@ namespace MbitGate.model
             Items = new ObservableCollection<string>();
 
             SelectedRate = Rates.Count > 10 ? Rates[10] : Rates.Count > 0 ? Rates[0] : new Rate();
-
+            SelectedRadarType = Application.Current.Resources["RadarHoldType"].ToString();
         }
 
+        public List<string> Types
+        {
+            get =>new List<string>(){ Application.Current.Resources["RadarHoldType"].ToString(), Application.Current.Resources["RadarTriggerType"].ToString()};
+        }  
+        
+        public string SelectedRadarType
+        {
+            get;set;
+        }
         public ObservableCollection<string> Items { get; set; }
 
         private List<Rate> _rates = null;
@@ -761,6 +770,8 @@ namespace MbitGate.model
 
     }
 
+    public enum RadarType { Hold, Trigger }
+
     public class SerialMainViewModel : MainViewModel
     {
         private const int ReadBytesNumber = 64;
@@ -814,6 +825,8 @@ namespace MbitGate.model
 
         public List<string> RecordTypes { get { return control.RecordKind.GetAllTypes(); } }
         public string Record { get; set; }
+
+        public RadarType ConnectedRadarType{get;set;}
 
         public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
         {
@@ -1246,7 +1259,7 @@ namespace MbitGate.model
                             }));
                             serial.WriteLine(SerialRadarCommands.SoftReset);
                             mutex.Set();
-                            break;
+                            break; 
                         case SerialRadarCommands.SensorStart:
                             break;
                     }
@@ -1352,8 +1365,14 @@ namespace MbitGate.model
             {
                 _dialogCoordinator.HideMetroDialogAsync(this, _settingView);
             }
-            serial.close();
-            SerialWork(() => ToGetVer(), false);
+            
+            SerialWork(() => ToGetVer(()=> { SerialWork(() => JudgeRadarType()); }), false);
+
+            if (ConfigModel.SelectedRadarType == Application.Current.Resources["RadarTriggerType"].ToString())
+            {
+                ConnectedRadarType = RadarType.Trigger;
+                OnPropertyChanged("IsHoldRadarType");
+            }
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
@@ -1723,7 +1742,7 @@ namespace MbitGate.model
         {
             serial.DataReceivedHandler = msg =>
             {
-                Version = msg.Substring(0, msg.IndexOf("Done"));
+                Version = msg.Substring(0, msg.IndexOf("Done")).Trim('\r', '\n');
                 if(compareVersion2("1.1.1"))
                 {
                     DelayVisible = true;
@@ -1807,6 +1826,8 @@ namespace MbitGate.model
         FileIOManager reader = null;
         Timer overTimer = null;
         byte[] dataTmp = null;
+        const int preByteSizeAdded = 32;
+        const int ignorePreByteSize = 8;
         protected override void ToDo()
         {
             SerialWork(() =>
@@ -1853,19 +1874,19 @@ namespace MbitGate.model
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
-                        uint sum = 0, pos = 7;
-                        if (reader.Length < 8)
+                        uint sum = 0, pos = preByteSizeAdded+ignorePreByteSize-1;
+                        if (reader.Length < ignorePreByteSize)
                         {
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
-                        if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(32))))
+                        if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
                         {
                             _progressViewModel.Message = ErrorString.SmallVersion;
                             reader.Close();
                             return;
                         }
-                        reader.ReadBytes(8);
+                        reader.ReadBytes(ignorePreByteSize);
 
                         serial.DataReceivedHandler = async msg =>
                         {
@@ -1975,7 +1996,7 @@ namespace MbitGate.model
                                                 await TaskEx.Delay(500);
                                                 lastOperation = SerialRadarCommands.BootLoader;
                                                 _progressViewModel.Message = Tips.Updating;
-                                                int times = (int)((reader.Length - 8) / 64 + ((reader.Length - 8) % 64 == 0 ? 0 : 1));
+                                                int times = (int)((reader.Length - preByteSizeAdded - ignorePreByteSize) / 64 + ((reader.Length - preByteSizeAdded - ignorePreByteSize) % 64 == 0 ? 0 : 1));
                                                 byte[] tmp = BitConverter.GetBytes(times);
                                                 _progressViewModel.MaxValue = (uint)times;
                                                 _progressViewModel.Value = 0;
@@ -2108,6 +2129,53 @@ namespace MbitGate.model
             {
                 serial.WriteLine(SerialRadarCommands.AlarmOrder4);
                 serial.close();
+            }
+        }
+
+        public bool IsHoldRadarType { get => ConnectedRadarType == RadarType.Hold; }
+        public bool IsTriggerRadarType { get => ConnectedRadarType == RadarType.Trigger; }
+        private void JudgeRadarType()
+        {
+            if (ConfigModel.SelectedRadarType == Application.Current.Resources["RadarHoldType"].ToString())
+            {
+                ConnectedRadarType = RadarType.Hold;
+                OnPropertyChanged("IsHoldRadarType");
+                mutex.Set();
+            }
+            else
+            {
+                int delay = 0;
+                string lastOperation = SerialRadarCommands.SensorStop;
+                serial.DataReceivedHandler = async msg =>
+                {
+                    if (msg.Contains(SerialRadarReply.Done))
+                    {
+                        if (lastOperation == SerialRadarCommands.SensorStop)
+                        {
+                            lastOperation = SerialRadarCommands.WriteCLI;
+                            await TaskEx.Delay(200);
+                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.DelayTimeParam + " " + delay.ToString());
+                        }
+                        else if (lastOperation == SerialRadarCommands.WriteCLI)
+                        {
+                            ConnectedRadarType = RadarType.Trigger;
+                            OnPropertyChanged("IsHoldRadarType");
+                            await TaskEx.Delay(200);
+                            serial.EndStr = SerialRadarReply.Start;
+                            serial.WriteLine(SerialRadarCommands.SoftReset);
+                            mutex.Set();
+                        }
+                    }
+                    else if (msg.Contains(SerialRadarReply.Error))
+                    {
+                        ShowErrorWindow(Tips.ConfigFail);
+                        mutex.Set();
+                    }
+                    else if (msg.Contains(SerialRadarReply.Start))
+                    {
+                    }
+                };
+                serial.WriteLine(SerialRadarCommands.SensorStop);
             }
         }
     }

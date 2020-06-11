@@ -1,19 +1,12 @@
 ﻿using MbitGate.model;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
-using System.IO.Ports;
-using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MbitGate.views
 {
@@ -30,6 +23,7 @@ namespace MbitGate.views
             DataContext = mainVModel;
             ic_tab_config.IsChecked = true;
             this.AddHandler(MahApps.Metro.Controls.Dialogs.CustomDialog.MouseMoveEvent, new MouseEventHandler(DialogCoordinatorWindow_Drag));
+            this.Title = Application.Current.Resources["MainWindowTitle"].ToString() + FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
         }
 
         private void Choose_Click(object sender, RoutedEventArgs e)

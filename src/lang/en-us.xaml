@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">Radar RS485 V2.6.1</s:String>
+    <s:String  x:Key="MainWindowTitle">Radar RS485 V</s:String>
     <s:String  x:Key="SerialModelTitle">Update</s:String>
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
@@ -72,7 +72,9 @@
     <s:String x:Key="FunCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">Strongest</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">Removed</s:String>
-
+    <s:String x:Key="RadarType">Type</s:String>
+    <s:String x:Key="RadarHoldType">Hold</s:String>
+    <s:String x:Key="RadarTriggerType">Trigger</s:String>
     <!--提示-->
     <s:String x:Key="ParamsError">Parameters Error</s:String>
     <s:String x:Key="BinPathError">Bint Path Error</s:String>

@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">道闸RS485雷达设置V2.6.1</s:String>
+    <s:String  x:Key="MainWindowTitle">道闸RS485雷达设置V</s:String>
     <s:String  x:Key="SerialModelTitle">升级</s:String>
     <s:String  x:Key="ConfigModelTitle">设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
@@ -22,7 +22,7 @@
     <s:String  x:Key="Fail">固件刷写失败</s:String>
     <s:String  x:Key="Config">配置</s:String>
     <s:String  x:Key="Baud">波特率</s:String>
-    <s:String  x:Key="Distance">&#160;&#160;&#160;&#160;作用距离</s:String>
+    <s:String  x:Key="Distance">&#160;&#160;&#160;作用距离</s:String>
     <s:String  x:Key="LRange">作用左范围</s:String>
     <s:String  x:Key="RRange">作用右范围</s:String>
     <s:String  x:Key="Position">杆位置</s:String>
@@ -72,7 +72,9 @@
     <s:String x:Key="FuncCancelRemoveAlarm">取消剔除虚警点</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">最强点</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">剔除点</s:String>
-    
+    <s:String x:Key="RadarType">类&#160;&#160;&#160;&#160;型</s:String>
+    <s:String x:Key="RadarHoldType">防砸</s:String>
+    <s:String x:Key="RadarTriggerType">触发</s:String>
     <!--提示-->
     <s:String x:Key="ParamsError">参数错误</s:String>
     <s:String x:Key="BinPathError">固件路径错误</s:String>
