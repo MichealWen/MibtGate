@@ -2160,6 +2160,7 @@ namespace MbitGate.model
                         {
                             ConnectedRadarType = RadarType.Trigger;
                             OnPropertyChanged("IsHoldRadarType");
+                            DelayVisible = false;
                             await TaskEx.Delay(200);
                             serial.EndStr = SerialRadarReply.Start;
                             serial.WriteLine(SerialRadarCommands.SoftReset);
