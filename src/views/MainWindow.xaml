@@ -11,7 +11,7 @@
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         Title="{StaticResource MainWindowTitle}" Height="420" Width="850" ResizeMode="CanMinimize"
-        WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded">
+        WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" Icon="/MbitGate;component/image/mbit.ico">
     <Grid x:Name="MainWin">
         <Grid.Resources>
             <ResourceDictionary>

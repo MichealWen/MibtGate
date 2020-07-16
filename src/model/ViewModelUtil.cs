@@ -1677,7 +1677,7 @@ namespace MbitGate.model
                 }
                 else if(Gate == control.GateType.Straight)
                 {
-                    if (lrange < 0.39999 || rrange < 0.39999 || lrange > 1.00001 || rrange > 1.00001)
+                    if (lrange < 0.09999 || rrange < 0.09999 || lrange > 1.00001 || rrange > 1.00001)
                     {
                         error = ErrorString.RangeError1;
                         throw new Exception(error);
@@ -1685,7 +1685,7 @@ namespace MbitGate.model
                 }
                 else if (Gate == control.GateType.AdvertisingFence)
                 {
-                    if (lrange < 0.69999 || rrange < 0.69999 || lrange > 1.00001 || rrange > 1.00001)
+                    if (lrange < 0.09999 || rrange < 0.09999 || lrange > 1.00001 || rrange > 1.00001)
                     {
                         error = ErrorString.RangeError2;
                         throw new Exception(error);

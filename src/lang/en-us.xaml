@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">Radar RS485 V</s:String>
+    <s:String  x:Key="MainWindowTitle">Radar RS485_TTL V</s:String>
     <s:String  x:Key="SerialModelTitle">Update</s:String>
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
@@ -65,11 +65,11 @@
     <s:String x:Key="RemoveAlarm">Remove</s:String>
     <s:String x:Key="RegetAlarm">Reget</s:String>
     <s:String x:Key="CancelRemoveAlarm">Cancel</s:String>
-    <s:String x:Key="FunConfirmAlarm">Show The Strongest Weak Point</s:String>
+    <s:String x:Key="FuncConfirmAlarm">Show The Strongest Weak Point</s:String>
     <s:String x:Key="FuncCancelAlarm">Stop Show The Strongest Weak Point</s:String>
-    <s:String x:Key="FunRemoveAlarm">Remove All Weak Point</s:String>
-    <s:String x:Key="FunRegetAlarm">Get All Removed Weak Point</s:String>
-    <s:String x:Key="FunCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
+    <s:String x:Key="FuncRemoveAlarm">Remove All Weak Point</s:String>
+    <s:String x:Key="FuncRegetAlarm">Get All Removed Weak Point</s:String>
+    <s:String x:Key="FuncCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">Strongest</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">Removed</s:String>
     <s:String x:Key="RadarType">Type</s:String>
@@ -123,7 +123,7 @@
     <s:String x:Key="Down">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Down</s:String>
     <s:String x:Key="UpValue">Dalay:1</s:String>
     <s:String x:Key="DownValue">Dalay:0</s:String>
-    <s:String x:Key="Exception">异常</s:String>
+    <s:String x:Key="Exception">Exception</s:String>
     <s:String x:Key="GetVersion">Get Version</s:String>
 
     <s:String x:Key="Error">Error</s:String>

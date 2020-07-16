@@ -7,7 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source=".\lang\zh-cn.xaml"/>
+                <ResourceDictionary Source=".\lang\en-us.xaml"/>
                 <ResourceDictionary Source=".\style\Controls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

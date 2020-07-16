@@ -39,7 +39,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>mbit32.ico</ApplicationIcon>
+    <ApplicationIcon>image\mbit.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
@@ -203,17 +203,11 @@
     <Resource Include="image\Wifi.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="mbit.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="image\mbit-update.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="image\arrow_left.png" />
     <Resource Include="image\arrow_right.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="mbit32.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="image\close.png" />
