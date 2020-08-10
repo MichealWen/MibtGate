@@ -9,6 +9,7 @@
     <s:String  x:Key="DeveloperModelTitle">Develop</s:String>
     <s:String x:Key="RecordModelTitle">Record</s:String>
     <s:String x:Key="AlarmModelTitile">Weak</s:String>
+    <s:String x:Key="CompareModelTitle">Contrast</s:String>
     <s:String  x:Key="Serial">Serial</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
     <s:String  x:Key="Radar">Radar</s:String>
@@ -72,9 +73,13 @@
     <s:String x:Key="FuncCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">Strongest</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">Removed</s:String>
+    <s:String x:Key="BeforeChartPointsTitle">Previous</s:String>
+    <s:String x:Key="AfterChartPointsTitle">Current</s:String>
     <s:String x:Key="RadarType">Type</s:String>
     <s:String x:Key="RadarHoldType">Hold</s:String>
     <s:String x:Key="RadarTriggerType">Trigger</s:String>
+    <s:String x:Key="GetBackPoints">Get</s:String>
+    <s:String x:Key="FuncBackPoints">Get Range Profile Data</s:String>
     <!--提示-->
     <s:String x:Key="ParamsError">Parameters Error</s:String>
     <s:String x:Key="BinPathError">Bint Path Error</s:String>
@@ -86,7 +91,7 @@
     <s:String x:Key="DisntacneError">Distance should less than 6 meters</s:String>
     <s:String x:Key="RangeError1">Either Side shoule between 0.4 ~1 meter</s:String>
     <s:String x:Key="RangeError2">Either Side shoule between 0.7 ~1 meter</s:String>
-    <s:String x:Key="DelayError">Delay Must Between 2~300 Seconds</s:String>
+    <s:String x:Key="DelayError">Delay Must Between 3~300 Seconds</s:String>
     <s:String x:Key="Opening">Serial Opening</s:String>
     <s:String x:Key="Initializing">Initializing</s:String>
     <s:String x:Key="UpdateFail">Update Fail</s:String>
@@ -138,4 +143,10 @@
     <s:String x:Key="LowSensibility">Low Sensibility</s:String>
     <s:String x:Key="MiddleSensibility">Middle Sensibility</s:String>
     <s:String x:Key="HighSensibility">High Sensibility</s:String>
+
+    <s:String x:Key="CorrelationLow">Correlation Low</s:String>
+    <s:String x:Key="CorrelationHigh">Correlation High</s:String>
+    <s:String x:Key="Comparison">Comparison</s:String>
+    <s:String x:Key="FuncComparision">Compare With Correlation Value Of Radar</s:String>
+    <s:String x:Key="ComparisionIntroduction" xml:space="preserve">Instruction&#x000D;&#x000A;①Click“Get”，Get Range Profile Of Radar&#x000D;&#x000A;②Reelectric Radar，Click“Study”，To Study Again&#x000D;&#x000A;③Click“Get”，Get Range Profile Of Radar Again&#x000D;&#x000A;④Click“Comparison”，Compare The Data Geted</s:String>
 </ResourceDictionary>

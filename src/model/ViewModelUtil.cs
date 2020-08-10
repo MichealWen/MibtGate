@@ -817,6 +817,12 @@ namespace MbitGate.model
         public ICommand RegetWeakPointsCmd { get; set; }
         public ICommand CancelRemoveWeakPointsCmd { get; set; }
 
+        public ICommand GetBackPointsCmd { get; set; }
+
+        public ICommand ComparisonCmd { get; set; }
+
+        public LiveCharts.SeriesCollection BackgroundSeries { get; set; }
+
         public DateTime CurrentTime { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
@@ -1021,6 +1027,57 @@ namespace MbitGate.model
             CurrentTime = DateTime.Now;
             StartTime = DateTime.Now;
             EndTime = DateTime.Now;
+
+            BackgroundAfterPoints = new ChartValues<ObservablePoint>();
+            BackgroundBeforePoints = new ChartValues<ObservablePoint>();
+            BackgroundComparison = false;
+
+            GetBackPointsCmd = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    if (BackgroundAfterPoints.Count > 0)
+                    {
+                        BackgroundBeforePoints.Clear();
+                        foreach (var point in BackgroundAfterPoints.AsEnumerable())
+                        {
+                            BackgroundBeforePoints.Add(point);
+                        }
+                        beforeVals = afterVals;
+
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                        {
+                            BackgroundSeries[0].Values.Clear();
+                            BackgroundSeries[0].Values.AddRange(BackgroundBeforePoints);
+                        }));
+                    }
+                    
+                    SerialWork(() =>ToGetAfterPoints());
+                }
+            };
+
+            ComparisonCmd = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    SerialWork(() => ToGetCorrelation());
+                }
+            };
+
+            BackgroundSeries = new SeriesCollection()
+            {
+                new LiveCharts.Wpf.LineSeries()
+                            {
+                                Title = Application.Current.Resources["BeforeChartPointsTitle"].ToString(),
+                                Values = new ChartValues<ObservablePoint>()
+                            },
+                new LiveCharts.Wpf.LineSeries()
+                            {
+                                Title = Application.Current.Resources["AfterChartPointsTitle"].ToString(),
+                                Values=new ChartValues<ObservablePoint>(),
+                                PointGeometry = LiveCharts.Wpf.DefaultGeometries.Diamond
+                            }
+            };
         }
 
         private void toCancelGetWeakPoints()
@@ -1079,7 +1136,6 @@ namespace MbitGate.model
 
         private void toCancelRemoveWeakPoints()
         {
-
             serial.DataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
@@ -1158,6 +1214,10 @@ namespace MbitGate.model
 
         public ChartValues<ObservablePoint> StrongestWeakPoints { get; set; }
         public ChartValues<ObservablePoint> RemovedWeakPoints { get; set; }
+
+        public bool BackgroundComparison { get; set; }
+        public ChartValues<ObservablePoint> BackgroundBeforePoints { get; set; }
+        public ChartValues<ObservablePoint> BackgroundAfterPoints { get; set; }
 
         private void toSearch()
         {
@@ -1495,13 +1555,88 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.SensorStop);
         }
 
+        const double SampleRate = 0.045;
+        double standCorrelation = 0.68;
+        double correlation = 0.0;
+        double[] beforeVals = null, afterVals = null;
+        private void ToGetAfterPoints()
+        {
+            serial.EndStr = SerialRadarReply.Done;
+            serial.DataReceivedHandler = msg =>
+            {
+                var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
+                if(collection.Count > 0)
+                {
+                    BackgroundAfterPoints.Clear();
+                    afterVals = new double[collection.Count];
+                    for (int index = 0; index < collection.Count - 1; index++)
+                    {
+                        double y = double.Parse(collection[index].Value);
+                        BackgroundAfterPoints.Add(new ObservablePoint(index * SampleRate, y));
+                        afterVals[index] = y;
+                    }
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                    {
+                        BackgroundSeries[1].Values.Clear();
+                        BackgroundSeries[1].Values.AddRange(BackgroundAfterPoints);
+                    }));
+                    
+                    if (beforeVals != null)
+                    {
+                        correlation = Helper.MathHelper.Corrcoef(beforeVals, afterVals);
+                    }
+                }
+                serial.DataReceivedHandler = null;
+                mutex.Set();
+            };
+            serial.WriteLine(SerialRadarCommands.Output + " 12");
+        }
+
+        private void ToGetBeforePoints()
+        {
+            serial.DataReceivedHandler = msg =>
+            {
+                BackgroundBeforePoints.Clear();
+                var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
+
+                for(int index =0; index<collection.Count-1; index++)
+                {
+                    BackgroundBeforePoints.Add(new ObservablePoint(double.Parse(collection[index].Value), index* SampleRate));
+                }
+                mutex.Set();
+            };
+            serial.WriteLine(SerialRadarCommands.Output + " 12");
+        }
+
+        private void ToGetCorrelation()
+        {
+            serial.DataReceivedHandler = msg =>
+            {
+                string[] param = msg.Split(' ');
+                if(param.Length > 6)
+                {
+                    standCorrelation = double.Parse(param[2]) + double.Parse(param[5]);
+                    
+                }
+                if (correlation < standCorrelation)
+                {
+                    ShowConfirmWindow(Tips.CorrelationLow, string.Empty);
+                }else
+                {
+                    ShowConfirmWindow(Tips.CorrelationHigh, string.Empty);
+                }
+                mutex.Set();
+            };
+            serial.WriteLine(SerialRadarCommands.ReadCLI + " setThresholdParas");
+        }
+
         DispatcherTimer timekeeper = new DispatcherTimer();
         private void ToStudy()
         {
             serial.EndStr = "\n";
             serial.DataReceivedHandler = msg =>
             {
-                if (msg.Contains(SerialRadarReply.StudyEnd))
+                if (msg.Contains(SerialRadarReply.StudyEnd) || msg.Contains("end"))
                 {
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                     {
@@ -1677,7 +1812,7 @@ namespace MbitGate.model
                 }
                 else if(Gate == control.GateType.Straight)
                 {
-                    if (lrange < 0.09999 || rrange < 0.09999 || lrange > 1.00001 || rrange > 1.00001)
+                    if (lrange < 0.39999 || rrange < 0.39999 || lrange > 1.00001 || rrange > 1.00001)
                     {
                         error = ErrorString.RangeError1;
                         throw new Exception(error);
@@ -1685,7 +1820,7 @@ namespace MbitGate.model
                 }
                 else if (Gate == control.GateType.AdvertisingFence)
                 {
-                    if (lrange < 0.09999 || rrange < 0.09999 || lrange > 1.00001 || rrange > 1.00001)
+                    if (lrange < 0.69999 || rrange < 0.69999 || lrange > 1.00001 || rrange > 1.00001)
                     {
                         error = ErrorString.RangeError2;
                         throw new Exception(error);
@@ -2074,7 +2209,6 @@ namespace MbitGate.model
                                 }
                                 overTimer.Dispose();
                             }
-
                         };
                         serial.WriteLine(SerialRadarCommands.SensorStop);
                     }

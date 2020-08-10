@@ -9,6 +9,7 @@
     <s:String  x:Key="DeveloperModelTitle">开发设置</s:String>
     <s:String x:Key="RecordModelTitle">雷达数据</s:String>
     <s:String x:Key="AlarmModelTitile">虚警处理</s:String>
+    <s:String x:Key="CompareModelTitle">背景对比</s:String>
     <s:String  x:Key="Serial">串&#160;&#160;&#160;口</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
     <s:String  x:Key="Radar">雷达</s:String>
@@ -72,9 +73,13 @@
     <s:String x:Key="FuncCancelRemoveAlarm">取消剔除虚警点</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">最强点</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">剔除点</s:String>
+    <s:String x:Key="BeforeChartPointsTitle">上次背景</s:String>
+    <s:String x:Key="AfterChartPointsTitle">当前背景</s:String>
     <s:String x:Key="RadarType">类&#160;&#160;&#160;&#160;型</s:String>
     <s:String x:Key="RadarHoldType">防砸</s:String>
     <s:String x:Key="RadarTriggerType">触发</s:String>
+    <s:String x:Key="GetBackPoints">获取数据</s:String>
+    <s:String x:Key="FuncBackPoints">获取背景距离像值</s:String>
     <!--提示-->
     <s:String x:Key="ParamsError">参数错误</s:String>
     <s:String x:Key="BinPathError">固件路径错误</s:String>
@@ -86,7 +91,7 @@
     <s:String x:Key="DisntacneError">作用距离1~6米</s:String>
     <s:String x:Key="RangeError1">左右范围0.4~1米</s:String>
     <s:String x:Key="RangeError2">左右范围0.7~1米</s:String>
-    <s:String x:Key="DelayError">延时时间区间2~300秒</s:String>
+    <s:String x:Key="DelayError">延时时间区间3~300秒</s:String>
     <s:String x:Key="Opening">正在打开串口</s:String>
     <s:String x:Key="Initializing">正在初始化设置</s:String>
     <s:String x:Key="UpdateFail">固件刷写失败</s:String>
@@ -138,4 +143,10 @@
     <s:String x:Key="LowSensibility">低灵敏度(区分电动车)</s:String>
     <s:String x:Key="MiddleSensibility">中灵敏度(区分人车)</s:String>
     <s:String x:Key="HighSensibility">高灵敏度(不区分人车)</s:String>
+
+    <s:String x:Key="CorrelationLow">相似程度低</s:String>
+    <s:String x:Key="CorrelationHigh">相似程度高</s:String>
+    <s:String x:Key="Comparison">对比结果</s:String>
+    <s:String x:Key="FuncComparision">与雷达相关系数值对比</s:String>
+    <s:String x:Key="ComparisionIntroduction" xml:space="preserve">使用介绍&#x000D;&#x000A;&#160;&#160;&#160;&#160;①点击“获取数据”，获取已经学习到的背景数据&#x000D;&#x000A;&#160;&#160;&#160;&#160;②雷达重新上电，点击设置界面“自学习”，进行重新学习&#x000D;&#x000A;&#160;&#160;&#160;&#160;③点击 “获取数据”，获取重新学习后的背景数据&#x000D;&#x000A;&#160;&#160;&#160;&#160;④点击“对比结果”，比对两次数据差异</s:String>
 </ResourceDictionary>

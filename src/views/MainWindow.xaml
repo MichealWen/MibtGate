@@ -10,8 +10,8 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" Height="420" Width="850" ResizeMode="CanMinimize"
-        WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" Icon="/MbitGate;component/image/mbit.ico">
+        Title="{StaticResource MainWindowTitle}" Height="420" Width="913" ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" >
     <Grid x:Name="MainWin">
         <Grid.Resources>
             <ResourceDictionary>
@@ -51,6 +51,12 @@
                 <DockPanel Width="120">
                     <Image Source="/MbitGate;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource AlarmModelTitile}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+                </DockPanel>
+            </ToggleButton>
+            <ToggleButton x:Name="ic_tab_comparison" Style="{StaticResource STYLE_TabToggle}" Click="Compare_Choose_Click" Visibility="Visible">
+                <DockPanel Width="150">
+                    <Image Source="/MbitGate;component/image/triangle.png"    DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Label Content="{StaticResource CompareModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_develop" Style="{StaticResource STYLE_TabToggle}" Click="Develop_Choose_Click">
@@ -210,14 +216,26 @@
             </DockPanel>
         </Grid>
 
-        <Grid Grid.Row="3" x:Name="ConfigGrid">
-            <Grid.Visibility>
-                <MultiBinding Converter="{StaticResource MultiRevertCheckedVisibilityConverter}">
-                    <Binding Path="IsChecked" ElementName="ic_tab_search"/>
-                    <Binding Path="IsChecked" ElementName="ic_tab_update"/>
-                    <Binding Path="IsChecked" ElementName="ic_tab_alarm"/>
-                </MultiBinding>
-            </Grid.Visibility>
+        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_comparison, Converter={StaticResource CheckedVisibilityConverter}}">
+            <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="250*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="1" Margin="50 0">
+                <LiveChart:CartesianChart LegendLocation="Bottom" Width="700"  Series="{Binding BackgroundSeries}">
+                    <!--<LiveChart:CartesianChart.Series>
+                        <LiveChart:LineSeries Values="{Binding BackgroundBeforePoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}" Title="{StaticResource BeforeChartPointsTitle}"/>
+                        <LiveChart:LineSeries Values="{Binding BackgroundAfterPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{StaticResource AfterChartPointsTitle}"/>
+                    </LiveChart:CartesianChart.Series>-->
+                </LiveChart:CartesianChart>
+                <TextBlock Text="{StaticResource ComparisionIntroduction}" Width="110" TextWrapping="Wrap" />
+            </DockPanel>
+        </Grid>
+
+        <Grid Grid.Row="3" x:Name="ConfigGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="30"/>
@@ -253,6 +271,17 @@
                 <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="100 0 0 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
                 <Button Content="{StaticResource RegetAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
                 <Button Content="{StaticResource CancelRemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="3"  x:Name="ComparisonGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_comparison, Converter={StaticResource CheckedVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                <Button Content="{StaticResource GetBackPoints}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetBackPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncBackPoints}"/>
+                <Button Content="{StaticResource Comparison}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ComparisonCmd}"  ToolTip="{StaticResource FuncBackPoints}"/>
             </StackPanel>
         </Grid>
     </Grid>

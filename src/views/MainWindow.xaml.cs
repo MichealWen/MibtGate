@@ -39,11 +39,7 @@ namespace MbitGate.views
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (e.OriginalSource is MahApps.Metro.Controls.MetroThumb || e.OriginalSource is System.Windows.Controls.TextBox || e.OriginalSource is System.Windows.Controls.PasswordBox)
-                {
-                    return;
-                }
-                else
+                if(e.OriginalSource is MahApps.Metro.Controls.MetroThumbContentControl)
                 {
                     this.DragMove();
                 }
@@ -67,6 +63,7 @@ namespace MbitGate.views
             ic_tab_develop.IsChecked = true;
             ic_tab_search.IsChecked = false;
             ic_tab_alarm.IsChecked = false;
+            ic_tab_comparison.IsChecked = false;
             mainVModel?.root();
         }
 
@@ -77,6 +74,7 @@ namespace MbitGate.views
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
             ic_tab_alarm.IsChecked = false;
+            ic_tab_comparison.IsChecked = false;
         }
 
         private void Config_Choose_Click(object sender, RoutedEventArgs e)
@@ -86,6 +84,7 @@ namespace MbitGate.views
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
             ic_tab_alarm.IsChecked = false;
+            ic_tab_comparison.IsChecked = false;
         }
 
         private void ComboxThreshold_LostFocus(object sender, RoutedEventArgs e)
@@ -105,6 +104,7 @@ namespace MbitGate.views
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = true;
             ic_tab_alarm.IsChecked = false;
+            ic_tab_comparison.IsChecked = false;
         }
 
         private void Alarm_Choose_Click(object sender, RoutedEventArgs e)
@@ -114,6 +114,17 @@ namespace MbitGate.views
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
             ic_tab_alarm.IsChecked = true;
+            ic_tab_comparison.IsChecked = false;
+        }
+
+        private void Compare_Choose_Click(object sender, RoutedEventArgs e)
+        {
+            ic_tab_config.IsChecked = false;
+            ic_tab_update.IsChecked = false;
+            ic_tab_develop.IsChecked = false;
+            ic_tab_search.IsChecked = false;
+            ic_tab_alarm.IsChecked = false;
+            ic_tab_comparison.IsChecked = true;
         }
     }
 
@@ -214,7 +225,8 @@ namespace MbitGate.views
             bool checkedValue1 = (bool)values[0];
             bool checkedValue2 = (bool)values[1];
             bool checkedValue3 = (bool)values[2];
-            if(checkedValue1 || checkedValue2 || checkedValue3)
+            bool checkedValue4 = (bool)values[3];
+            if(checkedValue1 || checkedValue2 || checkedValue3 || checkedValue4)
             {
                 return Visibility.Hidden;
             }
@@ -243,7 +255,7 @@ namespace MbitGate.views
             return Visibility.Hidden;
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[]   targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

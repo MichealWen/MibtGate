@@ -196,6 +196,8 @@ namespace MbitGate.control
         public static string Searching = Application.Current.Resources["Searching"].ToString();
         public static string SearchTimeEnd = Application.Current.Resources["SearchTimeEnd"].ToString();
         public static string GetVersion = Application.Current.Resources["GetVersion"].ToString();
+        public static string CorrelationLow = Application.Current.Resources["CorrelationLow"].ToString();
+        public static string CorrelationHigh = Application.Current.Resources["CorrelationHigh"].ToString();
     }
 
     public class GateType
