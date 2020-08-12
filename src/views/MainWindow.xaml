@@ -19,7 +19,8 @@
                 <local:MultiRevertCheckedVisibilityConverter x:Key="MultiRevertCheckedVisibilityConverter"/>
                 <local:RevertVisibilityConverter x:Key="RevertVisibilityConverter"/>
                 <local:CheckedVisibilityConverter x:Key="CheckedVisibilityConverter"/>
-                <local:CheckedMultiVisibilityConverter  x:Key="CheckedMultiVisibilityConverter"/>
+                <local:AndCheckedMultiVisibilityConverter  x:Key="AndCheckedMultiVisibilityConverter"/>
+                <local:OrCheckedMultiVisibilityConverter  x:Key="OrCheckedMultiVisibilityConverter"/>
                 <local:SearchModelVisibilityConverter x:Key="SearchModelVisibilityConverter"/>
             </ResourceDictionary>
         </Grid.Resources>
@@ -105,7 +106,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <StackPanel.Visibility>
-                        <MultiBinding Converter="{StaticResource CheckedMultiVisibilityConverter}">
+                        <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
                             <Binding Path="DelayVisible" />
                             <Binding Path="IsHoldRadarType" />
                         </MultiBinding>
@@ -119,7 +120,7 @@
         <!--<Grid Grid.Row="2" Visibility="{Binding Developer, Converter={StaticResource bool2VisibilityConverter}}">-->
         <Grid Grid.Row="1">
             <Grid.Visibility>
-                <MultiBinding Converter="{StaticResource CheckedMultiVisibilityConverter}">
+                <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
                     <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
                     <Binding Path="Developer"/>
                 </MultiBinding>
@@ -235,7 +236,13 @@
             </DockPanel>
         </Grid>
 
-        <Grid Grid.Row="3" x:Name="ConfigGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
+        <Grid Grid.Row="3" x:Name="ConfigGrid">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource OrCheckedMultiVisibilityConverter}">
+                    <Binding Path="IsChecked" ElementName="ic_tab_config"/>
+                    <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
+                </MultiBinding>
+            </Grid.Visibility>
             <Grid.RowDefinitions>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="30"/>
@@ -248,6 +255,7 @@
                 <Button Content="{StaticResource Reboot}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}"/>
             </StackPanel>
         </Grid>
+        
         <Grid Grid.Row="3"  x:Name="RecordGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="15"/>

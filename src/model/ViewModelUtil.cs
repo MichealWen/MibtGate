@@ -1616,7 +1616,6 @@ namespace MbitGate.model
                 if(param.Length > 6)
                 {
                     standCorrelation = double.Parse(param[2]) + double.Parse(param[5]);
-                    
                 }
                 if (correlation < standCorrelation)
                 {
