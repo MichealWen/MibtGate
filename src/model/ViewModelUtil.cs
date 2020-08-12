@@ -823,6 +823,8 @@ namespace MbitGate.model
 
         public LiveCharts.SeriesCollection BackgroundSeries { get; set; }
 
+        public bool CanCompare { get; set; }
+
         public DateTime CurrentTime { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
@@ -1078,6 +1080,7 @@ namespace MbitGate.model
                                 PointGeometry = LiveCharts.Wpf.DefaultGeometries.Diamond
                             }
             };
+            CanCompare = false;
         }
 
         private void toCancelGetWeakPoints()
@@ -1588,6 +1591,8 @@ namespace MbitGate.model
                 }
                 serial.DataReceivedHandler = null;
                 mutex.Set();
+                CanCompare = (BackgroundBeforePoints.Count > 0 && BackgroundAfterPoints.Count > 0);
+                OnPropertyChanged("CanCompare");
             };
             serial.WriteLine(SerialRadarCommands.Output + " 12");
         }

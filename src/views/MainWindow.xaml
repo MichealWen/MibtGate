@@ -289,7 +289,7 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                 <Button Content="{StaticResource GetBackPoints}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetBackPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncBackPoints}"/>
-                <Button Content="{StaticResource Comparison}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ComparisonCmd}"  ToolTip="{StaticResource FuncBackPoints}"/>
+                <Button Content="{StaticResource Comparison}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ComparisonCmd}"  ToolTip="{StaticResource FuncBackPoints}" IsEnabled="{Binding CanCompare}"/>
             </StackPanel>
         </Grid>
     </Grid>

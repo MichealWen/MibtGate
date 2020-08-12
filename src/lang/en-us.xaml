@@ -146,6 +146,7 @@
 
     <s:String x:Key="CorrelationLow">Correlation Low</s:String>
     <s:String x:Key="CorrelationHigh">Correlation High</s:String>
+    <s:String x:Key="CorrelationError">Can Not Compare</s:String>
     <s:String x:Key="Comparison">Comparison</s:String>
     <s:String x:Key="FuncComparision">Compare With Correlation Value Of Radar</s:String>
     <s:String x:Key="ComparisionIntroduction" xml:space="preserve">Instruction&#x000D;&#x000A;①Click“Get”，Get Range Profile Of Radar&#x000D;&#x000A;②Reelectric Radar，Click“Study”，To Study Again&#x000D;&#x000A;③Click“Get”，Get Range Profile Of Radar Again&#x000D;&#x000A;④Click“Comparison”，Compare The Data Geted</s:String>
