@@ -1567,10 +1567,16 @@ namespace MbitGate.model
             serial.EndStr = SerialRadarReply.Done;
             serial.DataReceivedHandler = msg =>
             {
+                BackgroundAfterPoints.Clear();
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                {
+                    BackgroundSeries[1].Values.Clear();
+                }));
+                afterVals = null;
+
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
                 if(collection.Count > 0)
                 {
-                    BackgroundAfterPoints.Clear();
                     afterVals = new double[collection.Count];
                     for (int index = 0; index < collection.Count - 1; index++)
                     {
@@ -1580,7 +1586,6 @@ namespace MbitGate.model
                     }
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
-                        BackgroundSeries[1].Values.Clear();
                         BackgroundSeries[1].Values.AddRange(BackgroundAfterPoints);
                     }));
                     
@@ -1588,6 +1593,10 @@ namespace MbitGate.model
                     {
                         correlation = Helper.MathHelper.Corrcoef(beforeVals, afterVals);
                     }
+                }
+                else
+                {
+                    ShowConfirmWindow(Tips.CorrelationNoDataError, string.Empty);
                 }
                 serial.DataReceivedHandler = null;
                 mutex.Set();
@@ -1624,10 +1633,10 @@ namespace MbitGate.model
                 }
                 if (correlation < standCorrelation)
                 {
-                    ShowConfirmWindow(Tips.CorrelationLow, string.Empty);
+                    ShowConfirmWindow(Tips.CorrelationLow + "[" + correlation.ToString("F2") + "<" + standCorrelation + "]", string.Empty);
                 }else
                 {
-                    ShowConfirmWindow(Tips.CorrelationHigh, string.Empty);
+                    ShowConfirmWindow(Tips.CorrelationHigh + "[" + correlation.ToString("F2") + ">" + standCorrelation + "]", string.Empty);
                 }
                 mutex.Set();
             };
