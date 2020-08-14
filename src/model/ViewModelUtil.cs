@@ -385,7 +385,7 @@ namespace MbitGate.model
             }));
         }
 
-        protected void ShowConfirmCancelWindow(string title, string message, SimpleCommand confirm = null, SimpleCommand cancel = null)
+        protected void ShowConfirmCancelWindow(string title, string message, Action confirm = null, Action cancel = null)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
             {
@@ -410,7 +410,7 @@ namespace MbitGate.model
                         ExecuteDelegate = async param =>
                         {
                             await _dialogCoordinator.HideMetroDialogAsync(this, _dialog);
-                            confirm.ExecuteDelegate(null);
+                            confirm();
                         }
                     };
                 }
@@ -425,7 +425,7 @@ namespace MbitGate.model
                         ExecuteDelegate = async param =>
                         {
                             await _dialogCoordinator.HideMetroDialogAsync(this, _dialog);
-                            cancel.ExecuteDelegate(null);
+                            cancel();
                         }
                     };
                 }
@@ -1038,22 +1038,6 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    if (BackgroundAfterPoints.Count > 0)
-                    {
-                        BackgroundBeforePoints.Clear();
-                        foreach (var point in BackgroundAfterPoints.AsEnumerable())
-                        {
-                            BackgroundBeforePoints.Add(point);
-                        }
-                        beforeVals = afterVals;
-
-                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                        {
-                            BackgroundSeries[0].Values.Clear();
-                            BackgroundSeries[0].Values.AddRange(BackgroundBeforePoints);
-                        }));
-                    }
-                    
                     SerialWork(() =>ToGetAfterPoints());
                 }
             };
@@ -1568,37 +1552,55 @@ namespace MbitGate.model
             serial.EndStr = SerialRadarReply.Done;
             serial.DataReceivedHandler = msg =>
             {
-                BackgroundAfterPoints.Clear();
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                {
-                    BackgroundSeries[1].Values.Clear();
-                }));
-                afterVals = null;
-
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
                 if(collection.Count > 0)
                 {
-                    afterVals = new List<double>();
-                    int x = 0;
-                    for (int index = 0; index < collection.Count - 1; index++)
-                    {
-                        double y = double.Parse(collection[index].Value);
-                        if(y > 0.00001 || y < -0.00001)
-                        {
-                            BackgroundAfterPoints.Add(new ObservablePoint(x * SampleRate, y));
-                            afterVals.Add(y);
-                            x++;
-                        }
-                    }
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
-                    {
-                        BackgroundSeries[1].Values.AddRange(BackgroundAfterPoints);
-                    }));
-                    
-                    if (beforeVals != null)
-                    {
-                        correlation = Helper.MathHelper.Corrcoef(beforeVals.ToArray(), afterVals.ToArray());
-                    }
+                    ShowConfirmCancelWindow(Tips.ToSaveCorrelationData, string.Empty, 
+                        () => {
+                            if (BackgroundAfterPoints.Count > 0)
+                            {
+                                BackgroundBeforePoints.Clear();
+                                foreach (var point in BackgroundAfterPoints.AsEnumerable())
+                                {
+                                    BackgroundBeforePoints.Add(point);
+                                }
+                                beforeVals = afterVals;
+
+                                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                                {
+                                    BackgroundSeries[0].Values.Clear();
+                                    BackgroundSeries[0].Values.AddRange(BackgroundBeforePoints);
+                                }));
+                            }
+                            BackgroundAfterPoints.Clear();
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                            {
+                                BackgroundSeries[1].Values.Clear();
+                            }));
+                            afterVals = new List<double>();
+                            int x = 0;
+                            for (int index = 0; index < collection.Count - 1; index++)
+                            {
+                                double y = double.Parse(collection[index].Value);
+                                if (y > 0.00001 || y < -0.00001)
+                                {
+                                    BackgroundAfterPoints.Add(new ObservablePoint(x * SampleRate, y));
+                                    afterVals.Add(y);
+                                    x++;
+                                }
+                            }
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                            {
+                                BackgroundSeries[1].Values.AddRange(BackgroundAfterPoints);
+                            }));
+
+                            if (beforeVals != null)
+                            {
+                                correlation = Helper.MathHelper.Corrcoef(beforeVals.ToArray(), afterVals.ToArray());
+                            }
+                            CanCompare = (BackgroundBeforePoints.Count > 0 && BackgroundAfterPoints.Count > 0);
+                            OnPropertyChanged("CanCompare");
+                        });
                 }
                 else
                 {
@@ -1606,8 +1608,6 @@ namespace MbitGate.model
                 }
                 serial.DataReceivedHandler = null;
                 mutex.Set();
-                CanCompare = (BackgroundBeforePoints.Count > 0 && BackgroundAfterPoints.Count > 0);
-                OnPropertyChanged("CanCompare");
             };
             serial.WriteLine(SerialRadarCommands.Output + " 12");
         }
