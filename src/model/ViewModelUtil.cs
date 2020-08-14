@@ -1561,7 +1561,8 @@ namespace MbitGate.model
         const double SampleRate = 0.045;
         double standCorrelation = 0.68;
         double correlation = 0.0;
-        double[] beforeVals = null, afterVals = null;
+        List<double> beforeVals = null; 
+        List<double> afterVals = null;
         private void ToGetAfterPoints()
         {
             serial.EndStr = SerialRadarReply.Done;
@@ -1577,12 +1578,17 @@ namespace MbitGate.model
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
                 if(collection.Count > 0)
                 {
-                    afterVals = new double[collection.Count];
+                    afterVals = new List<double>();
+                    int x = 0;
                     for (int index = 0; index < collection.Count - 1; index++)
                     {
                         double y = double.Parse(collection[index].Value);
-                        BackgroundAfterPoints.Add(new ObservablePoint(index * SampleRate, y));
-                        afterVals[index] = y;
+                        if(y > 0.00001 || y < -0.00001)
+                        {
+                            BackgroundAfterPoints.Add(new ObservablePoint(x * SampleRate, y));
+                            afterVals.Add(y);
+                            x++;
+                        }
                     }
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
@@ -1591,7 +1597,7 @@ namespace MbitGate.model
                     
                     if (beforeVals != null)
                     {
-                        correlation = Helper.MathHelper.Corrcoef(beforeVals, afterVals);
+                        correlation = Helper.MathHelper.Corrcoef(beforeVals.ToArray(), afterVals.ToArray());
                     }
                 }
                 else
