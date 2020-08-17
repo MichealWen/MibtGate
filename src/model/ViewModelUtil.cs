@@ -352,7 +352,6 @@ namespace MbitGate.model
                         }
                     }
                 };
-
                 await _dialogCoordinator.ShowMetroDialogAsync(this, _dialog);
             }));
         }
@@ -844,6 +843,7 @@ namespace MbitGate.model
                 {
                     ExecuteDelegate = param =>
                     {
+                        _progressViewModel.Message = string.Empty;
                         Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                         {
                             if (serial != null)
@@ -1670,6 +1670,7 @@ namespace MbitGate.model
             {
                 if (msg.Contains(SerialRadarReply.StudyEnd) || msg.Contains("end"))
                 {
+                    _progressViewModel.Message = string.Empty;
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                     {
                         await TaskEx.Delay(500);
@@ -1683,13 +1684,16 @@ namespace MbitGate.model
                 }
                 else if (msg.Contains(SerialRadarReply.Done))
                 {
-                    _progressViewModel.Message = Tips.Studying;
                     _progressViewModel.IsIndeterminate = true;
                     _progressViewModel.MaxValue = 100;
                     _progressViewModel.Value = 0;
                     Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                     {
-                        await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
+                        if (!_progressCtrl.IsVisible && _progressViewModel.Message != Tips.Studying)
+                        {
+                            _progressViewModel.Message = Tips.Studying;
+                            await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
+                        }
                     }));
                 }
                 else
