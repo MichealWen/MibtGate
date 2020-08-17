@@ -201,6 +201,8 @@ namespace MbitGate.control
         public static string CorrelationError = Application.Current.Resources["CorrelationError"].ToString();
         public static string CorrelationNoDataError = Application.Current.Resources["CorrelationNoDataError"].ToString();
         public static string ToSaveCorrelationData = Application.Current.Resources["ToSaveCorrelationData"].ToString();
+        public static string ToSaveCorrelationData2 = Application.Current.Resources["ToSaveCorrelationData2"].ToString();
+        public static string ToSaveCorrelationData3 = Application.Current.Resources["ToSaveCorrelationData3"].ToString();
     }
 
     public class GateType

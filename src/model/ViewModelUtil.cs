@@ -1555,7 +1555,20 @@ namespace MbitGate.model
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.\d+");
                 if(collection.Count > 0)
                 {
-                    ShowConfirmCancelWindow(Tips.ToSaveCorrelationData, string.Empty, 
+                    string tip = string.Empty;
+                    if(BackgroundAfterPoints.Count == 0)
+                    {
+                        tip = Tips.ToSaveCorrelationData;
+                    }
+                    else if (BackgroundAfterPoints.Count > 0 && BackgroundBeforePoints.Count == 0)
+                    {
+                        tip = Tips.ToSaveCorrelationData2;
+                    }
+                    else
+                    {
+                        tip = Tips.ToSaveCorrelationData3;
+                    }
+                    ShowConfirmCancelWindow(tip, string.Empty, 
                         () => {
                             if (BackgroundAfterPoints.Count > 0)
                             {
