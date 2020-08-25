@@ -84,7 +84,7 @@
     <s:String x:Key="ParamsError">参数错误</s:String>
     <s:String x:Key="BinPathError">固件路径错误</s:String>
     <s:String x:Key="SerialError">串口错误</s:String>
-    <s:String x:Key="SerialOpenError">串口打开错误</s:String>
+    <s:String x:Key="SerialOpenError">串口打开失败</s:String>
     <s:String x:Key="FileError">文件错误</s:String>
     <s:String x:Key="CANOpenError">CAN口打开错误</s:String>
     <s:String x:Key="RadarError">雷达标号错误</s:String>
@@ -154,4 +154,20 @@
     <s:String x:Key ="ToSaveCorrelationData">获取上次背景学习数据</s:String>
     <s:String x:Key ="ToSaveCorrelationData2">获取当前背景学习数据</s:String>
     <s:String x:Key="ToSaveCorrelationData3">是否清除上上次背景数据，并保存当前背景学习数据</s:String>
+
+    <s:String x:Key="WriteCLICommand">配置命令</s:String>
+    <s:String x:Key="ReadCLIAllCommand">全部参数</s:String>
+    <s:String x:Key="SensorstopCommand">暂停</s:String>
+    <s:String x:Key="CustomCommand">其它命令</s:String>
+
+    <s:String x:Key="WriteCLIRainCommand">雨天配置</s:String>
+    <s:String x:Key="WriteCLIRangeCommand">杆件区域配置</s:String>
+    <s:String x:Key="WorkAnomalousCommand">落杆异常原因</s:String>
+
+    <s:String x:Key="RangeProfileError">距离像检测异常</s:String>
+    <s:String x:Key="PointDataError">点云数据异常</s:String>
+
+    <s:String x:Key="RangeError">杆件区域配置超出范围</s:String>
+
+    <s:String x:Key="ReasonAnomalousSearching">正在查找异常原因&#160;&#160;&#160;&#160;</s:String>
 </ResourceDictionary>

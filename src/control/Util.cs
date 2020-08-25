@@ -203,6 +203,10 @@ namespace MbitGate.control
         public static string ToSaveCorrelationData = Application.Current.Resources["ToSaveCorrelationData"].ToString();
         public static string ToSaveCorrelationData2 = Application.Current.Resources["ToSaveCorrelationData2"].ToString();
         public static string ToSaveCorrelationData3 = Application.Current.Resources["ToSaveCorrelationData3"].ToString();
+        public static string RangeProfileError = Application.Current.Resources["RangeProfileError"].ToString();
+        public static string PointDataError = Application.Current.Resources["PointDataError"].ToString();
+        public static string RangeError = Application.Current.Resources["RangeError"].ToString();
+        public static string ReasonAnomalousSearching = Application.Current.Resources["ReasonAnomalousSearching"].ToString();
     }
 
     public class GateType

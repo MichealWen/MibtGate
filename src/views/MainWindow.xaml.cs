@@ -39,7 +39,7 @@ namespace MbitGate.views
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if(e.OriginalSource is MahApps.Metro.Controls.MetroThumbContentControl)
+                if(e.OriginalSource is MahApps.Metro.Controls.MetroThumbContentControl || e.OriginalSource is System.Windows.Controls.Grid)
                 {
                     this.DragMove();
                 }

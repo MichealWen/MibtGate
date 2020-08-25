@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">Radar RS485_TTL V</s:String>
+    <s:String  x:Key="MainWindowTitle">Radar Config(RS485_TTL) V</s:String>
     <s:String  x:Key="SerialModelTitle">Update</s:String>
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
@@ -84,7 +84,7 @@
     <s:String x:Key="ParamsError">Parameters Error</s:String>
     <s:String x:Key="BinPathError">Bint Path Error</s:String>
     <s:String x:Key="SerialError">Serial Error</s:String>
-    <s:String x:Key="SerialOpenError">Serial Open Error</s:String>
+    <s:String x:Key="SerialOpenError">Serial Open Fail</s:String>
     <s:String x:Key="FileError">File Error</s:String>
     <s:String x:Key="CANOpenError">CAN Open Error</s:String>
     <s:String x:Key="RadarError">Radar Error</s:String>
@@ -154,4 +154,20 @@
     <s:String x:Key ="ToSaveCorrelationData">Save Current Data?</s:String>
     <s:String x:Key ="ToSaveCorrelationData2">Save Current Data?</s:String>
     <s:String x:Key="ToSaveCorrelationData3">Save Current Data(Clear Previous Data)?</s:String>
+
+    <s:String x:Key="WriteCLICommand">Write CLI</s:String>
+    <s:String x:Key="ReadCLIAllCommand">All Config</s:String>
+    <s:String x:Key="SensorstopCommand">SensorStop</s:String>
+    <s:String x:Key="CustomCommand">Command</s:String>
+    
+    <s:String x:Key="WriteCLIRainCommand">Rain Config</s:String>
+    <s:String x:Key="WriteCLIRangeCommand">Rod Region Config</s:String>
+    <s:String x:Key="WorkAnomalousCommand">Get Anomalous Reason</s:String>
+
+    <s:String x:Key="RangeProfileError">Range Profile Error</s:String>
+    <s:String x:Key="PointDataError">Point Data Error</s:String>
+
+    <s:String x:Key="RangeError">Rod Region Should Between </s:String>
+
+    <s:String x:Key="ReasonAnomalousSearching">Anomalous Reason Searching&#160;&#160;&#160;&#160;</s:String>
 </ResourceDictionary>

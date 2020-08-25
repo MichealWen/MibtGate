@@ -122,6 +122,47 @@
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
                     <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
+                    <Binding Path="Root"/>
+                </MultiBinding>
+            </Grid.Visibility>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100*"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="100*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="188,0">
+                <TextBlock Text="{StaticResource Threshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,30,0"/>
+                <TextBox x:Name="Thresold" Text="{Binding Threshold}" Width="280" FontFamily="Microsoft YaHei"  FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" >
+                <TextBox Text="{Binding  WriteCLICommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                <Button Content="{StaticResource WriteCLICommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLICommand}" BorderBrush="#02a8f3"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center" >
+                <TextBox Text="{Binding  CustomCommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                <Button Content="{StaticResource CustomCommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding CustomCommand}" BorderBrush="#02a8f3"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Center" Margin="188,0">
+                <Button Content="{StaticResource ReadCLIAllCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding ReadCLIAllCommand}" BorderBrush="#02a8f3"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="10" HorizontalAlignment="Center" Margin="188,0">
+                <Button Content="{StaticResource SensorstopCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding SensorstopCommand}" BorderBrush="#02a8f3"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
+                    <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
                     <Binding Path="Developer"/>
                 </MultiBinding>
             </Grid.Visibility>
@@ -135,21 +176,18 @@
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Version}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="Version" Text="{Binding Version}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" IsReadOnly="True"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" >
+                <TextBox Text="{Binding  WriteCLIRangeCommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                <Button Content="{StaticResource WriteCLIRangeCommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLIRangeCommand}" BorderBrush="#02a8f3"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Threshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="Thresold" Text="{Binding Threshold}" Width="200" FontFamily="Microsoft YaHei"  FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <!--<TextBlock Text="{StaticResource Unit}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>-->
+                <Button Content="{StaticResource WorkAnomalousCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding WorkAnomalousCommand}" BorderBrush="#02a8f3"/>
             </StackPanel>
-            <!--<StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Delay}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="Delay" Text="{Binding Delay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <TextBlock Text="{StaticResource Unit}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </StackPanel>-->
+            <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center" Margin="188,0">
+                <Button Content="{StaticResource WriteCLIRainCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLIRainCommand}" BorderBrush="#02a8f3"/>
+            </StackPanel>
         </Grid>
+        
         <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_update, Converter={StaticResource CheckedVisibilityConverter}}">
         <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
             <Grid.RowDefinitions>
@@ -170,7 +208,7 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
-        <!--<Grid Grid.Row="2" Visibility="Visible">-->
+        <!--<Grid Grid.Row="2" Visibility="Hidden">-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*"/>
                 <RowDefinition Height="30"/>
