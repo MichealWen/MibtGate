@@ -33,7 +33,7 @@
     <s:String  x:Key="UnitS">秒</s:String>
     <s:String  x:Key="Get">获取</s:String>
     <s:String  x:Key="Set">重设</s:String>
-    <s:String  x:Key="Default">默认</s:String>
+    <s:String  x:Key="Default">出厂设置</s:String>
     <s:String  x:Key="Password">密码</s:String>
     <s:String  x:Key="Verify">验证</s:String>
     <s:String x:Key="Study">自学习</s:String>

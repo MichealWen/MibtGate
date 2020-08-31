@@ -149,7 +149,7 @@ namespace MbitGate.control
     {
         public const string Error = "[Error]";
         public static string ParamError = Application.Current.Resources["ParamsError"].ToString();
-        public static string BinPathError = Application.Current.Resources["ParamsError"].ToString();
+        public static string BinPathError = Application.Current.Resources["BinPathError"].ToString();
         public static string SerialError = Application.Current.Resources["SerialError"].ToString();
         public static string SerialOpenError = Application.Current.Resources["SerialOpenError"].ToString();
         public static string FileError = Application.Current.Resources["FileError"].ToString();

@@ -19,7 +19,7 @@
         <Border Grid.Row="0" Background="#EFEFEF"/>
         <TextBlock FontSize="16" Foreground="#333333" Grid.Row="0" Style="{StaticResource STYLE_CONFIGVIEWTITLE}" Text="{Binding Title}" FontWeight="Bold"/>
         <ScrollViewer Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalScrollBarVisibility="Auto">
-            <TextBlock FontSize="15" Foreground="#666666" TextWrapping="Wrap" Text="{Binding Message}" />
+            <TextBox FontSize="15" Foreground="#666666" TextWrapping="Wrap" Text="{Binding Message}" BorderThickness="0" IsReadOnly="True"/>
         </ScrollViewer>
         <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" >
             <Button Content="{DynamicResource Confirm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding Confirm}"/>

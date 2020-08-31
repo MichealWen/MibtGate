@@ -1557,7 +1557,7 @@ namespace MbitGate.model
                 RemovedWeakPoints.Clear();
                 if (msg.Contains(SerialRadarReply.Done))
                 {
-                    var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.？\d*");
+                    var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
                     for(int i=0; i<collection.Count; i+=2)
                     {
                         RemovedWeakPoints.Add(new ObservablePoint(double.Parse(collection[i].Value), double.Parse(collection[i+1].Value)));
@@ -1924,7 +1924,7 @@ namespace MbitGate.model
             serial.EndStr = SerialRadarReply.Done;
             serial.DataReceivedHandler = msg =>
             {
-                var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.？\d*");
+                var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
                 if(collection.Count > 0)
                 {
                     string tip = string.Empty;
@@ -2002,7 +2002,7 @@ namespace MbitGate.model
             serial.DataReceivedHandler = msg =>
             {
                 BackgroundBeforePoints.Clear();
-                var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+.？\d*");
+                var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
 
                 for(int index =0; index<collection.Count-1; index++)
                 {
@@ -2105,81 +2105,34 @@ namespace MbitGate.model
 
         private void ToReset()
         {
-            string lastOperation = SerialRadarCommands.SensorStop;
+            string lastOperation = SerialRadarCommands.Output;
             serial.DataReceivedHandler =async msg =>
             {
-                if (msg.Contains(SerialRadarReply.Done))
+                if (msg.Contains(SerialRadarReply.Start))
                 {
-                    if (lastOperation == SerialRadarCommands.SensorStop)
+                    if (lastOperation == SerialRadarCommands.Output)
                     {
-                        lastOperation = SerialRadarCommands.WriteCLI;
-                        await TaskEx.Delay(300);
-                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 5 2 2 30 5 32 0 0 0");
-                    }
-                    else if (lastOperation == SerialRadarCommands.WriteCLI)
-                    {
-                        LRange = "0.5";
-                        Distance = "3";
-                        RRange = "0.5";
-                        Gate = control.GateType.Straight;
-                        Threshold = control.ThresholdType.High;
-                        Record = control.RecordKind.Ignore;
-                        OnPropertyChanged("LRange");
-                        OnPropertyChanged("Distance");
-                        OnPropertyChanged("RRange");
-                        OnPropertyChanged("Gate");
-                        OnPropertyChanged("Threshold");
-                        OnPropertyChanged("Record");
-                        mutex.Set();
-                        if (DelayVisible)
-                        {
-                            SerialWork(() => ToSetDelay(true));
-                        }
-                        else
-                        {
-                            serial.EndStr = SerialRadarReply.Start;
-                            serial.WriteLine(SerialRadarCommands.SoftReset);
-                        }
-                    }
-                }
-                else if (msg.Contains(SerialRadarReply.Error))
-                {
-                    ShowErrorWindow(Tips.ConfigFail);
-                    mutex.Set();
-                }
-                else if(msg.Contains(SerialRadarReply.Start))
-                {
-                    ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
-                }
-            };
-            serial.WriteLine(SerialRadarCommands.SensorStop);
-        }
-
-        private void ToGet()
-        {
-            string lastOperation = SerialRadarCommands.ReadCLI;
-            serial.DataReceivedHandler = msg =>
-            {
-                if (msg.Contains(SerialRadarReply.Done))
-                {
-                    if (lastOperation == SerialRadarCommands.SensorStop)
-                    {
+                        serial.EndStr = SerialRadarReply.Done;
                         lastOperation = SerialRadarCommands.ReadCLI;
+                        await TaskEx.Delay(300);  
                         serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
                     }
-                    else if (lastOperation == SerialRadarCommands.ReadCLI)
+                }
+                else if(msg.Contains(SerialRadarReply.Done))
+                {
+                    if (lastOperation == SerialRadarCommands.ReadCLI)
                     {
-                        string[] result = msg.Split(new char[] { ' ', '\n', '\r' });
-                        if(result.Length > 11)
+                        var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
+                        if (collection.Count > 10)
                         {
                             try
                             {
-                                LRange = (float.Parse(result[3]) / 10).ToString();
-                                Distance = (float.Parse(result[6]) / 10).ToString();
-                                RRange = (float.Parse(result[7]) / 10).ToString();
-                                Gate = control.GateType.GetType(result[9]);
-                                Threshold = control.ThresholdType.GetType(result[10]);
-                                Record = control.RecordKind.GetType(result[11]);
+                                LRange = (float.Parse(collection[2].Value) / 10).ToString();
+                                Distance = (float.Parse(collection[5].Value) / 10).ToString();
+                                RRange = (float.Parse(collection[6].Value) / 10).ToString();
+                                Gate = control.GateType.GetType(collection[8].Value);
+                                Threshold = control.ThresholdType.GetType(collection[9].Value);
+                                Record = control.RecordKind.GetType(collection[10].Value);
                                 OnPropertyChanged("LRange");
                                 OnPropertyChanged("Distance");
                                 OnPropertyChanged("RRange");
@@ -2196,6 +2149,68 @@ namespace MbitGate.model
                                 return;
                             }
                             catch (Exception)
+                            {
+                            }
+                        }
+                        ShowErrorWindow(Tips.GetFail);
+                        mutex.Set();
+                    }
+                }
+                else if (msg.Contains(SerialRadarReply.Error))
+                {
+                    ShowErrorWindow(Tips.ConfigFail);
+                    mutex.Set();
+                }
+                else if(msg.Contains(SerialRadarReply.Start))
+                {
+                    ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
+                }
+            };
+            serial.EndStr = SerialRadarReply.Start;
+            serial.WriteLine(SerialRadarCommands.Output + " 13");
+        }
+
+        private void ToGet()
+        {
+            string lastOperation = SerialRadarCommands.ReadCLI;
+            serial.DataReceivedHandler = msg =>
+            {
+                if (msg.Contains(SerialRadarReply.Done))
+                {
+                    if (lastOperation == SerialRadarCommands.SensorStop)
+                    {
+                        lastOperation = SerialRadarCommands.ReadCLI;
+                        serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
+                    }
+                    else if (lastOperation == SerialRadarCommands.ReadCLI)
+                    {
+                        var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
+                        if (collection.Count > 10)
+                        {
+                            try
+                            {
+                                LRange = (float.Parse(collection[2].Value) / 10).ToString();
+                                Distance = (float.Parse(collection[5].Value) / 10).ToString();
+                                RRange = (float.Parse(collection[6].Value) / 10).ToString();
+                                Gate = control.GateType.GetType(collection[8].Value);
+                                Threshold = control.ThresholdType.GetType(collection[9].Value);
+                                Record = control.RecordKind.GetType(collection[10].Value);
+                                OnPropertyChanged("LRange");
+                                OnPropertyChanged("Distance");
+                                OnPropertyChanged("RRange");
+                                OnPropertyChanged("Gate");
+                                OnPropertyChanged("Threshold");
+                                OnPropertyChanged("Record");
+
+                                mutex.Set();
+                                Thread.Sleep(500);
+                                if (DelayVisible)
+                                {
+                                    SerialWork(() => ToGetDelay());
+                                }
+                                return;
+                            }
+                            catch (Exception ex)
                             {
                             }
                         }
@@ -2386,6 +2401,11 @@ namespace MbitGate.model
         const int ignorePreByteSize = 8;
         protected override void ToDo()
         {
+            if(BinPath == "" || !BinPath.Contains('\\'))
+            {
+                ShowErrorWindow(ErrorString.BinPathError);
+                return;
+            }
             SerialWork(() =>
             {
                 string lastMessage = string.Empty;
