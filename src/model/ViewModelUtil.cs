@@ -2477,11 +2477,16 @@ namespace MbitGate.model
                                         break;
                                     case SerialRadarCommands.WriteCLI:
                                         await TaskEx.Delay(500);
-                                        lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
+                                        //lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
                                         _progressViewModel.Message = Tips.WaitForOpen;
                                         serial.CompareEndString = false;
                                         serial.Type = SerialReceiveType.Bytes;
                                         serial.WriteLine(SerialRadarCommands.SoftReset);
+                                        await TaskEx.Delay(500);
+                                        lastOperation = SerialRadarCommands.FlashErase;
+                                        _progressViewModel.Message = Tips.Flashing;
+                                        serial.Rate = int.Parse(BauRate.Rate115200);
+                                        serial.Write(new byte[] { 0x01, 0xCD });
                                         break;
                                 }
                             }
@@ -2567,7 +2572,7 @@ namespace MbitGate.model
                                             serial.Write(new byte[] { 0x01, 0xCD });
                                             break;
                                         case SerialRadarCommands.FlashErase:
-                                            if(data[0] == 0x11 && data[1] == 0xCD)
+                                            if(data[data.Length-2] == 0x11 && data[data.Length-1] == 0xCD)
                                             {
                                                 await TaskEx.Delay(500);
                                                 lastOperation = SerialRadarCommands.BootLoader;
