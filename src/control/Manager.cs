@@ -162,7 +162,7 @@ namespace MbitGate.control
             _serial.DataBits = 8;
             _serial.StopBits = System.IO.Ports.StopBits.One;
             _serial.Parity = System.IO.Ports.Parity.None;
-            _serial.DtrEnable = false;
+            _serial.DtrEnable = true;
             _serial.RtsEnable = false;
             _serial.ReceivedBytesThreshold = 2;
             _serial.ReadTimeout = 1000;
@@ -184,7 +184,7 @@ namespace MbitGate.control
             _serial.DataBits = 8;
             _serial.StopBits = System.IO.Ports.StopBits.One;
             _serial.Parity = System.IO.Ports.Parity.None;
-            _serial.DtrEnable = false;
+            _serial.DtrEnable = true;
             _serial.RtsEnable = false;
             _serial.ReceivedBytesThreshold = 2;
             _serial.ReadTimeout = 1000;

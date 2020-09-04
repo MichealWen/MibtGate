@@ -38,7 +38,7 @@ namespace Helper
         {
             double xy = 0, x = 0, y = 0, xsum = 0, ysum = 0;
             double corrc;
-            int m = d1.Length;
+            int m = d1.Length > d2.Length?d2.Length:d1.Length;
             for(int i=0;i<m;i++)
             {
                 xsum += d1[i];
