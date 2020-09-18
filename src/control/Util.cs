@@ -161,6 +161,7 @@ namespace MbitGate.control
         public static string SmallVersion = Application.Current.Resources["SmallVersion"].ToString();
         public static string OverTime = Application.Current.Resources["OverTime"].ToString();
         public static string DelayError = Application.Current.Resources["DelayError"].ToString();
+        internal static string ConnectError = Application.Current.Resources["ConnectError"].ToString();
     }
 
     public class Tips

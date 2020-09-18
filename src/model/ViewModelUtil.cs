@@ -1768,10 +1768,11 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.ParamError);
                 return;
             }
-            if (serial == null)
+            if(serial != null)
             {
-                serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
+                serial.close();
             }
+            serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
             serial.PortName = GetSerialPortName(ConfigModel.CustomItem);
             serial.Rate = (int)ConfigModel.CustomRate;
             if (serial.IsOpen)
@@ -1781,12 +1782,19 @@ namespace MbitGate.model
                 ShowErrorWindow(ErrorString.SerialOpenError);
                 return;
             }
-            if (_settingView.IsVisible)
-            {
-                _dialogCoordinator.HideMetroDialogAsync(this, _settingView);
-            }
 
-            SerialWork(() => ToGetVer(()=> { SerialWork(() => JudgeRadarType()); }), false);
+            SerialWork(() => ToGetVer(()=> { 
+                SerialWork(() => JudgeRadarType());
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () =>
+                {
+                    if (_settingView.IsVisible)
+                    {
+                        await _dialogCoordinator.HideMetroDialogAsync(this, _settingView);
+                    }
+                }));
+            }), false, 1000, ()=> {
+                ShowErrorWindow(ErrorString.ConnectError);
+            });
 
             if (ConfigModel.SelectedRadarType == Application.Current.Resources["RadarTriggerType"].ToString())
             {
@@ -1796,7 +1804,7 @@ namespace MbitGate.model
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
-        private async void SerialWork(Action towork, bool toShowOverTimeTip = true, int waitmillionseoconds = 3000)
+        private async void SerialWork(Action towork, bool toShowOverTimeTip = true, int waitmillionseoconds = 3000, Action overTimeToDo=null)
         {
             if (serial != null)
             {
@@ -1817,6 +1825,10 @@ namespace MbitGate.model
                     {
                         if(toShowOverTimeTip)
                             ShowErrorWindow(ErrorString.OverTime);
+                        if(overTimeToDo != null)
+                        {
+                            overTimeToDo();
+                        }
                     }
                     mutex.Reset();
                 });
@@ -2313,19 +2325,23 @@ namespace MbitGate.model
         {
             serial.DataReceivedHandler = msg =>
             {
-                Version = msg.Substring(0, msg.IndexOf("Done")).Trim('\r', '\n');
-                if(compareVersion2("1.1.1"))
+                if(msg.Contains("ITS"))
                 {
-                    DelayVisible = true;
-                }else
-                {
-                    DelayVisible = false;
+                    Version = msg.Substring(0, msg.IndexOf("Done")).Trim('\r', '\n');
+                    if (compareVersion2("1.1.1"))
+                    {
+                        DelayVisible = true;
+                    }
+                    else
+                    {
+                        DelayVisible = false;
+                    }
+                    OnPropertyChanged("Version");
+                    OnPropertyChanged("DelayVisible");
+                    mutex.Set();
+                    if (proceedToDo != null)
+                        proceedToDo();
                 }
-                OnPropertyChanged("Version");
-                OnPropertyChanged("DelayVisible");
-                mutex.Set();
-                if (proceedToDo != null)
-                    proceedToDo();
             };
             serial.WriteLine(SerialRadarCommands.Version);
         }
