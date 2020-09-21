@@ -1762,7 +1762,7 @@ namespace MbitGate.model
             {
                 ShowErrorWindow(ErrorString.SerialError);
                 return;
-            }
+            } 
             else if (ConfigModel.CustomRate == 0)
             {
                 ShowErrorWindow(ErrorString.ParamError);
@@ -2323,26 +2323,33 @@ namespace MbitGate.model
 
         private void ToGetVer(Action proceedToDo= null)
         {
+            string lastoperation = string.Empty;
             serial.DataReceivedHandler = msg =>
             {
-                if(msg.Contains("ITS"))
+                if(lastoperation == SerialRadarCommands.Version)
                 {
-                    Version = msg.Substring(0, msg.IndexOf("Done")).Trim('\r', '\n');
-                    if (compareVersion2("1.1.1"))
+                    if (msg.Contains("ITS"))
                     {
-                        DelayVisible = true;
+                        Version = msg.Substring(0, msg.IndexOf("Done")).Trim('\r', '\n');
+                        if (compareVersion2("1.1.1"))
+                        {
+                            DelayVisible = true;
+                        }
+                        else
+                        {
+                            DelayVisible = false;
+                        }
+                        OnPropertyChanged("Version");
+                        OnPropertyChanged("DelayVisible");
+                        mutex.Set();
+                        if (proceedToDo != null)
+                            proceedToDo();
                     }
-                    else
-                    {
-                        DelayVisible = false;
-                    }
-                    OnPropertyChanged("Version");
-                    OnPropertyChanged("DelayVisible");
-                    mutex.Set();
-                    if (proceedToDo != null)
-                        proceedToDo();
                 }
             };
+            serial.WriteLine(SerialRadarCommands.Version);
+            Thread.Sleep(1000);
+            lastoperation = SerialRadarCommands.Version;
             serial.WriteLine(SerialRadarCommands.Version);
         }
 
