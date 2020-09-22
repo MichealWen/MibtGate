@@ -23,7 +23,8 @@
     <s:String  x:Key="Fail">固件刷写失败</s:String>
     <s:String  x:Key="Config">配置</s:String>
     <s:String  x:Key="Baud">波特率</s:String>
-    <s:String  x:Key="Distance">&#160;&#160;&#160;作用距离</s:String>
+    <s:String  x:Key="FrontMaxDistance">最大前距离</s:String>
+    <s:String x:Key="FrontMinDistance">最小前距离</s:String>
     <s:String  x:Key="LRange">作用左范围</s:String>
     <s:String  x:Key="RRange">作用右范围</s:String>
     <s:String  x:Key="Position">杆位置</s:String>
@@ -88,7 +89,8 @@
     <s:String x:Key="FileError">文件错误</s:String>
     <s:String x:Key="CANOpenError">CAN口打开错误</s:String>
     <s:String x:Key="RadarError">雷达标号错误</s:String>
-    <s:String x:Key="DisntacneError">作用距离1~6米</s:String>
+    <s:String x:Key="DistacneMaxError">作用最大前向距离1~6米</s:String>
+    <s:String x:Key="DistacneMinError">作用最小前向距离0.2~1米</s:String>
     <s:String x:Key="RangeError1">左右范围0.4~1米</s:String>
     <s:String x:Key="RangeError2">左右范围0.7~1米</s:String>
     <s:String x:Key="DelayError">延时时间区间3~300秒</s:String>

@@ -789,7 +789,8 @@ namespace MbitGate.model
 
         private SettingView _settingView = null;
         PasswordView _pwdView = null;
-        public string Distance { get; set; }
+        public string MaxDistance { get; set; }
+        public string MinDistance { get; set; }
         public string LRange { get; set; }
         public string RRange { get; set; }
 
@@ -1299,13 +1300,15 @@ namespace MbitGate.model
                                          double lrange = double.Parse(result[3]) / 10;
                                          double rrange = double.Parse(result[7]) / 10;
                                          LRange = lrange.ToString();
-                                         Distance = (float.Parse(result[6]) / 10).ToString();
+                                         MinDistance = (float.Parse(result[4]) / 10).ToString();
+                                         MaxDistance = (float.Parse(result[6]) / 10).ToString();
                                          RRange = rrange.ToString();
                                          Gate = control.GateType.GetType(result[9]);
                                          Threshold = control.ThresholdType.GetType(result[10]);
                                          Record = control.RecordKind.GetType(result[11]);
                                          OnPropertyChanged("LRange");
-                                         OnPropertyChanged("Distance");
+                                         OnPropertyChanged("MinDistance");
+                                         OnPropertyChanged("MaxDistance");
                                          OnPropertyChanged("RRange");
                                          OnPropertyChanged("Gate");
                                          OnPropertyChanged("Threshold");
@@ -2140,13 +2143,15 @@ namespace MbitGate.model
                             try
                             {
                                 LRange = (float.Parse(collection[2].Value) / 10).ToString();
-                                Distance = (float.Parse(collection[5].Value) / 10).ToString();
+                                MinDistance = (float.Parse(collection[3].Value) / 10).ToString();
+                                MaxDistance = (float.Parse(collection[5].Value) / 10).ToString();
                                 RRange = (float.Parse(collection[6].Value) / 10).ToString();
                                 Gate = control.GateType.GetType(collection[8].Value);
                                 Threshold = control.ThresholdType.GetType(collection[9].Value);
                                 Record = control.RecordKind.GetType(collection[10].Value);
                                 OnPropertyChanged("LRange");
-                                OnPropertyChanged("Distance");
+                                OnPropertyChanged("MinDistance");
+                                OnPropertyChanged("MaxDistance");
                                 OnPropertyChanged("RRange");
                                 OnPropertyChanged("Gate");
                                 OnPropertyChanged("Threshold");
@@ -2202,13 +2207,15 @@ namespace MbitGate.model
                             try
                             {
                                 LRange = (float.Parse(collection[2].Value) / 10).ToString();
-                                Distance = (float.Parse(collection[5].Value) / 10).ToString();
+                                MinDistance = (float.Parse(collection[3].Value) / 10).ToString();
+                                MaxDistance = (float.Parse(collection[5].Value) / 10).ToString();
                                 RRange = (float.Parse(collection[6].Value) / 10).ToString();
                                 Gate = control.GateType.GetType(collection[8].Value);
                                 Threshold = control.ThresholdType.GetType(collection[9].Value);
                                 Record = control.RecordKind.GetType(collection[10].Value);
                                 OnPropertyChanged("LRange");
-                                OnPropertyChanged("Distance");
+                                OnPropertyChanged("MinDistance");
+                                OnPropertyChanged("MaxDistance");
                                 OnPropertyChanged("RRange");
                                 OnPropertyChanged("Gate");
                                 OnPropertyChanged("Threshold");
@@ -2241,21 +2248,27 @@ namespace MbitGate.model
 
         private void ToSet()
         {
-            float distance = 0.0f, lrange = 0.0f, rrange = 0.0f;
+            float mindistance = 0.0f, maxdistance = 0.0f, lrange = 0.0f, rrange = 0.0f;
             try
             {
-                distance = float.Parse(Distance);
+                mindistance = float.Parse(MinDistance);
+                maxdistance = float.Parse(MaxDistance);
                 lrange = float.Parse(LRange);
                 rrange = float.Parse(RRange);
                 string error = string.Empty;
-                if (distance < 0 || lrange < 0 || rrange < 0)
+                if (maxdistance < 0 || lrange < 0 || rrange < 0)
                 {
                     error = ErrorString.ParamError;
                     throw new Exception(error);
                 }
-                else if (distance > 6.0 || distance < 1.0)
+                else if (maxdistance > 6.0 || maxdistance < 1.0)
                 {
-                    error = ErrorString.DisntacneError;
+                    error = ErrorString.DistacneMaxError;
+                    throw new Exception(error);
+                }
+                else if(mindistance > 1.0 || mindistance < 0.2)
+                {
+                    error = ErrorString.DistacneMinError;
                     throw new Exception(error);
                 }
                 else if(Gate == control.GateType.Straight)
@@ -2291,7 +2304,7 @@ namespace MbitGate.model
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
                         await TaskEx.Delay(300);
-                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (float.Parse(LRange) * 10).ToString("F0") + " 2 2 " + (float.Parse(Distance) * 10).ToString("F0") + " " + (float.Parse(RRange) * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold) + " " + control.RecordKind.GetValue(Record));
+                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (lrange * 10).ToString("F0") + " " + (mindistance * 10).ToString("F0")  + " 2 " + (maxdistance * 10).ToString("F0") + " " + (rrange * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold) + " " + control.RecordKind.GetValue(Record));
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
@@ -2311,6 +2324,7 @@ namespace MbitGate.model
                 else if (msg.Contains(SerialRadarReply.Error))
                 {
                     ShowErrorWindow(Tips.ConfigFail);
+                    serial.DataReceivedHandler = null;
                     mutex.Set();
                 }
                 else if(msg.Contains(SerialRadarReply.Start))

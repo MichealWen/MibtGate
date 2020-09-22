@@ -23,7 +23,8 @@
     <s:String  x:Key="Fail">Flash Fail</s:String>
     <s:String  x:Key="Config">Config</s:String>
     <s:String  x:Key="Baud">Baud</s:String>
-    <s:String  x:Key="Distance">&#160;&#160;&#160;&#160;&#160;&#160;Distance</s:String>
+    <s:String  x:Key="FrontMaxDistance">Front Max Distance</s:String>
+    <s:String x:Key="FrontMinDistance">Front Min Distance</s:String>
     <s:String  x:Key="LRange">Left &#160;&#160;Range</s:String>
     <s:String  x:Key="RRange">Right Range</s:String>
     <s:String  x:Key="Position">Rod Position</s:String>
@@ -88,7 +89,8 @@
     <s:String x:Key="FileError">File Error</s:String>
     <s:String x:Key="CANOpenError">CAN Open Error</s:String>
     <s:String x:Key="RadarError">Radar Error</s:String>
-    <s:String x:Key="DisntacneError">Distance should less than 6 meters</s:String>
+    <s:String x:Key="DistacneMaxError">Max Distance should in[1~ 6] meters</s:String>
+    <s:String x:Key="DistanceMinError">Min Distance should in [0.2~1]meters</s:String>
     <s:String x:Key="RangeError1">Either Side shoule between 0.4 ~1 meter</s:String>
     <s:String x:Key="RangeError2">Either Side shoule between 0.7 ~1 meter</s:String>
     <s:String x:Key="DelayError">Delay Must Between 3~300 Seconds</s:String>

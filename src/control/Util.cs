@@ -155,7 +155,8 @@ namespace MbitGate.control
         public static string FileError = Application.Current.Resources["FileError"].ToString();
         public static string CANOpenError = Application.Current.Resources["CANOpenError"].ToString();
         public static string RadarError = Application.Current.Resources["RadarError"].ToString();
-        public static string DisntacneError = Application.Current.Resources["DisntacneError"].ToString();
+        public static string DistacneMaxError = Application.Current.Resources["DistacneMaxError"].ToString();
+        public static string DistacneMinError = Application.Current.Resources["DistacneMinError"].ToString();
         public static string RangeError1 = Application.Current.Resources["RangeError1"].ToString();
         public static string RangeError2 = Application.Current.Resources["RangeError2"].ToString();
         public static string SmallVersion = Application.Current.Resources["SmallVersion"].ToString();
