@@ -1836,7 +1836,7 @@ namespace MbitGate.model
                     mutex.Reset();
                 });
         }
-        private void ToGetDelay()
+        private void ToGetDelay(string tip)
         {
             string lastOperation = SerialRadarCommands.ReadCLI;
             serial.DataReceivedHandler =async msg =>
@@ -1855,7 +1855,7 @@ namespace MbitGate.model
                         OnPropertyChanged("Delay");
                         await TaskEx.Delay(300);
                         lastOperation = string.Empty;
-                        ShowConfirmWindow(Tips.GetSuccess, string.Empty);
+                        ShowConfirmWindow(tip, string.Empty);
                         mutex.Set();
                         serial.close();
                     }
@@ -2161,26 +2161,28 @@ namespace MbitGate.model
                                 Thread.Sleep(500);
                                 if (DelayVisible)
                                 {
-                                    SerialWork(() => ToGetDelay());
+                                    SerialWork(() => ToGetDelay(Tips.ResetSuccess));
                                 }
+                                if(IsTriggerRadarType)
+                                    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
                                 return;
                             }
                             catch (Exception)
                             {
                             }
                         }
-                        ShowErrorWindow(Tips.GetFail);
+                        ShowErrorWindow(Tips.ResetFail);
                         mutex.Set();
                     }
                 }
                 else if (msg.Contains(SerialRadarReply.Error))
                 {
-                    ShowErrorWindow(Tips.ConfigFail);
+                    ShowErrorWindow(Tips.ResetFail);
                     mutex.Set();
                 }
                 else if(msg.Contains(SerialRadarReply.Start))
                 {
-                    ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
+                    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
                 }
             };
             serial.EndStr = SerialRadarReply.Start;
@@ -2225,8 +2227,10 @@ namespace MbitGate.model
                                 Thread.Sleep(500);
                                 if (DelayVisible)
                                 {
-                                    SerialWork(() => ToGetDelay());
+                                    SerialWork(() => ToGetDelay(Tips.GetSuccess));
                                 }
+                                if(IsTriggerRadarType)
+                                    ShowConfirmWindow(Tips.GetSuccess, string.Empty);
                                 return;
                             }
                             catch (Exception ex)
@@ -2318,6 +2322,8 @@ namespace MbitGate.model
                         {
                             serial.EndStr = SerialRadarReply.Start;
                             serial.WriteLine(SerialRadarCommands.SoftReset);
+                            if(IsTriggerRadarType)
+                                ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
                         }
                     }
                 }

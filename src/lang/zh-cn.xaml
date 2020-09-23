@@ -174,4 +174,6 @@
     <s:String x:Key="ReasonAnomalousSearching">正在查找异常原因&#160;&#160;&#160;&#160;</s:String>
 
     <s:String x:Key="ConnectError">连接异常,请检查线束或选择其它波特率</s:String>
+    <s:String x:Key="TipResetSuccess">恢复出厂设置成功</s:String>
+    <s:String x:Key="TipResetFail">恢复出厂设置失败</s:String>
 </ResourceDictionary>

@@ -209,6 +209,8 @@ namespace MbitGate.control
         public static string PointDataError = Application.Current.Resources["PointDataError"].ToString();
         public static string RangeError = Application.Current.Resources["RangeError"].ToString();
         public static string ReasonAnomalousSearching = Application.Current.Resources["ReasonAnomalousSearching"].ToString();
+        public static string ResetSuccess = Application.Current.Resources["TipResetSuccess"].ToString();
+        public static string ResetFail = Application.Current.Resources["TipResetFail"].ToString();
     }
 
     public class GateType
