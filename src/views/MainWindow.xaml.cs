@@ -126,6 +126,11 @@ namespace MbitGate.views
             ic_tab_alarm.IsChecked = false;
             ic_tab_comparison.IsChecked = true;
         }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            mainVModel?.GetVersionCommand?.Execute(null);
+        }
     }
 
     public class SerialNameConverter : IValueConverter

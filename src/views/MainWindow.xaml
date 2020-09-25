@@ -66,7 +66,7 @@
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 10 0" HorizontalAlignment="Right"/>
+            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 10 0" HorizontalAlignment="Right" MouseDown="TextBlock_MouseDown"/>
         </DockPanel>
 
         <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
@@ -245,7 +245,7 @@
             </Grid.RowDefinitions>
 
             <DockPanel Grid.Row="1" Margin="50 0">
-                <LiveChart:CartesianChart LegendLocation="Bottom" >
+                <LiveChart:CartesianChart LegendLocation="Bottom">
                     <LiveChart:CartesianChart.Series>
                         <LiveChart:ScatterSeries Values="{Binding StrongestWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}" Title="{DynamicResource SeriesStrongestWeakPoints}"/>
                         <LiveChart:ScatterSeries Values="{Binding RemovedWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource SeriesRemovedWeakPoints}"/>
@@ -256,6 +256,9 @@
                     <LiveChart:CartesianChart.AxisY>
                         <LiveChart:Axis MinValue="0"  MaxValue="7"/>
                     </LiveChart:CartesianChart.AxisY>
+                    <!--<LiveChart:CartesianChart.DataTooltip>
+                        <LiveChart:DefaultTooltip SelectionMode="OnlySender" ShowSeries="False"></LiveChart:DefaultTooltip>
+                    </LiveChart:CartesianChart.DataTooltip>-->
                 </LiveChart:CartesianChart>
             </DockPanel>
         </Grid>

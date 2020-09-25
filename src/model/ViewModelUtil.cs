@@ -843,6 +843,8 @@ namespace MbitGate.model
         public ICommand WorkAnomalousCommand { get; set; }
         public ICommand WriteCLIRainCommand { get; set; }
 
+        public ICommand GetVersionCommand { get; set; }
+
         public LiveCharts.SeriesCollection BackgroundSeries { get; set; }
 
         public bool CanCompare { get; set; }
@@ -1150,6 +1152,14 @@ namespace MbitGate.model
                 }
             };
             WriteCLIRangeCommandStr = string.Empty;
+
+            GetVersionCommand = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    SerialWork(() => ToGetVer());
+                }
+            };
     }
 
         private void ToWriteRain()
@@ -1414,9 +1424,10 @@ namespace MbitGate.model
 
         private void ToWriteCustom()
         {
+            _progressViewModel.Message = string.Empty;
             serial.DataReceivedHandler = msg =>
             {
-                _progressViewModel.Message = msg;
+                _progressViewModel.Message += msg;
             };
             serial.WriteLine(CustomCommandStr);
             _progressViewModel.IsIndeterminate = false;
