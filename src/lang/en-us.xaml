@@ -23,8 +23,8 @@
     <s:String  x:Key="Fail">Flash Fail</s:String>
     <s:String  x:Key="Config">Config</s:String>
     <s:String  x:Key="Baud">Baud</s:String>
-    <s:String  x:Key="FrontMaxDistance">Front Max Distance</s:String>
-    <s:String x:Key="FrontMinDistance">Front Min Distance</s:String>
+    <s:String  x:Key="FrontMaxDistance">Front  &#160;&#160;&#160;Max</s:String>
+    <s:String x:Key="FrontMinDistance">Front  &#160;&#160;&#160;Min</s:String>
     <s:String  x:Key="LRange">Left &#160;&#160;Range</s:String>
     <s:String  x:Key="RRange">Right Range</s:String>
     <s:String  x:Key="Position">Rod Position</s:String>
@@ -90,7 +90,7 @@
     <s:String x:Key="CANOpenError">CAN Open Error</s:String>
     <s:String x:Key="RadarError">Radar Error</s:String>
     <s:String x:Key="DistacneMaxError">Max Distance should in[1~ 6] meters</s:String>
-    <s:String x:Key="DistanceMinError">Min Distance should in [0.2~1]meters</s:String>
+    <s:String x:Key="DistacneMinError">Min Distance should in [0.2~1]meters</s:String>
     <s:String x:Key="RangeError1">Either Side shoule between 0.4 ~1 meter</s:String>
     <s:String x:Key="RangeError2">Either Side shoule between 0.7 ~1 meter</s:String>
     <s:String x:Key="DelayError">Delay Must Between 3~300 Seconds</s:String>
@@ -130,8 +130,8 @@
     <s:String x:Key="Down">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Down</s:String>
     <s:String x:Key="UpValue">Dalay:1</s:String>
     <s:String x:Key="DownValue">Dalay:0</s:String>
-    <s:String x:Key="Exception">Exception</s:String>
-    <s:String x:Key="GetVersion">Get Version</s:String>
+    <s:String x:Key="Exception">异常</s:String>
+    <s:String x:Key="GetVersion">正在获取版本号</s:String>
 
     <s:String x:Key="Error">Error</s:String>
     <s:String x:Key="NoImplementation">Not Implementation</s:String>
@@ -172,6 +172,8 @@
     <s:String x:Key="RangeError">Rod Region Should Between </s:String>
 
     <s:String x:Key="ReasonAnomalousSearching">Anomalous Reason Searching&#160;&#160;&#160;&#160;</s:String>
+
+    <s:String x:Key="ConnectError" xml:space="preserve">Connect Fail, Check:&#x000D;&#x000A;&#160;&#160;&#160;&#160;Wires&#x000D;&#x000A;&#160;&#160;&#160;&#160;Baud&#x000D;&#x000A;&#160;&#160;&#160;&#160;UART Occupied</s:String>
     <s:String x:Key="TipResetSuccess">Reset Success</s:String>
     <s:String x:Key="TipResetFail">Reset Fail</s:String>
 </ResourceDictionary>

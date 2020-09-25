@@ -173,7 +173,7 @@
 
     <s:String x:Key="ReasonAnomalousSearching">正在查找异常原因&#160;&#160;&#160;&#160;</s:String>
 
-    <s:String x:Key="ConnectError">连接异常,请检查线束或选择其它波特率</s:String>
+    <s:String x:Key="ConnectError" xml:space="preserve">连接失败,请检查&#x000D;&#x000A;可能原因：&#x000D;&#x000A;&#160;&#160;&#160;&#160;线束问题&#x000D;&#x000A;&#160;&#160;&#160;&#160;波特率错误&#x000D;&#x000A;&#160;&#160;&#160;&#160;其它程序占用串口</s:String>
     <s:String x:Key="TipResetSuccess">恢复出厂设置成功</s:String>
     <s:String x:Key="TipResetFail">恢复出厂设置失败</s:String>
 </ResourceDictionary>
