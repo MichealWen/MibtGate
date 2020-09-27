@@ -2088,6 +2088,7 @@ namespace MbitGate.model
                 }
                 else if (msg.Contains(SerialRadarReply.Done))
                 {
+                    //serial.CompareEndString = false;
                     _progressViewModel.IsIndeterminate = true;
                     _progressViewModel.MaxValue = 100;
                     _progressViewModel.Value = 0;
@@ -2107,10 +2108,11 @@ namespace MbitGate.model
             };
             serial.WriteLine(SerialRadarCommands.Output + " 4");
         }
-        private void ToReboot()
+        private async void ToReboot()
         {
             serial.WriteLine(SerialRadarCommands.SoftReset);
             ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
+            await TaskEx.Delay(500);
             serial.DataReceivedHandler = null;
             mutex.Set();
         }
@@ -2666,9 +2668,15 @@ namespace MbitGate.model
                                                 }
                                                 else
                                                 {
-                                                    dataTmp = reader.ReadBytes(ReadBytesNumber);
-                                                    Array.ForEach<byte>(dataTmp, b => { sum += b; });
-                                                    serial.Write(dataTmp);
+                                                    try
+                                                    {
+                                                        dataTmp = reader.ReadBytes(ReadBytesNumber);
+                                                        Array.ForEach<byte>(dataTmp, b => { sum += b; });
+                                                        serial.Write(dataTmp);
+                                                    }
+                                                    catch (Exception)
+                                                    {
+                                                    }
                                                 }
                                                 pos += ReadBytesNumber;
                                                 _progressViewModel.Value += 1;
