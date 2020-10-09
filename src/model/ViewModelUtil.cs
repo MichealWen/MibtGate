@@ -2519,6 +2519,12 @@ namespace MbitGate.model
                             return;
                         }
                         reader.ReadBytes(ignorePreByteSize);
+                        //不比较版本号
+                        //string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
+                        //if(version.Contains("ITS"))
+                        //{
+                        //    reader.ReadBytes(preByteSizeAdded);
+                        //}
 
                         serial.DataReceivedHandler = async msg =>
                         {
