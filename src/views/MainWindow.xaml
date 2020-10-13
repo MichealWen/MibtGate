@@ -10,7 +10,7 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" Height="450" Width="950" ResizeMode="CanMinimize"
+        Title="{StaticResource MainWindowTitle}" Height="450" Width="980" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" >
     <Grid x:Name="MainWin">
         <Grid.Resources>
@@ -66,7 +66,8 @@
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 10 0" HorizontalAlignment="Right" MouseDown="TextBlock_MouseDown"/>
+            <Image Source="/MbitGate;component/image/log-out.png"  Width="16" Height="16" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown"/>
+            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 5 0" HorizontalAlignment="Right" MouseDown="VersionTextBox_MouseDown"/>
         </DockPanel>
 
         <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">

@@ -365,7 +365,7 @@ namespace MbitGate.model
         }
         protected void ShowErrorWindow(string message)
         {
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
+            Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
             {
                 try
                 {
@@ -845,6 +845,8 @@ namespace MbitGate.model
 
         public ICommand GetVersionCommand { get; set; }
 
+        public ICommand ReLoginCommand { get; set; }
+
         public LiveCharts.SeriesCollection BackgroundSeries { get; set; }
 
         public bool CanCompare { get; set; }
@@ -1160,7 +1162,23 @@ namespace MbitGate.model
                     SerialWork(() => ToGetVer());
                 }
             };
+
+            ReLoginCommand = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    ToRelogin();
+                }
+            };
     }
+
+        private void ToRelogin()
+        {
+            this.Dispose();
+            Application.Current.Dispatcher.Invoke((Action)(()=> {
+                this.start();
+            }));
+        }
 
         private void ToWriteRain()
         {
@@ -1595,7 +1613,7 @@ namespace MbitGate.model
 
         private void toSearch()
         {
-            string lastOperation = SerialRadarCommands.BootLoader;
+            string lastOperation = SerialRadarCommands.SearchTime;
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
             {
                 SearchResult.Clear();
@@ -1623,7 +1641,7 @@ namespace MbitGate.model
                                                                                                                            " " + EndTime.Second);
                             break;
                         case SerialRadarCommands.SearchTime:
-                            lastOperation = SerialRadarCommands.SensorStart;
+                            lastOperation = string.Empty;
                             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(()=> {
                                 lock(SearchResult)
                                 {
@@ -1636,10 +1654,19 @@ namespace MbitGate.model
                                             SearchResult.Add(str);
                                         }
                                     });
+
+                                    if (SearchResult.Count == 0)
+                                    {
+                                        ShowConfirmWindow(Tips.SearchTimeGetNone, string.Empty);
+                                    }
+                                    else
+                                    {
+                                        ShowConfirmWindow(Tips.SearchTimeSuccess, string.Empty);
+                                    }
+                                    serial.DataReceivedHandler = null;
+                                    mutex.Set();
                                 }
                             }));
-                            serial.CompareEndString = false;
-                            serial.WriteLine(SerialRadarCommands.SoftReset);
                             break;
                     }
                 }
@@ -1664,7 +1691,18 @@ namespace MbitGate.model
                     ShowErrorWindow(Tips.SearchTimeFail);
                 }
             };
-            serial.WriteLine(SerialRadarCommands.BootLoader);
+            serial.WriteLine(SerialRadarCommands.SearchTime + " " + StartTime.Year +
+                                                                                                                           " " + StartTime.Month +
+                                                                                                                           " " + StartTime.Day +
+                                                                                                                           " " + StartTime.Hour +
+                                                                                                                           " " + StartTime.Minute +
+                                                                                                                           " " + StartTime.Second +
+                                                                                                                           " " + EndTime.Year +
+                                                                                                                           " " + EndTime.Month +
+                                                                                                                           " " + EndTime.Day +
+                                                                                                                           " " + EndTime.Hour +
+                                                                                                                           " " + EndTime.Minute +
+                                                                                                                           " " + EndTime.Second);
         }
 
         private void toClarTime()
@@ -2512,19 +2550,19 @@ namespace MbitGate.model
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
-                        if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
-                        {
-                            _progressViewModel.Message = ErrorString.SmallVersion;
-                            reader.Close();
-                            return;
-                        }
-                        reader.ReadBytes(ignorePreByteSize);
-                        //不比较版本号
-                        //string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
-                        //if(version.Contains("ITS"))
+                        //if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
                         //{
-                        //    reader.ReadBytes(preByteSizeAdded);
+                        //    _progressViewModel.Message = ErrorString.SmallVersion;
+                        //    reader.Close();
+                        //    return;
                         //}
+                        //reader.ReadBytes(ignorePreByteSize);
+                        //不比较版本号
+                        string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
+                        if (version.Contains("ITS"))
+                        {
+                            reader.ReadBytes(preByteSizeAdded);
+                        }
 
                         serial.DataReceivedHandler = async msg =>
                         {

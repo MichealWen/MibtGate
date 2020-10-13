@@ -100,7 +100,7 @@ namespace MbitGate.control
         public const string GetTIme = "ReadTime";
         public const string SetTime = "setTime";
         public const string ClearTime = "TimeErase";
-        public const string SearchTime = "DalayFilpTime";
+        public const string SearchTime = "RelayFlipTime";
         public const string WriteBaudRate = "commandBaudRate ";
         public const string AlarmOrder0 = "falseAlarmOrder 0";
         public const string AlarmOrder1 = "falseAlarmOrder 1";

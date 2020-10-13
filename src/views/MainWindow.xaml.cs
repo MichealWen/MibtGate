@@ -127,9 +127,14 @@ namespace MbitGate.views
             ic_tab_comparison.IsChecked = true;
         }
 
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void VersionTextBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            mainVModel?.GetVersionCommand?.Execute(null);
+            mainVModel.GetVersionCommand.Execute(null);
+        }
+
+        private void LogoutImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            mainVModel.ReLoginCommand.Execute(null);
         }
     }
 
