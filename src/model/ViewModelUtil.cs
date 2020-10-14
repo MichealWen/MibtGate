@@ -2550,19 +2550,19 @@ namespace MbitGate.model
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
-                        //if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
-                        //{
-                        //    _progressViewModel.Message = ErrorString.SmallVersion;
-                        //    reader.Close();
-                        //    return;
-                        //}
-                        //reader.ReadBytes(ignorePreByteSize);
-                        //不比较版本号
-                        string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
-                        if (version.Contains("ITS"))
+                        if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
                         {
-                            reader.ReadBytes(preByteSizeAdded);
+                            _progressViewModel.Message = ErrorString.SmallVersion;
+                            reader.Close();
+                            return;
                         }
+                        reader.ReadBytes(ignorePreByteSize);
+                        //不比较版本号
+                        //string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
+                        //if (version.Contains("ITS"))
+                        //{
+                        //    reader.ReadBytes(preByteSizeAdded);
+                        //}
 
                         serial.DataReceivedHandler = async msg =>
                         {
