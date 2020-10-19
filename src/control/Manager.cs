@@ -1,8 +1,11 @@
-﻿using System;
+﻿using MbitGate.helper;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 namespace MbitGate.control
 {
@@ -155,6 +158,15 @@ namespace MbitGate.control
     public class SerialManager
     {
         private System.IO.Ports.SerialPort _serial;
+        CommunicateHexProtocolDecoder hexDecoder;
+        CommunicateStringProtocolDecoder stringDecoder;
+        Timer overTimer = null;
+        Timer consumerTimer = null;
+        ConcurrentQueue<byte> ReplayData;
+        string preStrCommand;
+        byte[] preHexCommand;
+        byte repeat;
+        const byte MaxRepeatCount = 3;
         public SerialManager(SerialReceiveType type = SerialReceiveType.Chars)
         {
             _serial = new System.IO.Ports.SerialPort();
@@ -167,14 +179,33 @@ namespace MbitGate.control
             _serial.ReceivedBytesThreshold = 2;
             _serial.ReadTimeout = 1000;
             _serial.DataReceived += OnSerialDataReceived;
+            stringDecoder = new CommunicateStringProtocolDecoder();
+            hexDecoder = new CommunicateHexProtocolDecoder();
+            stringDecoder.NotifyDecodeResult = OnStringResultReach;
+            hexDecoder.NotifyCRCError = OnHexResultCRCFail;
+            hexDecoder.NotifyReplayError = OnHexResultError;
+            hexDecoder.NotifyFullResult = OnHexFullResultReach;
+
             Type = type;
             EndStr = "Done";
             EndBytes = new byte[] { };
             CompareEndString = true;
             CompareEndBytesCount = 1;
+
+            overTimer = new Timer(300);
+            overTimer.Elapsed += OverTimer_Elapsed;
+
+            ReplayData = new ConcurrentQueue<byte>();
+            preStrCommand = null;
+            preHexCommand = null;
+            repeat = 0;
+
+            consumerTimer = new System.Timers.Timer(100);
+            consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
+            consumerTimer.Start();
         }
 
-        public Action<string> DataReceivedHandler { get; set; }
+        public Action<string> StringDataReceivedHandler { get; set; }
         public Action<byte[]> BytesDataReceivedHandler { get; set; }
 
         public SerialManager(string name, SerialReceiveType type = SerialReceiveType.Chars)
@@ -190,18 +221,40 @@ namespace MbitGate.control
             _serial.ReadTimeout = 1000;
             PortName = name;
             _serial.DataReceived += OnSerialDataReceived;
+            stringDecoder = new CommunicateStringProtocolDecoder();
+            hexDecoder = new CommunicateHexProtocolDecoder();
+            stringDecoder.NotifyDecodeResult = OnStringResultReach;
+            hexDecoder.NotifyCRCError = OnHexResultCRCFail;
+            hexDecoder.NotifyReplayError = OnHexResultError;
+            hexDecoder.NotifyFullResult = OnHexFullResultReach;
+
             Type = type;
             EndStr = "Done";
             EndBytes = new byte[] { };
             CompareEndString = true;
             CompareEndBytesCount = 1;
-        }
-        private string _receivedStr = string.Empty;
 
-        public string EndStr { get; set; }
+            overTimer = new Timer(300);
+            overTimer.Elapsed += OverTimer_Elapsed;
+
+            ReplayData = new ConcurrentQueue<byte>();
+            preStrCommand = null;
+            preHexCommand = null;
+            repeat = 0;
+
+            consumerTimer = new System.Timers.Timer(100);
+            consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
+            consumerTimer.Start();
+        }
+
+        public string EndStr { 
+            get=>stringDecoder.CustomFoot; set=>stringDecoder.CustomFoot=value; 
+        }
         public byte[] EndBytes { get; set; }
 
-        public bool CompareEndString { get; set; }
+        public bool CompareEndString { 
+            get=>stringDecoder.CompareEndString; set=>stringDecoder.CompareEndString=value; 
+        }
         public int CompareEndBytesCount { get; set; }
         private void OnSerialDataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
@@ -210,64 +263,96 @@ namespace MbitGate.control
                 switch (Type)
                 {
                     case SerialReceiveType.Bytes:
-                        if (BytesDataReceivedHandler != null)
+                        byte[] data = new byte[_serial.BytesToRead];
+                        _serial.Read(data, 0, data.Length);
+                        foreach (byte val in data)
                         {
-                            try
-                            {
-                                //if(_serial.BytesToRead >= CompareEndBytesCount)
-                                //{
-                                //    byte[] data = new byte[_serial.BytesToRead];
-                                //    _serial.Read(data, 0, data.Length);
-                                //    if (data.Length > 0)
-                                //    {
-                                //        BytesDataReceivedHandler(data);
-                                //    }
-                                //}
-                                byte[] data = new byte[_serial.BytesToRead];
-                                _serial.Read(data, 0, data.Length);
-                                //if (EndBytes.Length > 0)
-                                //    for (int i = (data.Length - EndBytes.Length), j = 0; i < data.Length; i++, j++)
-                                //    {
-                                //        if (data[i] != EndBytes[j])
-                                //            return;
-                                //    }
-                                BytesDataReceivedHandler(data);
-                            }
-                            catch (Exception ex)
-                            {
-                            }
+                            ReplayData.Enqueue(val);
                         }
                         break;
                     case SerialReceiveType.Chars:
-                        if (DataReceivedHandler != null)
-                        {
-                            while (_serial.BytesToRead > 0)
-                            {
-                                _receivedStr += _serial.ReadExisting();
-                                if(CompareEndString)
-                                {
-                                    if (_receivedStr.Contains("Error") || _receivedStr.Contains(EndStr))
-                                    {
-                                        DataReceivedHandler(_receivedStr);
-                                        _receivedStr = string.Empty;
-                                    }
-                                }
-                                else
-                                {
-                                    DataReceivedHandler(_receivedStr);
-                                    _receivedStr = string.Empty;
-                                }
-                            }
-                        }
+                        string content = _serial.ReadExisting();
+                        stringDecoder.Decode(ref content);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                _receivedStr = string.Empty;
             }
         }
 
+        private void ToDecodeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            hexDecoder.Decode(ref ReplayData);
+        }
+
+        private void OverTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+           if(preStrCommand != null)
+            {
+                if(MaxRepeatCount == repeat)
+                {
+                    overTimer.Stop();
+                    preStrCommand = null;
+                    repeat = 0;
+                    StringDataReceivedHandler?.Invoke(ErrorString.Error + ErrorString.OverTime);
+                }
+                else
+                    WriteLine(preStrCommand);
+            }
+           else if(preHexCommand != null)
+            {
+                if (MaxRepeatCount == repeat)
+                {
+                    overTimer.Stop();
+                    preHexCommand = null;
+                    repeat = 0;
+                    preHexCommand[3] = CommunicateHexProtocolDecoder.ERROVERTIME;
+                    BytesDataReceivedHandler?.Invoke(preHexCommand);
+                }
+                else
+                    Write(preHexCommand);
+            }
+            repeat++;
+        }
+
+        private void OnHexFullResultReach(byte[] frame)
+        {
+            preHexCommand = null;
+            overTimer.Stop();
+            repeat = 0;
+            BytesDataReceivedHandler?.Invoke(frame);
+        }
+
+        private void OnHexResultReach(Tuple<byte, byte, ushort, byte[]> data)
+        {
+            preHexCommand = null;
+            overTimer.Stop();
+            repeat = 0;
+            BytesDataReceivedHandler?.Invoke(data.Item4);
+        }
+
+        private void OnHexResultError(byte err)
+        {
+            preHexCommand[3] = err;
+            BytesDataReceivedHandler?.Invoke(preHexCommand);
+            overTimer.Stop();
+            preHexCommand = null;
+            repeat = 0;
+        }
+
+        private void OnHexResultCRCFail()
+        {
+            //overtime to repeat
+        }
+
+        private void OnStringResultReach(string replay)
+        {
+            overTimer.Stop();
+            preStrCommand = null;
+            repeat = 0;
+            StringDataReceivedHandler?.Invoke(replay);
+        }
         public bool IsOpen
         {
             get
@@ -339,13 +424,20 @@ namespace MbitGate.control
 
         public SerialReceiveType Type { get; set; }
 
-        public void WriteLine(string content, int millis = 0)
+        public void WriteLine(string content, int millis = 0, bool toStartTime = true)
         {
             try
             {
+                preStrCommand = content;
                 _serial.DiscardOutBuffer();
                 _serial.WriteLine(content);
                 System.Threading.Thread.Sleep(millis);
+                //if (content == SerialRadarCommands.SoftReset)
+                //    overTimer.Interval = 1000;
+                //else
+                //    overTimer.Interval = 300;
+                if(toStartTime)
+                    overTimer.Start();
             }
             catch (Exception ex)
             {
@@ -357,8 +449,10 @@ namespace MbitGate.control
         {
             try
             {
+                preHexCommand = content;
                 _serial.Write(content, 0, content.Length);
                 System.Threading.Thread.Sleep(millis);
+                overTimer.Start();
             }
             catch (Exception ex)
             {
@@ -377,8 +471,7 @@ namespace MbitGate.control
             {
                 if(_serial != null)
                     _serial.Close();
-                _receivedStr = string.Empty;
-                DataReceivedHandler = null;
+                StringDataReceivedHandler = null;
                 BytesDataReceivedHandler = null;
             }
             catch{ }
