@@ -262,6 +262,8 @@ namespace MbitGate.control
         public bool CompareEndString { 
             get=>stringDecoder.CompareEndString; set=>stringDecoder.CompareEndString=value; 
         }
+
+        public bool DecodeFrame { get; set; }
         public int CompareEndBytesCount { get; set; }
         private void OnSerialDataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
@@ -272,9 +274,16 @@ namespace MbitGate.control
                     case SerialReceiveType.Bytes:
                         byte[] data = new byte[_serial.BytesToRead];
                         _serial.Read(data, 0, data.Length);
-                        foreach (byte val in data)
+                        if(DecodeFrame)
                         {
-                            ReplayData.Enqueue(val);
+                            foreach (byte val in data)
+                            {
+                                ReplayData.Enqueue(val);
+                            }
+                        }
+                        else
+                        {
+                            BytesFrameDataReceivedHandler?.Invoke(data);
                         }
                         break;
                     case SerialReceiveType.Chars:

@@ -865,6 +865,8 @@ namespace MbitGate.model
 
         public Action ExtraOnceWorkToDo { get; set; }
 
+        private bool NewVersion { get; set; }  //version over 1.2.7
+
         public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
         {
             _progressViewModel = new ProgressViewModel()
@@ -2404,6 +2406,14 @@ namespace MbitGate.model
                         if (compareVersion2("1.1.1"))
                         {
                             DelayVisible = true;
+                            if(compareVersion2("1.2.7"))
+                            {
+                                NewVersion = true;
+                            }
+                            else
+                            {
+                                NewVersion = false;
+                            }
                         }
                         else
                         {
@@ -2487,6 +2497,8 @@ namespace MbitGate.model
         }
 
         FileIOManager reader = null;
+        Timer overTimer = null;
+        byte[] dataTmp = null;
         const int preByteSizeAdded = 32;
         const int ignorePreByteSize = 8;
         protected override void ToDo()
@@ -2499,6 +2511,31 @@ namespace MbitGate.model
             SerialWork(() =>
             {
                 string lastMessage = string.Empty;
+                overTimer = new Timer(obj =>
+                {
+                    if (_progressViewModel.Message == Tips.Updating)
+                    {
+                        if (lastMessage == _progressViewModel.Value.ToString())
+                        {
+                            _progressViewModel.Message = ErrorString.OverTime;
+                        }
+                        else
+                        {
+                            lastMessage = _progressViewModel.Value.ToString();
+                        }
+                    }
+                    else
+                    {
+                        if (lastMessage == _progressViewModel.Message)
+                        {
+                            _progressViewModel.Message = ErrorString.OverTime;
+                        }
+                        else
+                        {
+                            lastMessage = _progressViewModel.Message;
+                        }
+                    }
+                }, null, 0, 5000);
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                 {
                     //serial.CompareEndString = false;
@@ -2523,50 +2560,358 @@ namespace MbitGate.model
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
-                        //if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
-                        //{
-                        //    _progressViewModel.Message = ErrorString.SmallVersion;
-                        //    reader.Close();
-                        //    return;
-                        //}
-                        //reader.ReadBytes(ignorePreByteSize);
-                        //不比较版本号
+                        
+                        //通用两种情况，带版本号不带版本号
                         string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
                         if (version.Contains("ITS"))
                         {
-                            reader.ReadBytes(preByteSizeAdded);
+                            if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded-ignorePreByteSize))))
+                            {
+                                _progressViewModel.Message = ErrorString.SmallVersion;
+                                reader.Close();
+                                return;
+                            }
+                            reader.ReadBytes(ignorePreByteSize);
                         }
-
-                        serial.StringDataReceivedHandler = async msg =>
+                        serial.DecodeFrame = NewVersion;
+                        bool toContinue = false;
+                        serial.CompareEndBytesCount = 2;
+                        if (NewVersion)
                         {
-                            if (msg.Contains(SerialRadarReply.Done))
+                            serial.StringDataReceivedHandler = async msg =>
+                            {
+                                if (msg.Contains(SerialRadarReply.Done))
+                                {
+                                    switch (lastOperation)
+                                    {
+                                        case SerialRadarCommands.SensorStop:
+                                            //await TaskEx.Delay(500);
+                                            lastOperation = SerialRadarCommands.WriteCLI;
+                                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                                            break;
+                                        case SerialRadarCommands.WriteCLI:
+                                            await TaskEx.Delay(500);
+                                            lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
+                                            _progressViewModel.Message = Tips.WaitForOpen;
+                                            serial.CompareEndString = false;
+                                            serial.WriteLine(SerialRadarCommands.SoftReset, 2000);
+                                            //await TaskEx.Delay(500);
+                                            //lastOperation = SerialRadarCommands.FlashErase;
+                                            //_progressViewModel.Message = Tips.Flashing;
+                                            //serial.Rate = int.Parse(BauRate.Rate115200);
+                                            //serial.Write(new byte[] { 0x01, 0xCD });
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (msg.Contains(SerialRadarReply.Error))
+                                    {
+                                        _progressViewModel.Message = ErrorString.Error + msg.Trim();
+                                        if (reader != null)
+                                            reader.Close();
+                                        if (serial != null)
+                                        {
+                                            serial.CompareEndString = true;
+                                            serial.Rate = (int)ConfigModel.CustomRate;
+                                            mutex.Set();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (lastOperation == ExtraSerialRadarCommands.SoftInercludeReset)
+                                        {
+                                            lastOperation = SerialRadarCommands.FlashErase;
+                                            serial.Type = SerialReceiveType.Bytes;
+                                            serial.Rate = int.Parse(BauRate.Rate115200);
+                                            serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 5000);
+                                        }
+                                    }
+                                }
+                            };
+                            serial.ErrorReceivedHandler = data =>
+                            {
+                                _progressViewModel.Message = ErrorString.Error + lastOperation + "   0x" + BitConverter.ToString(new byte[] { data });
+                                if (reader != null)
+                                    reader.Close();
+                                if (serial != null)
+                                {
+                                    serial.CompareEndString = true;
+                                    serial.Rate = (int)ConfigModel.CustomRate;
+                                    mutex.Set();
+                                }
+                            };
+                            serial.BytesDecodedDataReceivedHandler = async decodedDataTuple =>
                             {
                                 switch (lastOperation)
                                 {
-                                    case SerialRadarCommands.SensorStop:
+                                    case ExtraSerialRadarCommands.SoftInercludeReset:
                                         //await TaskEx.Delay(500);
-                                        lastOperation = SerialRadarCommands.WriteCLI;
-                                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                                        lastOperation = SerialRadarCommands.FlashErase;
+                                        _progressViewModel.Message = Tips.Flashing;
+                                        serial.Rate = int.Parse(BauRate.Rate115200);
+                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 8000);
                                         break;
-                                    case SerialRadarCommands.WriteCLI:
-                                        await TaskEx.Delay(500);
-                                        lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
-                                        _progressViewModel.Message = Tips.WaitForOpen;
-                                        serial.CompareEndString = false;
-                                        serial.WriteLine(SerialRadarCommands.SoftReset, 2000);
+                                    case SerialRadarCommands.FlashErase:
                                         //await TaskEx.Delay(500);
-                                        //lastOperation = SerialRadarCommands.FlashErase;
-                                        //_progressViewModel.Message = Tips.Flashing;
-                                        //serial.Rate = int.Parse(BauRate.Rate115200);
-                                        //serial.Write(new byte[] { 0x01, 0xCD });
+                                        lastOperation = SerialRadarCommands.BootLoader;
+                                        _progressViewModel.Message = Tips.Updating;
+                                        int times = (int)((reader.Length - preByteSizeAdded - ignorePreByteSize) / 64 + ((reader.Length - preByteSizeAdded - ignorePreByteSize) % 64 == 0 ? 0 : 1));
+                                        byte[] tmp = BitConverter.GetBytes(times);
+                                        _progressViewModel.MaxValue = (uint)times;
+                                        _progressViewModel.Value = 0;
+                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_SIZE, tmp));
+                                        break;
+                                    case SerialRadarCommands.BootLoader:
+                                    case SerialRadarCommands.T:
+                                        //await TaskEx.Delay(1);
+                                        if (lastOperation == SerialRadarCommands.BootLoader)
+                                        {
+                                            toContinue = true;
+                                            _progressViewModel.Message = Tips.Updating;
+                                            _progressViewModel.IsIndeterminate = false;
+                                        }
+                                        if (toContinue)
+                                        {
+                                            lastOperation = SerialRadarCommands.T;
+                                            if ((pos >= reader.Length - 1))
+                                            {
+                                                await TaskEx.Delay(100);
+                                                lastOperation = SerialRadarCommands.CRC;
+                                                serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_REFRESH, new byte[] { }), 8000);
+                                            }
+                                            else
+                                            {
+                                                try
+                                                {
+                                                    byte[] dataTmp = reader.ReadBytes(ReadBytesNumber);
+                                                    Array.ForEach<byte>(dataTmp, b => { sum += b; });
+                                                    byte[] msgData = new byte[dataTmp.Length + 4];
+                                                    Array.Copy(BitConverter.GetBytes(_progressViewModel.Value), msgData, 4);
+                                                    Array.Copy(dataTmp, 0, msgData, 4, dataTmp.Length);
+                                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_POSITION_DATA, msgData));
+                                                }
+                                                catch (Exception)
+                                                {
+                                                }
+                                                pos += ReadBytesNumber;
+                                                _progressViewModel.Value += 1;
+                                            }
+                                        }
+                                        break;
+                                    case SerialRadarCommands.CRC:
+                                        //await TaskEx.Delay(500);
+                                        lastOperation = SerialRadarCommands.SoftReset;
+                                        _progressViewModel.Value = _progressViewModel.MaxValue;
+                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_RESTART, new byte[] { }), 0, false);
+                                        reader.Close();
+                                        break;
+                                    case SerialRadarCommands.SoftReset:
+                                        lastOperation = string.Empty;
+                                        _progressViewModel.Message = Tips.Updated;
+                                        if (serial != null)
+                                        {
+                                            serial.CompareEndString = true;
+                                            serial.Rate = (int)ConfigModel.CustomRate;
+                                        }
+                                        mutex.Set();
+                                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+                                            _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                        }));
+                                        await TaskEx.Delay(1000);
+                                        ShowConfirmWindow(Tips.Updated, string.Empty);
+                                        SerialWork(() => ToGetVer());
                                         break;
                                 }
-                            }
-                            else
+                            };
+                        }
+                        else
+                        {
+                            serial.StringDataReceivedHandler = async msg =>
                             {
-                                if (msg.Contains(SerialRadarReply.Error))
+                                if (msg.Contains(SerialRadarReply.Done))
                                 {
-                                    _progressViewModel.Message = ErrorString.Error + msg.Trim();
+                                    switch (lastOperation)
+                                    {
+                                        case SerialRadarCommands.SensorStop:
+                                            await TaskEx.Delay(1000);
+                                            lastOperation = SerialRadarCommands.WriteCLI;
+                                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1",  300,  false);
+                                            break;
+                                        case SerialRadarCommands.WriteCLI:
+                                            await TaskEx.Delay(500);
+                                            //lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
+                                            _progressViewModel.Message = Tips.WaitForOpen;
+                                            serial.CompareEndString = false;
+                                            serial.Type = SerialReceiveType.Bytes;
+                                            serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
+                                            await TaskEx.Delay(500);
+                                            lastOperation = SerialRadarCommands.FlashErase;
+                                            _progressViewModel.Message = Tips.Flashing;
+                                            serial.Rate = int.Parse(BauRate.Rate115200);
+                                            serial.Write(new byte[] { 0x01, 0xCD }, 300, false);
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (msg.Contains(SerialRadarReply.Error))
+                                    {
+                                        _progressViewModel.Message = ErrorString.Error + msg.Trim();
+                                        if (reader != null)
+                                            reader.Close();
+                                        if (serial != null)
+                                        {
+                                            serial.CompareEndString = true;
+                                            serial.Rate = (int)ConfigModel.CustomRate;
+                                            mutex.Set();
+                                        }
+                                        overTimer.Dispose();
+                                    }
+                                    else if (msg.Contains(SerialRadarReply.NotRecognized))
+                                    {
+                                        switch (lastOperation)
+                                        {
+                                            case SerialRadarCommands.SensorStop:
+                                                serial.WriteLine(SerialRadarCommands.SensorStop, 300, false);
+                                                break;
+                                            case SerialRadarCommands.WriteCLI:
+                                                serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1", 300, false);
+                                                break;
+                                            case ExtraSerialRadarCommands.SoftInercludeReset:
+                                                serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (lastOperation == ExtraSerialRadarCommands.SoftInercludeReset)
+                                        {
+                                            lastOperation = SerialRadarCommands.FlashErase;
+                                            serial.Rate = int.Parse(BauRate.Rate115200);
+                                            serial.Write(new byte[] { 0x01, 0xCD }, 300, false);
+                                        }
+                                    }
+                                }
+                            };
+                            serial.BytesFrameDataReceivedHandler = async data =>
+                            {
+                                if (data.Length > 1)
+                                {
+                                    if (data[0] == 0xEE && data[1] == 0xCD)
+                                    {
+                                        switch (lastOperation)
+                                        {
+                                            case ExtraSerialRadarCommands.SoftInercludeReset:
+                                                serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
+                                                return;
+                                            case SerialRadarCommands.FlashErase:
+                                                serial.Write(new byte[] { 0x01, 0xCD }, 300, false);
+                                                return;
+                                            case SerialRadarCommands.BootLoader:
+                                            case SerialRadarCommands.T:
+                                                serial.Write(dataTmp, 300, false);
+                                                return;
+                                            case SerialRadarCommands.CRC:
+                                                byte[] tmp1 = BitConverter.GetBytes(sum);
+                                                serial.Write(new byte[] { 0x04, 0xCD, tmp1[0], tmp1[1], tmp1[2], tmp1[3] }, 300, false);
+                                                return;
+                                            case SerialRadarCommands.SoftReset:
+                                                serial.Write(new byte[] { 0x05, 0xCD }, 300, false);
+                                                return;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        switch (lastOperation)
+                                        {
+                                            case ExtraSerialRadarCommands.SoftInercludeReset:
+                                                await TaskEx.Delay(500);
+                                                lastOperation = SerialRadarCommands.FlashErase;
+                                                _progressViewModel.Message = Tips.Flashing;
+                                                serial.Rate = int.Parse(BauRate.Rate115200);
+                                                serial.Write(new byte[] { 0x01, 0xCD }, 300, false);
+                                                break;
+                                            case SerialRadarCommands.FlashErase:
+                                                if (data[data.Length - 2] == 0x11 && data[data.Length - 1] == 0xCD)
+                                                {
+                                                    await TaskEx.Delay(500);
+                                                    lastOperation = SerialRadarCommands.BootLoader;
+                                                    _progressViewModel.Message = Tips.Updating;
+                                                    int times = (int)((reader.Length - preByteSizeAdded - ignorePreByteSize) / 64 + ((reader.Length - preByteSizeAdded - ignorePreByteSize) % 64 == 0 ? 0 : 1));
+                                                    byte[] tmp = BitConverter.GetBytes(times);
+                                                    _progressViewModel.MaxValue = (uint)times;
+                                                    _progressViewModel.Value = 0;
+                                                    serial.Write(new byte[] { 0x02, 0xCD, tmp[0], tmp[1], tmp[2], tmp[3] }, 300, false);
+                                                }
+                                                break;
+                                            case SerialRadarCommands.BootLoader:
+                                            case SerialRadarCommands.T:
+                                                await TaskEx.Delay(1);
+                                                if (lastOperation == SerialRadarCommands.BootLoader)
+                                                {
+                                                    if (data[0] == 0x12 && data[1] == 0xCD)
+                                                    {
+                                                        toContinue = true;
+                                                        _progressViewModel.Message = Tips.Updating;
+                                                        _progressViewModel.IsIndeterminate = false;
+                                                    }
+                                                }
+                                                if (toContinue)
+                                                {
+                                                    lastOperation = SerialRadarCommands.T;
+                                                    if ((pos >= reader.Length - 1))
+                                                    {
+                                                        if (data[data.Length - 2] == 0x23 && data[data.Length - 1] == 0xCD)
+                                                        {
+                                                            await TaskEx.Delay(100);
+                                                            lastOperation = SerialRadarCommands.CRC;
+                                                            _progressViewModel.Message = Tips.CRCing;
+                                                            byte[] tmp1 = BitConverter.GetBytes(sum);
+                                                            serial.Write(new byte[] { 0x04, 0xCD, tmp1[0], tmp1[1], tmp1[2], tmp1[3] }, 300, false);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        try
+                                                        {
+                                                            dataTmp = reader.ReadBytes(ReadBytesNumber);
+                                                            Array.ForEach<byte>(dataTmp, b => { sum += b; });
+                                                            serial.Write(dataTmp, 300, false);
+                                                        }
+                                                        catch (Exception)
+                                                        {
+                                                        }
+                                                    }
+                                                    pos += ReadBytesNumber;
+                                                    _progressViewModel.Value += 1;
+                                                }
+                                                break;
+                                            case SerialRadarCommands.CRC:
+                                                await TaskEx.Delay(500);
+                                                lastOperation = SerialRadarCommands.SoftReset;
+                                                _progressViewModel.Value = _progressViewModel.MaxValue;
+                                                _progressViewModel.Message = Tips.WaitForOpen;
+                                                serial.Write(new byte[] { 0x05, 0xCD }, 300, false);
+                                                reader.Close();
+                                                break;
+                                            case SerialRadarCommands.SoftReset:
+                                                _progressViewModel.Message = Tips.Updated;
+                                                if (serial != null)
+                                                {
+                                                    serial.CompareEndString = true;
+                                                    serial.Rate = (int)ConfigModel.CustomRate;
+                                                }
+                                                mutex.Set();
+                                                overTimer.Dispose();
+                                                SerialWork(() => ToResetBaudRate());
+                                                break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    _progressViewModel.Message = Tips.UpdateFail;
                                     if (reader != null)
                                         reader.Close();
                                     if (serial != null)
@@ -2575,117 +2920,10 @@ namespace MbitGate.model
                                         serial.Rate = (int)ConfigModel.CustomRate;
                                         mutex.Set();
                                     }
+                                    overTimer.Dispose();
                                 }
-                                else
-                                {
-                                    if (lastOperation == ExtraSerialRadarCommands.SoftInercludeReset)
-                                    {
-                                        lastOperation = SerialRadarCommands.FlashErase;
-                                        serial.Type = SerialReceiveType.Bytes;
-                                        serial.Rate = int.Parse(BauRate.Rate115200);
-                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 5000);
-                                    }
-                                }
-                            }
-                        };
-                        bool toContinue = false;
-                        serial.CompareEndBytesCount = 2;
-                        serial.ErrorReceivedHandler = data =>
-                        {
-                            _progressViewModel.Message = ErrorString.Error + lastOperation + "   0x" + BitConverter.ToString(new byte[] { data });
-                            if (reader != null)
-                                reader.Close();
-                            if (serial != null)
-                            {
-                                serial.CompareEndString = true;
-                                serial.Rate = (int)ConfigModel.CustomRate;
-                                mutex.Set();
-                            }
-                        };
-                        serial.BytesDecodedDataReceivedHandler = async decodedDataTuple =>
-                        {
-                            switch (lastOperation)
-                            {
-                                case ExtraSerialRadarCommands.SoftInercludeReset:
-                                    //await TaskEx.Delay(500);
-                                    lastOperation = SerialRadarCommands.FlashErase;
-                                    _progressViewModel.Message = Tips.Flashing;
-                                    serial.Rate = int.Parse(BauRate.Rate115200);
-                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 8000);
-                                    break;
-                                case SerialRadarCommands.FlashErase:
-                                    //await TaskEx.Delay(500);
-                                    lastOperation = SerialRadarCommands.BootLoader;
-                                    _progressViewModel.Message = Tips.Updating;
-                                    int times = (int)((reader.Length - preByteSizeAdded - ignorePreByteSize) / 64 + ((reader.Length - preByteSizeAdded - ignorePreByteSize) % 64 == 0 ? 0 : 1));
-                                    byte[] tmp = BitConverter.GetBytes(times);
-                                    _progressViewModel.MaxValue = (uint)times;
-                                    _progressViewModel.Value = 0;
-                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_SIZE, tmp));
-                                    break;
-                                case SerialRadarCommands.BootLoader:
-                                case SerialRadarCommands.T:
-                                    //await TaskEx.Delay(1);
-                                    if (lastOperation == SerialRadarCommands.BootLoader)
-                                    {
-                                        toContinue = true;
-                                        _progressViewModel.Message = Tips.Updating;
-                                        _progressViewModel.IsIndeterminate = false;
-                                    }
-                                    if (toContinue)
-                                    {
-                                        lastOperation = SerialRadarCommands.T;
-                                        if((pos >= reader.Length-1))
-                                        {
-                                            await TaskEx.Delay(100);
-                                            lastOperation = SerialRadarCommands.CRC;
-                                            serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_REFRESH, new byte[] { }), 8000);
-                                        }
-                                        else
-                                        {
-                                            try
-                                            {
-                                                byte[] dataTmp = reader.ReadBytes(ReadBytesNumber);
-                                                Array.ForEach<byte>(dataTmp, b => { sum += b; });
-                                                byte[] msgData = new byte[dataTmp.Length + 4];
-                                                Array.Copy(BitConverter.GetBytes(_progressViewModel.Value), msgData, 4);
-                                                Array.Copy(dataTmp, 0, msgData, 4, dataTmp.Length);
-                                                serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_POSITION_DATA, msgData));
-                                            }
-                                            catch (Exception)
-                                            {
-                                            }
-                                            pos += ReadBytesNumber;
-                                            _progressViewModel.Value += 1;
-                                        }
-                                    }
-                                    break;
-                                case SerialRadarCommands.CRC:
-                                    //await TaskEx.Delay(500);
-                                    lastOperation = SerialRadarCommands.SoftReset;
-                                    _progressViewModel.Value = _progressViewModel.MaxValue;
-                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_RESTART, new byte[] { }), 0, false);
-                                    reader.Close();
-                                    break;
-                                case SerialRadarCommands.SoftReset:
-                                    //lastOperation = string.Empty;
-                                    System.Console.WriteLine("==========" + BitConverter.ToString(decodedDataTuple.Item4));
-                                    _progressViewModel.Message = Tips.Updated;
-                                    if (serial != null)
-                                    {
-                                        serial.CompareEndString = true;
-                                        serial.Rate = (int)ConfigModel.CustomRate;
-                                    }
-                                    mutex.Set();
-                                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(()=> {
-                                        _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
-                                    }));
-                                    await TaskEx.Delay(1000);
-                                    ShowConfirmWindow(Tips.Updated, string.Empty);
-                                    SerialWork(() => ToGetVer());
-                                    break;
-                            }
-                        };
+                            };
+                        }
                         serial.WriteLine(SerialRadarCommands.SensorStop);
                     }
                 }));
