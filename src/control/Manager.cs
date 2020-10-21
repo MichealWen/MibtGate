@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using System.Windows.Controls;
+using HexProtocol = MbitGate.helper.CommunicateHexProtocolDecoder;
 
 namespace MbitGate.control
 {
@@ -165,6 +167,7 @@ namespace MbitGate.control
         ConcurrentQueue<byte> ReplayData;
         string preStrCommand;
         byte[] preHexCommand;
+        int preMilliseconds;
         byte repeat;
         const byte MaxRepeatCount = 3;
         public SerialManager(SerialReceiveType type = SerialReceiveType.Chars)
@@ -184,7 +187,8 @@ namespace MbitGate.control
             stringDecoder.NotifyDecodeResult = OnStringResultReach;
             hexDecoder.NotifyCRCError = OnHexResultCRCFail;
             hexDecoder.NotifyReplayError = OnHexResultError;
-            hexDecoder.NotifyFullResult = OnHexFullResultReach;
+            hexDecoder.NotifyFullResult = OnHexFrameReach;
+            hexDecoder.NotifyDecodeResult = OnHexResultReach;
 
             Type = type;
             EndStr = "Done";
@@ -200,13 +204,15 @@ namespace MbitGate.control
             preHexCommand = null;
             repeat = 0;
 
-            consumerTimer = new System.Timers.Timer(100);
+            consumerTimer = new System.Timers.Timer(5);
             consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
             consumerTimer.Start();
         }
 
         public Action<string> StringDataReceivedHandler { get; set; }
-        public Action<byte[]> BytesDataReceivedHandler { get; set; }
+        public Action<byte[]> BytesFrameDataReceivedHandler { get; set; }
+        public Action<Tuple<byte/*address*/, byte/*error*/, ushort/*function*/, byte[]/*data*/>> BytesDecodedDataReceivedHandler { get; set; }
+        public Action<byte> ErrorReceivedHandler { get; set; }
 
         public SerialManager(string name, SerialReceiveType type = SerialReceiveType.Chars)
         {
@@ -226,7 +232,8 @@ namespace MbitGate.control
             stringDecoder.NotifyDecodeResult = OnStringResultReach;
             hexDecoder.NotifyCRCError = OnHexResultCRCFail;
             hexDecoder.NotifyReplayError = OnHexResultError;
-            hexDecoder.NotifyFullResult = OnHexFullResultReach;
+            hexDecoder.NotifyFullResult = OnHexFrameReach;
+            hexDecoder.NotifyDecodeResult = OnHexResultReach;
 
             Type = type;
             EndStr = "Done";
@@ -242,7 +249,7 @@ namespace MbitGate.control
             preHexCommand = null;
             repeat = 0;
 
-            consumerTimer = new System.Timers.Timer(100);
+            consumerTimer = new System.Timers.Timer(5);
             consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
             consumerTimer.Start();
         }
@@ -298,7 +305,7 @@ namespace MbitGate.control
                     StringDataReceivedHandler?.Invoke(ErrorString.Error + ErrorString.OverTime);
                 }
                 else
-                    WriteLine(preStrCommand);
+                    WriteLine(preStrCommand, preMilliseconds, false);
             }
            else if(preHexCommand != null)
             {
@@ -307,21 +314,20 @@ namespace MbitGate.control
                     overTimer.Stop();
                     preHexCommand = null;
                     repeat = 0;
-                    preHexCommand[3] = CommunicateHexProtocolDecoder.ERROVERTIME;
-                    BytesDataReceivedHandler?.Invoke(preHexCommand);
+                    ErrorReceivedHandler?.Invoke(HexProtocol.ERROVERTIME);
                 }
                 else
-                    Write(preHexCommand);
+                    Write(preHexCommand, preMilliseconds, false);
             }
             repeat++;
         }
 
-        private void OnHexFullResultReach(byte[] frame)
+        private void OnHexFrameReach(byte[] frame)
         {
             preHexCommand = null;
             overTimer.Stop();
             repeat = 0;
-            BytesDataReceivedHandler?.Invoke(frame);
+            BytesFrameDataReceivedHandler?.Invoke(frame);
         }
 
         private void OnHexResultReach(Tuple<byte, byte, ushort, byte[]> data)
@@ -329,16 +335,16 @@ namespace MbitGate.control
             preHexCommand = null;
             overTimer.Stop();
             repeat = 0;
-            BytesDataReceivedHandler?.Invoke(data.Item4);
+            BytesDecodedDataReceivedHandler?.Invoke(data);
         }
 
         private void OnHexResultError(byte err)
         {
-            preHexCommand[3] = err;
-            BytesDataReceivedHandler?.Invoke(preHexCommand);
             overTimer.Stop();
+            preHexCommand[3] = err;
             preHexCommand = null;
             repeat = 0;
+            ErrorReceivedHandler(err);
         }
 
         private void OnHexResultCRCFail()
@@ -424,14 +430,15 @@ namespace MbitGate.control
 
         public SerialReceiveType Type { get; set; }
 
-        public void WriteLine(string content, int millis = 0, bool toStartTime = true)
+        public void WriteLine(string content, int milliseconds = 300, bool toStartTime = true)
         {
             try
             {
                 preStrCommand = content;
+                preMilliseconds = milliseconds;
                 _serial.DiscardOutBuffer();
                 _serial.WriteLine(content);
-                System.Threading.Thread.Sleep(millis);
+                overTimer.Interval = milliseconds;
                 //if (content == SerialRadarCommands.SoftReset)
                 //    overTimer.Interval = 1000;
                 //else
@@ -445,14 +452,16 @@ namespace MbitGate.control
             }
         }
 
-        public void Write(byte[] content, int millis = 0)
+        public void Write(byte[] content, int milliseconds = 300, bool toStartTimer = true)
         {
             try
             {
                 preHexCommand = content;
+                preMilliseconds = milliseconds;
                 _serial.Write(content, 0, content.Length);
-                System.Threading.Thread.Sleep(millis);
-                overTimer.Start();
+                overTimer.Interval = milliseconds;
+                if(toStartTimer)
+                    overTimer.Start();
             }
             catch (Exception ex)
             {
@@ -472,7 +481,7 @@ namespace MbitGate.control
                 if(_serial != null)
                     _serial.Close();
                 StringDataReceivedHandler = null;
-                BytesDataReceivedHandler = null;
+                BytesFrameDataReceivedHandler = null;
             }
             catch{ }
         }

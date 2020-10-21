@@ -282,7 +282,7 @@ namespace MbitGate.model
                 return;
             if (!SelectedFilter.Contains("*.*"))
             {
-                foreach (System.IO.FileInfo directoryinfo in DirectoryInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => SelectedFilter.Split('|')[1].Contains(s.Extension.ToLower())).Where(s => !AvoidedFilePaths.Contains(s.FullName)))
+                foreach (System.IO.FileInfo directoryinfo in DirectoryInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => SelectedFilter.Split('|')[1].Contains(s.Extension.ToLower())).Where(s => !AvoidedFilePaths.Contains(s.FullName))/*.OrderByDescending(dir=>dir.LastWriteTime)*/)
                 {
                     if ((directoryinfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden && directoryinfo.Extension != "")
                     {
@@ -298,7 +298,7 @@ namespace MbitGate.model
             }
             else
             {
-                foreach (System.IO.FileInfo directoryinfo in DirectoryInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => !AvoidedFilePaths.Contains(s.FullName)))
+                foreach (System.IO.FileInfo directoryinfo in DirectoryInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => !AvoidedFilePaths.Contains(s.FullName))/*.OrderByDescending(dir => dir.LastWriteTime)*/)
                 {
                     if ((directoryinfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden && directoryinfo.Extension != "")
                     {

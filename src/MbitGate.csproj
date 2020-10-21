@@ -111,6 +111,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="helper\MathHelper.cs" />
+    <Compile Include="helper\ProtocolDecoder.cs" />
     <Compile Include="views\ATFileDialog.xaml.cs">
       <DependentUpon>ATFileDialog.xaml</DependentUpon>
     </Compile>

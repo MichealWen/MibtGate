@@ -15,6 +15,7 @@ using System.Windows.Threading;
 using System.Linq;
 using LiveCharts.Defaults;
 using LiveCharts;
+using HexProtocol = MbitGate.helper.CommunicateHexProtocolDecoder;
 
 namespace MbitGate.model
 {
@@ -881,8 +882,6 @@ namespace MbitGate.model
                                 serial.Rate = (int)ConfigModel.CustomRate;
                                 serial.close();
                             }
-                            if (overTimer != null)
-                                overTimer.Dispose();
                             await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                             mutex.Set();
                             if(ExtraOnceWorkToDo != null)
@@ -1182,7 +1181,7 @@ namespace MbitGate.model
 
         private void ToWriteRain()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1201,7 +1200,7 @@ namespace MbitGate.model
         {
             string lastop = " setThresholdParas";
             double standCorrelation = 0.0, area = 0.0, mc=0.0, Var=0.0;
-            serial.DataReceivedHandler = async msg =>
+            serial.StringDataReceivedHandler = async msg =>
             {
                 if (lastop == " setThresholdParas")
                 {
@@ -1287,7 +1286,7 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.ReadCLI + " setThresholdParas");
             ExtraOnceWorkToDo = () => { SerialWork(() => {
                 serial.WriteLine(SerialRadarCommands.SoftReset);
-                serial.DataReceivedHandler = null;
+                serial.StringDataReceivedHandler = null;
                 mutex.Set();
             }); };
             //_progressViewModel.IsIndeterminate = true;
@@ -1314,7 +1313,7 @@ namespace MbitGate.model
                 if (max > min)
                 {
                     string lastOperation = SerialRadarCommands.ReadCLI;
-                    serial.DataReceivedHandler = async msg =>
+                    serial.StringDataReceivedHandler = async msg =>
                      {
                          if (msg.Contains(SerialRadarReply.Done))
                          {
@@ -1376,7 +1375,7 @@ namespace MbitGate.model
                              ShowErrorWindow(Tips.RangeError);
                          else
                              ShowErrorWindow(msg);
-                         serial.DataReceivedHandler = null;
+                         serial.StringDataReceivedHandler = null;
                          mutex.Set();
                      };
                     serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
@@ -1393,7 +1392,7 @@ namespace MbitGate.model
 
         private void ToSensorstop()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1411,7 +1410,7 @@ namespace MbitGate.model
         private void ToReadAll()
         {
             string lastOperation = SerialRadarCommands.SensorStop;
-            serial.DataReceivedHandler = async msg =>
+            serial.StringDataReceivedHandler = async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1443,7 +1442,7 @@ namespace MbitGate.model
         private void ToWriteCustom()
         {
             _progressViewModel.Message = string.Empty;
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 _progressViewModel.Message += msg;
             };
@@ -1463,10 +1462,10 @@ namespace MbitGate.model
 
         private void ToWriteCLI()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 ShowConfirmWindow(msg, string.Empty);
-                serial.DataReceivedHandler = null;
+                serial.StringDataReceivedHandler = null;
                 mutex.Set();
             };
             serial.WriteLine(SerialRadarCommands.WriteCLI + " " + WriteCLICommandStr);
@@ -1474,7 +1473,7 @@ namespace MbitGate.model
 
         private void toCancelGetWeakPoints()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1493,7 +1492,7 @@ namespace MbitGate.model
         bool showStrongestPoints = false;
         private void toGetWeakPoints()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains("X"))
                 {
@@ -1528,7 +1527,7 @@ namespace MbitGate.model
 
         private void toCancelRemoveWeakPoints()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1567,7 +1566,7 @@ namespace MbitGate.model
 
         private void toRemoveWeakPonints()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1584,7 +1583,7 @@ namespace MbitGate.model
 
         private void toGetRemovedWeakPoints()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 RemovedWeakPoints.Clear();
                 if (msg.Contains(SerialRadarReply.Done))
@@ -1618,7 +1617,7 @@ namespace MbitGate.model
             {
                 SearchResult.Clear();
             }));
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if(msg.Contains(SerialRadarReply.Done))
                 {
@@ -1663,7 +1662,7 @@ namespace MbitGate.model
                                     {
                                         ShowConfirmWindow(Tips.SearchTimeSuccess, string.Empty);
                                     }
-                                    serial.DataReceivedHandler = null;
+                                    serial.StringDataReceivedHandler = null;
                                     mutex.Set();
                                 }
                             }));
@@ -1683,7 +1682,7 @@ namespace MbitGate.model
                             ShowConfirmWindow(Tips.SearchTimeSuccess, string.Empty);
                         }
                     }
-                    serial.DataReceivedHandler = null;
+                    serial.StringDataReceivedHandler = null;
                     mutex.Set();
                 }
                 else
@@ -1712,7 +1711,7 @@ namespace MbitGate.model
                 _progressViewModel.Message = Tips.ClearTiming;
                 await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
             }));
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if(msg.Contains(SerialRadarReply.Done))
                 {
@@ -1755,7 +1754,7 @@ namespace MbitGate.model
         private void ToSetTime()
         {
             string lastOperation = SerialRadarCommands.SetTime;
-            serial.DataReceivedHandler = msg => 
+            serial.StringDataReceivedHandler = msg => 
             {
                 if(msg.Contains(SerialRadarReply.Done))
                 {
@@ -1772,7 +1771,7 @@ namespace MbitGate.model
         private void toGetTime()
         {
             string lastOperation = SerialRadarCommands.GetTIme;
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1888,7 +1887,7 @@ namespace MbitGate.model
         private void ToGetDelay(string tip)
         {
             string lastOperation = SerialRadarCommands.ReadCLI;
-            serial.DataReceivedHandler =async msg =>
+            serial.StringDataReceivedHandler =async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1942,7 +1941,7 @@ namespace MbitGate.model
            
            
             string lastOperation = SerialRadarCommands.SensorStop;
-            serial.DataReceivedHandler = async msg =>
+            serial.StringDataReceivedHandler = async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -1986,7 +1985,7 @@ namespace MbitGate.model
         private void ToGetAfterPoints()
         {
             serial.EndStr = SerialRadarReply.Done;
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
                 if(collection.Count > 0)
@@ -2055,7 +2054,7 @@ namespace MbitGate.model
                 {
                     ShowConfirmWindow(Tips.CorrelationNoDataError, string.Empty);
                 }
-                serial.DataReceivedHandler = null;
+                serial.StringDataReceivedHandler = null;
                 mutex.Set();
             };
             serial.WriteLine(SerialRadarCommands.Output + " 12");
@@ -2063,7 +2062,7 @@ namespace MbitGate.model
 
         private void ToGetBeforePoints()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 BackgroundBeforePoints.Clear();
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
@@ -2079,7 +2078,7 @@ namespace MbitGate.model
 
         private void ToGetCorrelation()
         {
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 string[] param = msg.Split(' ');
                 if(param.Length > 6)
@@ -2108,7 +2107,7 @@ namespace MbitGate.model
         private void ToStudy()
         {
             serial.EndStr = "\n";
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.StudyEnd) || msg.Contains("end"))
                 {
@@ -2151,7 +2150,7 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.SoftReset);
             ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
             await TaskEx.Delay(500);
-            serial.DataReceivedHandler = null;
+            serial.StringDataReceivedHandler = null;
             mutex.Set();
         }
         private void Timekeeper_Tick(object sender, EventArgs e)
@@ -2172,7 +2171,7 @@ namespace MbitGate.model
         private void ToReset()
         {
             string lastOperation = SerialRadarCommands.Output;
-            serial.DataReceivedHandler =async msg =>
+            serial.StringDataReceivedHandler =async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Start))
                 {
@@ -2243,7 +2242,7 @@ namespace MbitGate.model
         private void ToGet()
         {
             string lastOperation = SerialRadarCommands.ReadCLI;
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -2351,7 +2350,7 @@ namespace MbitGate.model
             }
             
             string lastOperation = SerialRadarCommands.SensorStop;
-            serial.DataReceivedHandler = async msg =>
+            serial.StringDataReceivedHandler = async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -2381,7 +2380,7 @@ namespace MbitGate.model
                 else if (msg.Contains(SerialRadarReply.Error))
                 {
                     ShowErrorWindow(Tips.ConfigFail);
-                    serial.DataReceivedHandler = null;
+                    serial.StringDataReceivedHandler = null;
                     mutex.Set();
                 }
                 else if(msg.Contains(SerialRadarReply.Start))
@@ -2395,7 +2394,7 @@ namespace MbitGate.model
         private void ToGetVer(Action proceedToDo= null)
         {
             string lastoperation = string.Empty;
-            serial.DataReceivedHandler = msg =>
+            serial.StringDataReceivedHandler = msg =>
             {
                 if(lastoperation == SerialRadarCommands.Version)
                 {
@@ -2418,8 +2417,7 @@ namespace MbitGate.model
                     }
                 }
             };
-            serial.WriteLine(SerialRadarCommands.Version);
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
             lastoperation = SerialRadarCommands.Version;
             serial.WriteLine(SerialRadarCommands.Version);
         }
@@ -2428,7 +2426,7 @@ namespace MbitGate.model
         {
             serial.Rate = int.Parse(BauRate.Rate115200);
             string lastOperation = SerialRadarCommands.SensorStop;
-            serial.DataReceivedHandler = async msg =>
+            serial.StringDataReceivedHandler = async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
                 {
@@ -2489,8 +2487,6 @@ namespace MbitGate.model
         }
 
         FileIOManager reader = null;
-        Timer overTimer = null;
-        byte[] dataTmp = null;
         const int preByteSizeAdded = 32;
         const int ignorePreByteSize = 8;
         protected override void ToDo()
@@ -2503,29 +2499,6 @@ namespace MbitGate.model
             SerialWork(() =>
             {
                 string lastMessage = string.Empty;
-                overTimer = new Timer(obj =>
-                {
-                    if(_progressViewModel.Message == Tips.Updating)
-                    {
-                        if(lastMessage == _progressViewModel.Value.ToString())
-                        {
-                            _progressViewModel.Message = ErrorString.OverTime;
-                        }else
-                        {
-                            lastMessage = _progressViewModel.Value.ToString();
-                        }
-                    }else
-                    {
-                        if (lastMessage == _progressViewModel.Message)
-                        {
-                            _progressViewModel.Message = ErrorString.OverTime;
-                        }
-                        else
-                        {
-                            lastMessage = _progressViewModel.Message;
-                        }
-                    }
-                }, null, 0, 5000);
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
                 {
                     //serial.CompareEndString = false;
@@ -2550,43 +2523,42 @@ namespace MbitGate.model
                             _progressViewModel.Message = ErrorString.FileError;
                             return;
                         }
-                        if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
-                        {
-                            _progressViewModel.Message = ErrorString.SmallVersion;
-                            reader.Close();
-                            return;
-                        }
-                        reader.ReadBytes(ignorePreByteSize);
-                        //不比较版本号
-                        //string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
-                        //if (version.Contains("ITS"))
+                        //if (!compareVersion(System.Text.Encoding.Default.GetString(reader.ReadBytes(preByteSizeAdded))))
                         //{
-                        //    reader.ReadBytes(preByteSizeAdded);
+                        //    _progressViewModel.Message = ErrorString.SmallVersion;
+                        //    reader.Close();
+                        //    return;
                         //}
+                        //reader.ReadBytes(ignorePreByteSize);
+                        //不比较版本号
+                        string version = System.Text.Encoding.Default.GetString(reader.ReadBytes(ignorePreByteSize));
+                        if (version.Contains("ITS"))
+                        {
+                            reader.ReadBytes(preByteSizeAdded);
+                        }
 
-                        serial.DataReceivedHandler = async msg =>
+                        serial.StringDataReceivedHandler = async msg =>
                         {
                             if (msg.Contains(SerialRadarReply.Done))
                             {
                                 switch (lastOperation)
                                 {
                                     case SerialRadarCommands.SensorStop:
-                                        await TaskEx.Delay(1000);
+                                        //await TaskEx.Delay(500);
                                         lastOperation = SerialRadarCommands.WriteCLI;
                                         serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
                                         break;
                                     case SerialRadarCommands.WriteCLI:
                                         await TaskEx.Delay(500);
-                                        //lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
+                                        lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
                                         _progressViewModel.Message = Tips.WaitForOpen;
                                         serial.CompareEndString = false;
-                                        serial.Type = SerialReceiveType.Bytes;
-                                        serial.WriteLine(SerialRadarCommands.SoftReset);
-                                        await TaskEx.Delay(500);
-                                        lastOperation = SerialRadarCommands.FlashErase;
-                                        _progressViewModel.Message = Tips.Flashing;
-                                        serial.Rate = int.Parse(BauRate.Rate115200);
-                                        serial.Write(new byte[] { 0x01, 0xCD });
+                                        serial.WriteLine(SerialRadarCommands.SoftReset, 2000);
+                                        //await TaskEx.Delay(500);
+                                        //lastOperation = SerialRadarCommands.FlashErase;
+                                        //_progressViewModel.Message = Tips.Flashing;
+                                        //serial.Rate = int.Parse(BauRate.Rate115200);
+                                        //serial.Write(new byte[] { 0x01, 0xCD });
                                         break;
                                 }
                             }
@@ -2603,163 +2575,115 @@ namespace MbitGate.model
                                         serial.Rate = (int)ConfigModel.CustomRate;
                                         mutex.Set();
                                     }
-                                    overTimer.Dispose();
-                                }
-                                else if (msg.Contains(SerialRadarReply.NotRecognized))
-                                {
-                                    switch (lastOperation)
-                                    {
-                                        case SerialRadarCommands.SensorStop:
-                                            serial.WriteLine(SerialRadarCommands.SensorStop);
-                                            break;
-                                        case SerialRadarCommands.WriteCLI:
-                                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
-                                            break;
-                                        case ExtraSerialRadarCommands.SoftInercludeReset:
-                                            serial.WriteLine(SerialRadarCommands.SoftReset);
-                                            break;
-                                    }
                                 }
                                 else
                                 {
                                     if (lastOperation == ExtraSerialRadarCommands.SoftInercludeReset)
                                     {
                                         lastOperation = SerialRadarCommands.FlashErase;
+                                        serial.Type = SerialReceiveType.Bytes;
                                         serial.Rate = int.Parse(BauRate.Rate115200);
-                                        serial.Write(new byte[] { 0x01, 0xCD });
+                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 5000);
                                     }
                                 }
                             }
                         };
                         bool toContinue = false;
                         serial.CompareEndBytesCount = 2;
-                        serial.BytesDataReceivedHandler = async data =>
+                        serial.ErrorReceivedHandler = data =>
                         {
-                            if (data.Length > 1)
+                            _progressViewModel.Message = ErrorString.Error + lastOperation + "   0x" + BitConverter.ToString(new byte[] { data });
+                            if (reader != null)
+                                reader.Close();
+                            if (serial != null)
                             {
-                                if (data[0] == 0xEE && data[1] == 0xCD)
-                                {
-                                    switch(lastOperation)
-                                    {
-                                        case ExtraSerialRadarCommands.SoftInercludeReset:
-                                            serial.WriteLine(SerialRadarCommands.SoftReset);
-                                            return;
-                                        case SerialRadarCommands.FlashErase:
-                                            serial.Write(new byte[] { 0x01, 0xCD });
-                                            return;
-                                        case SerialRadarCommands.BootLoader:
-                                        case SerialRadarCommands.T:
-                                            serial.Write(dataTmp);
-                                            return;
-                                        case SerialRadarCommands.CRC:
-                                            byte[] tmp1 = BitConverter.GetBytes(sum);
-                                            serial.Write(new byte[] { 0x04, 0xCD, tmp1[0], tmp1[1], tmp1[2], tmp1[3] });
-                                            return;
-                                        case SerialRadarCommands.SoftReset:
-                                            serial.Write(new byte[] { 0x05, 0xCD });
-                                            return;
-                                    }
-                                }
-                                else
-                                {
-                                    switch (lastOperation)
-                                    {
-                                        case ExtraSerialRadarCommands.SoftInercludeReset:
-                                            await TaskEx.Delay(500);
-                                            lastOperation = SerialRadarCommands.FlashErase;
-                                            _progressViewModel.Message = Tips.Flashing;
-                                            serial.Rate = int.Parse(BauRate.Rate115200);
-                                            serial.Write(new byte[] { 0x01, 0xCD });
-                                            break;
-                                        case SerialRadarCommands.FlashErase:
-                                            if(data[data.Length-2] == 0x11 && data[data.Length-1] == 0xCD)
-                                            {
-                                                await TaskEx.Delay(500);
-                                                lastOperation = SerialRadarCommands.BootLoader;
-                                                _progressViewModel.Message = Tips.Updating;
-                                                int times = (int)((reader.Length - preByteSizeAdded - ignorePreByteSize) / 64 + ((reader.Length - preByteSizeAdded - ignorePreByteSize) % 64 == 0 ? 0 : 1));
-                                                byte[] tmp = BitConverter.GetBytes(times);
-                                                _progressViewModel.MaxValue = (uint)times;
-                                                _progressViewModel.Value = 0;
-                                                serial.Write(new byte[] { 0x02, 0xCD, tmp[0], tmp[1], tmp[2], tmp[3] });
-                                            }
-                                            break;
-                                        case SerialRadarCommands.BootLoader:
-                                        case SerialRadarCommands.T:
-                                            await TaskEx.Delay(1);
-                                            if (lastOperation == SerialRadarCommands.BootLoader)
-                                            {
-                                                if (data[0] == 0x12 && data[1] == 0xCD)
-                                                {
-                                                    toContinue = true;
-                                                    _progressViewModel.Message = Tips.Updating;
-                                                    _progressViewModel.IsIndeterminate = false;
-                                                }
-                                            }
-                                            if (toContinue)
-                                            {
-                                                lastOperation = SerialRadarCommands.T;
-                                                if ((pos >= reader.Length - 1))
-                                                {
-                                                    if(data[data.Length-2] == 0x23 && data[data.Length-1] == 0xCD)
-                                                    {
-                                                        await TaskEx.Delay(100);
-                                                        lastOperation = SerialRadarCommands.CRC;
-                                                        _progressViewModel.Message = Tips.CRCing;
-                                                        byte[] tmp1 = BitConverter.GetBytes(sum);
-                                                        serial.Write(new byte[] { 0x04, 0xCD, tmp1[0], tmp1[1], tmp1[2], tmp1[3] });
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    try
-                                                    {
-                                                        dataTmp = reader.ReadBytes(ReadBytesNumber);
-                                                        Array.ForEach<byte>(dataTmp, b => { sum += b; });
-                                                        serial.Write(dataTmp);
-                                                    }
-                                                    catch (Exception)
-                                                    {
-                                                    }
-                                                }
-                                                pos += ReadBytesNumber;
-                                                _progressViewModel.Value += 1;
-                                            }
-                                            break;
-                                        case SerialRadarCommands.CRC:
-                                            await TaskEx.Delay(500);
-                                            lastOperation = SerialRadarCommands.SoftReset;
-                                            _progressViewModel.Value = _progressViewModel.MaxValue;
-                                            _progressViewModel.Message = Tips.WaitForOpen;
-                                            serial.Write(new byte[] { 0x05, 0xCD });
-                                            reader.Close();
-                                            break;
-                                        case SerialRadarCommands.SoftReset:
-                                            _progressViewModel.Message = Tips.Updated;
-                                            if (serial != null)
-                                            {
-                                                serial.CompareEndString = true;
-                                                serial.Rate = (int)ConfigModel.CustomRate;
-                                            }
-                                            mutex.Set();
-                                            overTimer.Dispose();
-                                            SerialWork(() => ToResetBaudRate());
-                                            break;
-                                    }
-                                }
+                                serial.CompareEndString = true;
+                                serial.Rate = (int)ConfigModel.CustomRate;
+                                mutex.Set();
                             }
-                            else
+                        };
+                        serial.BytesDecodedDataReceivedHandler = async decodedDataTuple =>
+                        {
+                            switch (lastOperation)
                             {
-                                _progressViewModel.Message = Tips.UpdateFail;
-                                if (reader != null)
+                                case ExtraSerialRadarCommands.SoftInercludeReset:
+                                    //await TaskEx.Delay(500);
+                                    lastOperation = SerialRadarCommands.FlashErase;
+                                    _progressViewModel.Message = Tips.Flashing;
+                                    serial.Rate = int.Parse(BauRate.Rate115200);
+                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 8000);
+                                    break;
+                                case SerialRadarCommands.FlashErase:
+                                    //await TaskEx.Delay(500);
+                                    lastOperation = SerialRadarCommands.BootLoader;
+                                    _progressViewModel.Message = Tips.Updating;
+                                    int times = (int)((reader.Length - preByteSizeAdded - ignorePreByteSize) / 64 + ((reader.Length - preByteSizeAdded - ignorePreByteSize) % 64 == 0 ? 0 : 1));
+                                    byte[] tmp = BitConverter.GetBytes(times);
+                                    _progressViewModel.MaxValue = (uint)times;
+                                    _progressViewModel.Value = 0;
+                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_SIZE, tmp));
+                                    break;
+                                case SerialRadarCommands.BootLoader:
+                                case SerialRadarCommands.T:
+                                    //await TaskEx.Delay(1);
+                                    if (lastOperation == SerialRadarCommands.BootLoader)
+                                    {
+                                        toContinue = true;
+                                        _progressViewModel.Message = Tips.Updating;
+                                        _progressViewModel.IsIndeterminate = false;
+                                    }
+                                    if (toContinue)
+                                    {
+                                        lastOperation = SerialRadarCommands.T;
+                                        if((pos >= reader.Length-1))
+                                        {
+                                            await TaskEx.Delay(100);
+                                            lastOperation = SerialRadarCommands.CRC;
+                                            serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_REFRESH, new byte[] { }), 8000);
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                byte[] dataTmp = reader.ReadBytes(ReadBytesNumber);
+                                                Array.ForEach<byte>(dataTmp, b => { sum += b; });
+                                                byte[] msgData = new byte[dataTmp.Length + 4];
+                                                Array.Copy(BitConverter.GetBytes(_progressViewModel.Value), msgData, 4);
+                                                Array.Copy(dataTmp, 0, msgData, 4, dataTmp.Length);
+                                                serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_POSITION_DATA, msgData));
+                                            }
+                                            catch (Exception)
+                                            {
+                                            }
+                                            pos += ReadBytesNumber;
+                                            _progressViewModel.Value += 1;
+                                        }
+                                    }
+                                    break;
+                                case SerialRadarCommands.CRC:
+                                    //await TaskEx.Delay(500);
+                                    lastOperation = SerialRadarCommands.SoftReset;
+                                    _progressViewModel.Value = _progressViewModel.MaxValue;
+                                    serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_RESTART, new byte[] { }), 0, false);
                                     reader.Close();
-                                if (serial != null)
-                                {
-                                    serial.CompareEndString = true;
-                                    serial.Rate = (int)ConfigModel.CustomRate;
+                                    break;
+                                case SerialRadarCommands.SoftReset:
+                                    //lastOperation = string.Empty;
+                                    System.Console.WriteLine("==========" + BitConverter.ToString(decodedDataTuple.Item4));
+                                    _progressViewModel.Message = Tips.Updated;
+                                    if (serial != null)
+                                    {
+                                        serial.CompareEndString = true;
+                                        serial.Rate = (int)ConfigModel.CustomRate;
+                                    }
                                     mutex.Set();
-                                }
-                                overTimer.Dispose();
+                                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(()=> {
+                                        _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                    }));
+                                    await TaskEx.Delay(1000);
+                                    ShowConfirmWindow(Tips.Updated, string.Empty);
+                                    SerialWork(() => ToGetVer());
+                                    break;
                             }
                         };
                         serial.WriteLine(SerialRadarCommands.SensorStop);
@@ -2813,7 +2737,7 @@ namespace MbitGate.model
             base.Dispose();
             if (serial != null)
             {
-                serial.WriteLine(SerialRadarCommands.AlarmOrder4);
+                serial.WriteLine(SerialRadarCommands.SoftReset, 0, false);
                 serial.close();
             }
         }
@@ -2832,7 +2756,7 @@ namespace MbitGate.model
             {
                 int delay = 0;
                 string lastOperation = SerialRadarCommands.SensorStop;
-                serial.DataReceivedHandler = async msg =>
+                serial.StringDataReceivedHandler = async msg =>
                 {
                     if (msg.Contains(SerialRadarReply.Done))
                     {

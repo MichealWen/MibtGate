@@ -8,12 +8,25 @@ namespace MbitGate.helper
         private const byte HEADER = 0x55;
         private const byte FOOT = 0xAA;
         public const byte SUCCESS = 0x00;
-        public const byte ERROVERTIME = 0x05;
 
         private const byte MinLength = 0x0B;
 
+        public const byte ADDRESS_PUBLIC = 0xFF;
+
+        public const byte ERROVERTIME = 0x05;
+
         private const ushort FUNCTION_HARD_VER = 0x0001;
         private const ushort FUNCTION_SOFT_VER = 0x0002;
+
+        public const ushort FUNCTION_UPDATE_TEST = 0x00F0;
+        public const ushort FUNCTION_UPDATE_ERASE = 0x00F1;
+        public const ushort FUNCTION_UPDATE_SIZE = 0x00F2;
+        public const ushort FUNCTION_UPDATE_POSITION_DATA = 0x00F3;
+        public const ushort FUNCTION_UPDATE_CRC = 0x00F4;
+        public const ushort FUNCTION_UPDATE_DATA = 0x00F5;
+        public const ushort FUNCTION_UPDATE_READ_FLASH = 0x00F6;
+        public const ushort FUNCTION_UPDATE_REFRESH = 0x00F8;
+        public const ushort FUNCTION_UPDATE_RESTART = 0x00F9;
 
         static byte[] Crc8_table = {
                 0x93,0x98,0xE4,0x46,0xEB,0xBA,0x04,0x4C,
@@ -101,8 +114,7 @@ namespace MbitGate.helper
                     {
                         byte[] values = new byte[data.Length - 6];
                         Array.Copy(data, 6, values, 0, values.Length);
-                        //NotifyDecodeResult?.Invoke(new Tuple<byte, byte, ushort, byte[]>(data[0], data[1], BitConverter.ToUInt16(data, 2), data));
-                        NotifyFullResult?.Invoke(frame);
+                        NotifyDecodeResult?.Invoke(new Tuple<byte, byte, ushort, byte[]>(data[0], data[1], BitConverter.ToUInt16(data, 2), data));
                     }
                 }
                 else
@@ -141,7 +153,7 @@ namespace MbitGate.helper
                             footCount++;
                         if(footCount == 1)
                         {
-                            footCount = index;
+                            footIndex = index;
                         }
                         else if(footCount == 2)
                         {
@@ -194,7 +206,7 @@ namespace MbitGate.helper
                 if(index > 0)
                 {
                     decodeCount++;
-                    if (decodeCount > 10 && headerCount > 0)
+                    if (decodeCount > 100 && headerCount > 0)
                     {
                         decodeCount = 0;
                         for (int i = 0; i < index; i++)
