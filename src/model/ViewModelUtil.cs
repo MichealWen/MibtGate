@@ -2571,13 +2571,18 @@ namespace MbitGate.model
                                 reader.Close();
                                 return;
                             }
-                            reader.ReadBytes(ignorePreByteSize);
+                            if(!NewVersion)
+                                reader.ReadBytes(ignorePreByteSize);
+                        }
+                        if(NewVersion)
+                        {
+                            reader.Seek(0);
                         }
                         serial.DecodeFrame = NewVersion;
                         bool toContinue = false;
-                        serial.CompareEndBytesCount = 2;
                         if (NewVersion)
                         {
+                            overTimer.Dispose();
                             serial.StringDataReceivedHandler = async msg =>
                             {
                                 if (msg.Contains(SerialRadarReply.Done))
@@ -2650,7 +2655,7 @@ namespace MbitGate.model
                                         lastOperation = SerialRadarCommands.FlashErase;
                                         _progressViewModel.Message = Tips.Flashing;
                                         serial.Rate = int.Parse(BauRate.Rate115200);
-                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 8000);
+                                        serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 10000);
                                         break;
                                     case SerialRadarCommands.FlashErase:
                                         //await TaskEx.Delay(500);
@@ -2678,7 +2683,7 @@ namespace MbitGate.model
                                             {
                                                 await TaskEx.Delay(100);
                                                 lastOperation = SerialRadarCommands.CRC;
-                                                serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_REFRESH, new byte[] { }), 8000);
+                                                serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_REFRESH, new byte[] { }), 10000);
                                             }
                                             else
                                             {
@@ -2701,10 +2706,25 @@ namespace MbitGate.model
                                         break;
                                     case SerialRadarCommands.CRC:
                                         //await TaskEx.Delay(500);
-                                        lastOperation = SerialRadarCommands.SoftReset;
+                                        //lastOperation = SerialRadarCommands.SoftReset;
+                                        lastOperation = string.Empty;
                                         _progressViewModel.Value = _progressViewModel.MaxValue;
                                         serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_RESTART, new byte[] { }), 0, false);
                                         reader.Close();
+                                        _progressViewModel.Message = Tips.Updated;
+                                        if (serial != null)
+                                        {
+                                            serial.CompareEndString = true;
+                                            serial.Rate = (int)ConfigModel.CustomRate;
+                                        }
+                                        mutex.Set();
+                                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                                        {
+                                            _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                        }));
+                                        await TaskEx.Delay(1000);
+                                        ShowConfirmWindow(Tips.Updated, string.Empty);
+                                        SerialWork(() => ToGetVer());
                                         break;
                                     case SerialRadarCommands.SoftReset:
                                         lastOperation = string.Empty;
@@ -2727,6 +2747,7 @@ namespace MbitGate.model
                         }
                         else
                         {
+                            serial.CompareEndBytesCount = 2;
                             serial.StringDataReceivedHandler = async msg =>
                             {
                                 if (msg.Contains(SerialRadarReply.Done))

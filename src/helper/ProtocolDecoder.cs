@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Data;
+using System.Linq;
+using System.Windows.Navigation;
 
 namespace MbitGate.helper
 {
@@ -134,92 +137,114 @@ namespace MbitGate.helper
         }
 
         private int decodeCount = 0;
+        public int MaxCantDecodeCount = 100;
         internal void Decode(ref ConcurrentQueue<byte> data)
         {
             lock(data)
             {
-                byte headerCount = 0, footCount = 0, index = 0, tmp = 0, footIndex = 0;
-
-                foreach (byte val in data)
+                byte headerCount = 0, index = 0, tmp = 0;
+                int frameStart = 0;
+                if (data.Count >= GenerateLength(0))
                 {
-                    if (val == HEADER)
+                    foreach (byte val in data)
                     {
-                        if(headerCount < 2)
+                        index++;
+                        if (val == HEADER)
+                        {
+                            if (headerCount == 0)
+                                frameStart = index;
                             headerCount++;
-                    }
-                    else if (val == FOOT)
-                    {
-                        if(footCount < 2)
-                            footCount++;
-                        if(footCount == 1)
-                        {
-                            footIndex = index;
                         }
-                        else if(footCount == 2)
+                        if (headerCount == 0)
                         {
-                            if(index != (footIndex+1))
+                            frameStart++;
+                        }
+                        else if (headerCount == 1)
+                        {
+                            if (index > (frameStart + 1))
                             {
-                                footIndex = index;
-                                footCount = 1;
+                                headerCount = 0;
                             }
                         }
+                        else if (headerCount == 2)
+                        {
+                            break;
+                        }
                     }
-                    index++;
-                    if (headerCount == 0)
+                    //discard no use data in front
+                    for (int i = 0; i < frameStart - 1; i++)
                     {
-                        //discard
                         data.TryDequeue(out tmp);
-                        index--;
-                        headerCount = 0;
-                        footCount = 0;
                     }
-                    else if (headerCount == 1)
+                    index = 0;
+                    byte lengthLow = 0x00, lengthHigh = 0x00;
+                    int framelength = 0;
+                    bool errorFrame = false;
+                    int frameEnd = -1;
+                    foreach (byte val in data)
                     {
-                        if (index > 1)
+                        index++;
+                        if (index == 7)
+                            lengthLow = val;
+                        else if (index == 8)
                         {
-                            //discard
-                            for (int i = 0; i < index; i++)
-                            {
-                                data.TryDequeue(out tmp);
-                                index--;
-                            }
-                            headerCount = 0;
-                            footCount = 0;
+                            lengthHigh = val;
+                        }
+                        else if(index == 9)
+                        {
+                            framelength = GenerateLength((lengthHigh << 8) + lengthLow);
+                            frameEnd = 2+1+1+2+2 + (lengthHigh << 8) + lengthLow + 1 + 1;
+                        }
+                        else if(index == frameEnd)
+                        {
+                            errorFrame = (val != FOOT);
+                        }
+                        else if(index == (frameEnd+1))
+                        {
+                            errorFrame = errorFrame && (val != FOOT);
+                            break;
                         }
                     }
-                    else if (headerCount == 2)
+                    if(index == (frameEnd+1))
                     {
-                        if (footCount == 2)
-                        {
-                            byte[] frame = new byte[index];
-                            for (int i = 0; i < index; i++)
-                            {
-                                data.TryDequeue(out frame[i]);
-                            }
-                            headerCount = 0;
-                            footCount = 0;
-                            index = 0;
-                            System.Threading.Tasks.Task.Factory.StartNew(() => { Decode(frame); });
-                        }
-                    }
-                }
-                if(index > 0)
-                {
-                    decodeCount++;
-                    if (decodeCount > 100 && headerCount > 0)
-                    {
-                        decodeCount = 0;
-                        for (int i = 0; i < index; i++)
+                        if (errorFrame)
                         {
                             data.TryDequeue(out tmp);
                         }
+                        else
+                        {
+                            byte[] frame = new byte[framelength];
+                            for (int i = 0; i < framelength; i++)
+                            {
+                                data.TryDequeue(out frame[i]);
+                            }
+                            if(framelength==0)
+                            {
+                                int stophere = 0;
+                            }
+                            System.Threading.Tasks.Task.Factory.StartNew(() => { Decode(frame); });
+                            //Decode(frame);
+                            decodeCount = 0;
+                        }
                     }
                 }
-                else
+
+                decodeCount++;
+                if (decodeCount > MaxCantDecodeCount)
                 {
                     decodeCount = 0;
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        data.TryDequeue(out tmp);
+                    }
                 }
+
             }
+        }
+
+        private int GenerateLength(int dataLen)
+        {
+            return 2/*header*/+ 1/*address*/+ 1/*error*/+ 2/*function*/+ 2/*length*/+ dataLen + 1/*crc*/+ 2/*foot*/;
         }
     }
 
