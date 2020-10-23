@@ -247,6 +247,7 @@ namespace MbitGate.control
             CompareEndString = true;
 
             overTimer = new Timer(300);
+            overTimer.AutoReset = true;
             overTimer.Elapsed += OverTimer_Elapsed;
 
             ReplayData = new ConcurrentQueue<byte>();
@@ -259,6 +260,7 @@ namespace MbitGate.control
             consumerTimer.Start();
 
             hexDecoder.MaxCantDecodeCount = (300/3) - 10;  /*300 = overTimer.Interval   5=consumerTimer.Interval*/
+
         }
 
         public string EndStr { 
@@ -282,6 +284,7 @@ namespace MbitGate.control
                     case SerialReceiveType.Bytes:
                         byte[] data = new byte[_serial.BytesToRead];
                         _serial.Read(data, 0, data.Length);
+                        //System.Console.WriteLine("====================" + BitConverter.ToString(data));
                         if(DecodeFrame)
                         {
                             foreach (byte val in data)
@@ -454,7 +457,7 @@ namespace MbitGate.control
 
         public SerialReceiveType Type { get; set; }
 
-        public void WriteLine(string content, int milliseconds = 500, bool toStartTime = true)
+        public void WriteLine(string content, int milliseconds = 300, bool toStartTime = true)
         {
             try
             {
@@ -479,7 +482,7 @@ namespace MbitGate.control
             }
         }
 
-        public void Write(byte[] content, int milliseconds = 500, bool toStartTimer = true)
+        public void Write(byte[] content, int milliseconds = 300, bool toStartTimer = true)
         {
             try
             {
@@ -512,6 +515,8 @@ namespace MbitGate.control
                     _serial.Close();
                 StringDataReceivedHandler = null;
                 BytesFrameDataReceivedHandler = null;
+                BytesDecodedDataReceivedHandler = null;
+                ErrorReceivedHandler = null;
             }
             catch{ }
         }

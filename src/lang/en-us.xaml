@@ -111,7 +111,7 @@
     <s:String x:Key="ManualReboot">Reboot radar</s:String>
     <s:String x:Key="SmallVersion">Wrong Version</s:String>
     <s:String x:Key="RebootSuccess">Reboot Done</s:String>
-    <s:String x:Key="OverTime">No Response，ReElectric Radar Manual</s:String>
+    <s:String x:Key="OverTime">No Response</s:String>
     <s:String x:Key="GetTimeFail">Get Time Fail</s:String>
     <s:String x:Key="GetTimeSuccess">Get Time Success</s:String>
     <s:String x:Key="SetTimeFail">Set Time Fail</s:String>

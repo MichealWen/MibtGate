@@ -92,6 +92,7 @@ namespace MbitGate.control
         public const string ResetCLI = "ResetCLI";
         public const string Update = "Update";
         public const string BootLoader = "BootLoader";
+        public const string Test = "Test";
         public const string FlashErase = "flashErase";
         public const string T = "T";
         public const string CRC = "CRC";
