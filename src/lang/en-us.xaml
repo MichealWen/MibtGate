@@ -57,11 +57,14 @@
     <s:String x:Key="SetTime">SetTime</s:String>
     <s:String x:Key="ClearTime">ClearTime</s:String>
     <s:String x:Key="Search">Search</s:String>
+    <s:String x:Key="InvertSearch">Invert Search</s:String>
+    <s:String x:Key="InvertSearchCount">Invert Number</s:String>
     <s:String x:Key="SearchResult">Result</s:String>
     <s:String x:Key="FuncGetTime">Get Current Time In Radar</s:String>
     <s:String x:Key="FuncSetTime">synchronize Radar Time</s:String>
     <s:String x:Key="FuncClearTime">Clear Radar Time</s:String>
     <s:String x:Key="FuncRecord">Get Records In Radar</s:String>
+    <s:String x:Key="FuncInvertRecord">Get Last Number Records In Radar</s:String>
     <s:String x:Key="ConfirmAlarm">Show</s:String>
     <s:String x:Key="CancelAlarm">Stop</s:String>
     <s:String x:Key="RemoveAlarm">Remove</s:String>
@@ -176,4 +179,6 @@
     <s:String x:Key="ConnectError" xml:space="preserve">Connect Fail, Check:&#x000D;&#x000A;&#160;&#160;&#160;&#160;Wires&#x000D;&#x000A;&#160;&#160;&#160;&#160;Baud&#x000D;&#x000A;&#160;&#160;&#160;&#160;UART Occupied</s:String>
     <s:String x:Key="TipResetSuccess">Reset Success</s:String>
     <s:String x:Key="TipResetFail">Reset Fail</s:String>
+
+    <s:String x:Key="CustomUpdateRate">Update Baud</s:String>
 </ResourceDictionary>

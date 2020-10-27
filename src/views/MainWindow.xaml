@@ -201,6 +201,8 @@
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="30"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
 
@@ -209,12 +211,16 @@
                 <TextBox x:Name="PathText" Text="{Binding  BinPath, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, Mode=OneWayToSource}" Width="280" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
                 <Button Content="{StaticResource Choose}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding ChooseCommand}" CommandParameter="{Binding DataContext,ElementName=OperateSetting}" BorderBrush="#02a8f3" Click="Choose_Click"/>
             </StackPanel>
-            <StackPanel x:Name="CommandPanel" Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Center" >
+            <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Center" >
+                <TextBlock Text="{DynamicResource CustomUpdateRate}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox x:Name="RateCombo" FontSize="14" Foreground="#333333" Width="180" ItemsSource="{Binding UpdateRates}"  Text="{Binding CustomUpdateRate}" IsEditable="False"/>
+            </StackPanel>
+            <StackPanel x:Name="CommandPanel" Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Center" >
                 <Button Content="{StaticResource Update}" Width="130"  Style="{StaticResource Style_Button_Ok}" Command="{Binding UpdateCmd}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
-        <!--<Grid Grid.Row="2" Visibility="Hidden">-->
+        <!--<Grid Grid.Row="2" Visibility="Visible">-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*"/>
                 <RowDefinition Height="30"/>
@@ -233,6 +239,8 @@
                     <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333" Culture="zh-cn"  SelectedDate="{Binding StartTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True"/>
                     <TextBlock Text="{StaticResource EndTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                     <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333"  Culture="zh-cn" SelectedDate="{Binding EndTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True" />
+                    <TextBlock Text="{StaticResource InvertSearchCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox   Width="160" FontSize="14" Foreground="#333333"  Text="{Binding InvertSearchCount}"/>
                 </StackPanel>
                 <ListBox BorderThickness="5" BorderBrush="AliceBlue" Width="300"  ItemsSource="{Binding SearchResult}"/>
             </StackPanel>
@@ -313,6 +321,7 @@
                 <Button Content="{StaticResource SetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetTimeCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSetTime}"/>
                 <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearTimeCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncClearTime}"/>
                 <Button Content="{StaticResource Search}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCmd}" Margin="60 0 10 0"  ToolTip="{StaticResource FuncRecord}"/>
+                <Button Content="{StaticResource InvertSearch}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding InvertSearchCmd}" Margin="20 0 10 0"  ToolTip="{StaticResource FuncInvertRecord}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="3"  x:Name="AlarmGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">

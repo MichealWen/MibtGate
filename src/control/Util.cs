@@ -32,6 +32,11 @@ namespace MbitGate.control
         {
             return new List<string>() { Rate300, Rate600, Rate1200, Rate2400, Rate4800, Rate9600, Rate19200, Rate38400, Rate57600, Rate74800, Rate115200, Rate230400, Rate460800, Rate921600, Rate1843200, Rate3686400 };
         }
+
+        public static List<string> GetUpdateRates()
+        {
+            return new List<string>() { Rate115200, Rate57600, Rate38400, Rate19200};
+        }
     }
 
     public class CANBauRate
@@ -102,6 +107,7 @@ namespace MbitGate.control
         public const string SetTime = "setTime";
         public const string ClearTime = "TimeErase";
         public const string SearchTime = "RelayFlipTime";
+        public const string SearchInvert = "RelayTimeLog";
         public const string WriteBaudRate = "commandBaudRate ";
         public const string AlarmOrder0 = "falseAlarmOrder 0";
         public const string AlarmOrder1 = "falseAlarmOrder 1";

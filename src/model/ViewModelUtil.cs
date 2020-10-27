@@ -820,6 +820,8 @@ namespace MbitGate.model
         public ICommand SetTimeCmd { get; set; }
         public ICommand ClearTimeCmd { get; set; }
         public ICommand SearchCmd { get; set; }
+        public string InvertSearchCount { get; set; }
+        public ICommand InvertSearchCmd { get; set; }
         public ICommand RebootCmd { get; set; }
 
         public ICommand GetWeakPointsCmd { get; set; }
@@ -866,6 +868,9 @@ namespace MbitGate.model
         public Action ExtraOnceWorkToDo { get; set; }
 
         private bool NewVersion { get; set; }  //version over 1.2.7
+
+        public List<string> UpdateRates { get => BauRate.GetUpdateRates(); }
+        public string CustomUpdateRate { get; set; }
 
         public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
         {
@@ -1010,7 +1015,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toSearch());
+                    SerialWork(() => ToSearch());
                 }
             };
             SearchResult = new ObservableCollection<string>();
@@ -1171,7 +1176,18 @@ namespace MbitGate.model
                     ToRelogin();
                 }
             };
-    }
+
+            CustomUpdateRate = BauRate.Rate115200;
+            InvertSearchCount = "30";
+            OnPropertyChanged("InvertSearchCount");
+            InvertSearchCmd = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    SerialWork(() => ToInvertSearch());
+                }
+            };
+        }
 
         private void ToRelogin()
         {
@@ -1612,7 +1628,7 @@ namespace MbitGate.model
         public ChartValues<ObservablePoint> BackgroundBeforePoints { get; set; }
         public ChartValues<ObservablePoint> BackgroundAfterPoints { get; set; }
 
-        private void toSearch()
+        private void ToSearch()
         {
             string lastOperation = SerialRadarCommands.SearchTime;
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
@@ -1689,6 +1705,7 @@ namespace MbitGate.model
                 }
                 else
                 {
+                    mutex.Set();
                     ShowErrorWindow(Tips.SearchTimeFail);
                 }
             };
@@ -1704,6 +1721,83 @@ namespace MbitGate.model
                                                                                                                            " " + EndTime.Hour +
                                                                                                                            " " + EndTime.Minute +
                                                                                                                            " " + EndTime.Second);
+        }
+
+        private void ToInvertSearch()
+        {
+            try
+            {
+                int number = int.Parse(InvertSearchCount);
+            }
+            catch (Exception)
+            {
+                InvertSearchCount = "30";
+                OnPropertyChanged("InvertSearchCount");
+            }
+            string lastOperation = SerialRadarCommands.SearchTime;
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+            {
+                SearchResult.Clear();
+            }));
+            serial.StringDataReceivedHandler = msg =>
+            {
+                if (msg.Contains(SerialRadarReply.Done))
+                {
+                    switch (lastOperation)
+                    {
+                        case SerialRadarCommands.SearchTime:
+                            lastOperation = string.Empty;
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
+                                lock (SearchResult)
+                                {
+                                    msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
+                                    {
+                                        if (str != string.Empty)
+                                        {
+                                            str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                            str = str.Replace(OperationType.DownValue, OperationType.Down);
+                                            SearchResult.Add(str);
+                                        }
+                                    });
+
+                                    if (SearchResult.Count == 0)
+                                    {
+                                        ShowConfirmWindow(Tips.SearchTimeGetNone, string.Empty);
+                                    }
+                                    else
+                                    {
+                                        ShowConfirmWindow(Tips.SearchTimeSuccess, string.Empty);
+                                    }
+                                    serial.StringDataReceivedHandler = null;
+                                    mutex.Set();
+                                }
+                            }));
+                            break;
+                    }
+                }
+                else if (lastOperation == SerialRadarCommands.SensorStart)
+                {
+                    lock (SearchResult)
+                    {
+                        if (SearchResult.Count == 0)
+                        {
+                            ShowConfirmWindow(Tips.SearchTimeGetNone, string.Empty);
+                        }
+                        else
+                        {
+                            ShowConfirmWindow(Tips.SearchTimeSuccess, string.Empty);
+                        }
+                    }
+                    serial.StringDataReceivedHandler = null;
+                    mutex.Set();
+                }
+                else
+                {
+                    mutex.Set();
+                    ShowErrorWindow(Tips.SearchTimeFail);
+                }
+            };
+            serial.WriteLine(SerialRadarCommands.SearchInvert + " " + InvertSearchCount);
         }
 
         private void toClarTime()
@@ -2402,7 +2496,9 @@ namespace MbitGate.model
                 {
                     if (msg.Contains("ITS"))
                     {
-                        Version = msg.Substring(0, msg.IndexOf("Done")).Trim('\r', '\n');
+                        int startIndex = msg.IndexOf("ITS");
+                        int endIndex = msg.IndexOf("Done");
+                        Version = msg.Substring(startIndex, endIndex-startIndex).Trim('\r', '\n');
                         if (compareVersion2("1.1.1"))
                         {
                             DelayVisible = true;
@@ -2501,6 +2597,7 @@ namespace MbitGate.model
         byte[] dataTmp = null;
         const int preByteSizeAdded = 32;
         const int ignorePreByteSize = 8;
+        string preUpdateRate = string.Empty;
         protected override void ToDo()
         {
             if(BinPath == "" || !BinPath.Contains('\\'))
@@ -2592,7 +2689,22 @@ namespace MbitGate.model
                                         case SerialRadarCommands.SensorStop:
                                             //await TaskEx.Delay(100);
                                             lastOperation = SerialRadarCommands.WriteCLI;
-                                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                                            preUpdateRate = CustomUpdateRate;
+                                            switch(CustomUpdateRate)
+                                            {
+                                                case BauRate.Rate57600:
+                                                    serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 2");
+                                                    break;
+                                                case BauRate.Rate38400:
+                                                    serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 3");
+                                                    break;
+                                                case BauRate.Rate19200:
+                                                    serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 4");
+                                                    break;
+                                                default:
+                                                    serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.BootLoaderFlag + " 1");
+                                                    break;
+                                            }
                                             break;
                                         case SerialRadarCommands.WriteCLI:
                                             await TaskEx.Delay(100);
@@ -2603,7 +2715,7 @@ namespace MbitGate.model
                                             //await TaskEx.Delay(500);
                                             //lastOperation = SerialRadarCommands.FlashErase;
                                             //_progressViewModel.Message = Tips.Flashing;
-                                            //serial.Rate = int.Parse(BauRate.Rate115200);
+                                            //serial.Rate = int.Parse(CustomUpdateRate);
                                             //serial.Write(new byte[] { 0x01, 0xCD });
                                             break;
                                     }
@@ -2615,6 +2727,7 @@ namespace MbitGate.model
                                         if (lastOperation == SerialRadarCommands.SensorStop)
                                         {
                                             lastOperation = ExtraSerialRadarCommands.SoftInercludeReset;
+                                            serial.Rate = int.Parse(preUpdateRate);
                                             serial.BytesDecodedDataReceivedHandler(new Tuple<byte, byte, ushort, byte[]>(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_TEST, new byte[] { }));
                                             return;
                                         }
@@ -2637,7 +2750,7 @@ namespace MbitGate.model
                                             {
                                                 lastOperation = SerialRadarCommands.Test;
                                                 serial.Type = SerialReceiveType.Bytes;
-                                                serial.Rate = int.Parse(BauRate.Rate115200);
+                                                serial.Rate = int.Parse(CustomUpdateRate);
                                                 serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_TEST, new byte[] { }));
                                             }
                                         }
@@ -2669,13 +2782,10 @@ namespace MbitGate.model
                                         await TaskEx.Delay(100);
                                         lastOperation = SerialRadarCommands.Test;
                                         serial.Type = SerialReceiveType.Bytes;
-                                        serial.Rate = int.Parse(BauRate.Rate115200);
                                         serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_TEST, new byte[] { }));
                                         break;
                                     case SerialRadarCommands.Test:
                                         lastOperation = SerialRadarCommands.FlashErase;
-                                        serial.Type = SerialReceiveType.Bytes;
-                                        serial.Rate = int.Parse(BauRate.Rate115200);
                                         serial.Write(HexProtocol.Code(HexProtocol.ADDRESS_PUBLIC, HexProtocol.SUCCESS, HexProtocol.FUNCTION_UPDATE_ERASE, new byte[] { }), 8000);
                                         break;
                                     case SerialRadarCommands.FlashErase:

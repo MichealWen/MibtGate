@@ -56,12 +56,15 @@
     <s:String x:Key="GetTime">获取时间</s:String>
     <s:String x:Key="SetTime">设置时间</s:String>
     <s:String x:Key="ClearTime">清除时间</s:String>
-    <s:String x:Key="Search">查询记录</s:String>
+    <s:String x:Key="Search">按时间查询记录</s:String>
+    <s:String x:Key="InvertSearch">倒置查询记录</s:String>
+    <s:String x:Key="InvertSearchCount">倒置查询数量</s:String>
     <s:String x:Key="SearchResult">查询结果</s:String>
     <s:String x:Key="FuncGetTime">获取雷达当前时间</s:String>
     <s:String x:Key="FuncSetTime">同步雷达当前时间</s:String>
     <s:String x:Key="FuncClearTime">清除雷达当前时间</s:String>
     <s:String x:Key="FuncRecord">查询雷达在起止时间中的数据</s:String>
+    <s:String x:Key="FuncInvertRecord">查询雷达未尾数据</s:String>
     <s:String x:Key="ConfirmAlarm">显示虚警</s:String>
     <s:String x:Key="CancelAlarm">停止显示</s:String>
     <s:String x:Key="RemoveAlarm">剔除虚警</s:String>
@@ -176,4 +179,6 @@
     <s:String x:Key="ConnectError" xml:space="preserve">连接失败,请检查&#x000D;&#x000A;可能原因：&#x000D;&#x000A;&#160;&#160;&#160;&#160;线束问题&#x000D;&#x000A;&#160;&#160;&#160;&#160;波特率错误&#x000D;&#x000A;&#160;&#160;&#160;&#160;其它程序占用串口</s:String>
     <s:String x:Key="TipResetSuccess">恢复出厂设置成功</s:String>
     <s:String x:Key="TipResetFail">恢复出厂设置失败</s:String>
+
+    <s:String x:Key="CustomUpdateRate">升级波特率</s:String>
 </ResourceDictionary>
