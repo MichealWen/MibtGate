@@ -2243,7 +2243,7 @@ namespace MbitGate.model
         }
         private async void ToReboot()
         {
-            serial.WriteLine(SerialRadarCommands.SoftReset);
+            serial.WriteLine(SerialRadarCommands.SoftReset, 0, false);
             ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
             await TaskEx.Delay(500);
             serial.StringDataReceivedHandler = null;
