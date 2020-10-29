@@ -2671,10 +2671,14 @@ namespace MbitGate.model
                             if(!NewVersion)
                                 reader.ReadBytes(ignorePreByteSize);
                         }
-                        if(NewVersion)
+                        else
                         {
-                            reader.Seek(0);
+                            if(NewVersion)
+                            {
+                                reader.Seek(0);
+                            }
                         }
+                        
                         serial.DecodeFrame = NewVersion;
                         bool toContinue = false;
                         if (NewVersion)
