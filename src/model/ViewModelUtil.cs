@@ -16,6 +16,7 @@ using System.Linq;
 using LiveCharts.Defaults;
 using LiveCharts;
 using HexProtocol = MbitGate.helper.CommunicateHexProtocolDecoder;
+using System.CodeDom;
 
 namespace MbitGate.model
 {
@@ -1951,34 +1952,44 @@ namespace MbitGate.model
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
+        bool finished = true;
         private async void SerialWork(Action towork, bool toShowOverTimeTip = true, int waitmillionseoconds = 3000, Action overTimeToDo=null)
         {
-            if (serial != null)
+            if(finished)
             {
-                serial.close();
-            }
-            serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
-            serial.Rate = (int)ConfigModel.CustomRate;
-            serial.Type = SerialReceiveType.Chars;
-            if (!serial.open())
-            {
-                ShowErrorWindow(ErrorString.SerialOpenError);
-                return;
-            }
-            await Task.Factory.StartNew(
-                ()=> { 
-                    towork();
-                    if (!mutex.WaitOne(waitmillionseoconds))
-                    {
-                        if(toShowOverTimeTip)
-                            ShowErrorWindow(ErrorString.OverTime);
-                        if(overTimeToDo != null)
+                finished = false;
+                if(serial == null)
+                {
+                    serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
+                }
+                serial.Rate = (int)ConfigModel.CustomRate;
+                serial.Type = SerialReceiveType.Chars;
+                serial.CompareEndString = true;
+                serial.EndStr = SerialRadarReply.Done;
+                if (!serial.IsOpen && !serial.open())
+                {
+                    ShowErrorWindow(ErrorString.SerialOpenError);
+                    finished = true;
+                    return;
+                }
+                await Task.Factory.StartNew(
+                    () => {
+                        towork();
+                        if (waitmillionseoconds == -1)
+                            finished = true;
+                        if (!mutex.WaitOne(waitmillionseoconds))
                         {
-                            overTimeToDo();
+                            if (toShowOverTimeTip)
+                                ShowErrorWindow(ErrorString.OverTime);
+                            if (overTimeToDo != null)
+                            {
+                                overTimeToDo();
+                            }
                         }
-                    }
-                    mutex.Reset();
-                });
+                        mutex.Reset();
+                        finished = true;
+                    });
+            }
         }
         private void ToGetDelay(string tip)
         {
@@ -2462,6 +2473,7 @@ namespace MbitGate.model
                         mutex.Set();
                         if (DelayVisible)
                         {
+                            finished = true;
                             SerialWork(() => ToSetDelay());
                         }
                         else

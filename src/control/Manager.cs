@@ -400,7 +400,9 @@ namespace MbitGate.control
         {
             try
             {
-                if (_serial != null)
+                if (_serial == null)
+                    return false;
+                if (_serial.IsOpen == false)
                     _serial.Open();
                 return true;
             }
@@ -512,7 +514,10 @@ namespace MbitGate.control
             try
             {
                 if(_serial != null)
+                {
                     _serial.Close();
+                    _serial.Dispose();
+                }
                 StringDataReceivedHandler = null;
                 BytesFrameDataReceivedHandler = null;
                 BytesDecodedDataReceivedHandler = null;
