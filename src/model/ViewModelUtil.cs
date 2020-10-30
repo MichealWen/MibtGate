@@ -995,7 +995,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toGetTime());
+                    SerialWork(() => ToGetTime());
                 }
             };
             SetTimeCmd = new SimpleCommand()
@@ -1865,7 +1865,7 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.SetTime + " " + CurrentTime.Year.ToString() + " " + CurrentTime.Month + " " + CurrentTime.Day + " " + CurrentTime.Hour + " " + CurrentTime.Minute + " " + CurrentTime.Second);
         }
 
-        private void toGetTime()
+        private void ToGetTime()
         {
             string lastOperation = SerialRadarCommands.GetTIme;
             serial.StringDataReceivedHandler = msg =>
@@ -1879,7 +1879,7 @@ namespace MbitGate.model
                             serial.WriteLine(SerialRadarCommands.GetTIme);
                             break;
                         case SerialRadarCommands.GetTIme:
-                            string[] date = msg.Split(new char[] { '\r', '\n', ' ' });
+                            string[] date = msg.Trim('\n', ' ').Split('\r', '\n', ' ' );
                             try
                             {
                                 if (date[3] == "")
