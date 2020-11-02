@@ -1009,7 +1009,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toClarTime());
+                    SerialWork(() => ToClarTime());
                 }
             };
             SearchCmd = new SimpleCommand()
@@ -1801,7 +1801,7 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.SearchInvert + " " + InvertSearchCount);
         }
 
-        private void toClarTime()
+        private void ToClarTime()
         {
             string lastOperation = SerialRadarCommands.SensorStop;
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async ()=> {

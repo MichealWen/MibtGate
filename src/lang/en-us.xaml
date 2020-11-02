@@ -55,14 +55,14 @@
     <s:String x:Key="Record">&#160;&#160;&#160;&#160;Record</s:String>
     <s:String x:Key="GetTime">GetTime</s:String>
     <s:String x:Key="SetTime">SetTime</s:String>
-    <s:String x:Key="ClearTime">ClearTime</s:String>
+    <s:String x:Key="ClearTime">Clear</s:String>
     <s:String x:Key="Search">Search</s:String>
     <s:String x:Key="InvertSearch">Invert Search</s:String>
     <s:String x:Key="InvertSearchCount">Invert Number</s:String>
     <s:String x:Key="SearchResult">Result</s:String>
     <s:String x:Key="FuncGetTime">Get Current Time In Radar</s:String>
     <s:String x:Key="FuncSetTime">synchronize Radar Time</s:String>
-    <s:String x:Key="FuncClearTime">Clear Radar Time</s:String>
+    <s:String x:Key="FuncClearTime">Clear Radar Log</s:String>
     <s:String x:Key="FuncRecord">Get Records In Radar</s:String>
     <s:String x:Key="FuncInvertRecord">Get Last Number Records In Radar</s:String>
     <s:String x:Key="ConfirmAlarm">Show</s:String>
@@ -120,8 +120,8 @@
     <s:String x:Key="SetTimeFail">Set Time Fail</s:String>
     <s:String x:Key="SetTimeSuccess">Set Time Success</s:String>
     <s:String x:Key="ClearTiming">Clearing Time</s:String>
-    <s:String x:Key="ClearTimeFail">Clear Time Fail</s:String>
-    <s:String x:Key="ClearTimeSuccess">Clear Time Success</s:String>
+    <s:String x:Key="ClearTimeFail">Clear Log Fail</s:String>
+    <s:String x:Key="ClearTimeSuccess">Clear Log Success</s:String>
     <s:String x:Key="SearchTimeFail">Search Time Fail</s:String>
     <s:String x:Key="SearchTimeSuccess">Search Time Success</s:String>
     <s:String x:Key="SearchTimeGetNone">Get Data None</s:String>
