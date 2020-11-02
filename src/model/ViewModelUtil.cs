@@ -988,9 +988,6 @@ namespace MbitGate.model
                 }
             };
 
-            timekeeper.Tick += Timekeeper_Tick;
-            timekeeper.Interval = TimeSpan.FromSeconds(10);
-
             GetTimeCmd = new SimpleCommand()
             {
                 ExecuteDelegate = param =>
@@ -2010,7 +2007,8 @@ namespace MbitGate.model
                         OnPropertyChanged("Delay");
                         await TaskEx.Delay(300);
                         lastOperation = string.Empty;
-                        ShowConfirmWindow(tip, string.Empty);
+                        if(tip != string.Empty)
+                            ShowConfirmWindow(tip, string.Empty);
                         mutex.Set();
                         serial.close();
                     }
@@ -2210,7 +2208,6 @@ namespace MbitGate.model
             serial.WriteLine(SerialRadarCommands.ReadCLI + " setThresholdParas");
         }
 
-        DispatcherTimer timekeeper = new DispatcherTimer();
         private void ToStudy()
         {
             serial.EndStr = "\n";
@@ -2260,23 +2257,10 @@ namespace MbitGate.model
             serial.StringDataReceivedHandler = null;
             mutex.Set();
         }
-        private void Timekeeper_Tick(object sender, EventArgs e)
-        {
-            if(_progressCtrl.IsVisible)
-            {
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
-                {
-                    _progressViewModel.Message = Tips.StudyEnd;
-                    await TaskEx.Delay(1000);
-                    await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
-                }));
-                mutex.Set();
-                timekeeper.Stop();
-            }
-        }
 
         private void ToReset()
         {
+            bool toResetBaud = (ConfigModel.CustomRate != uint.Parse(BauRate.Rate115200));
             string lastOperation = SerialRadarCommands.Output;
             serial.StringDataReceivedHandler =async msg =>
             {
@@ -2286,7 +2270,7 @@ namespace MbitGate.model
                     {
                         serial.EndStr = SerialRadarReply.Done;
                         lastOperation = SerialRadarCommands.ReadCLI;
-                        await TaskEx.Delay(300);  
+                        await TaskEx.Delay(100);
                         serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
                     }
                 }
@@ -2314,11 +2298,11 @@ namespace MbitGate.model
                                 OnPropertyChanged("Threshold");
                                 OnPropertyChanged("Record");
 
-                                mutex.Set();
-                                Thread.Sleep(500);
+                                Thread.Sleep(300);
                                 if (DelayVisible)
                                 {
-                                    SerialWork(() => ToGetDelay(Tips.ResetSuccess));
+                                    lastOperation = SerialArguments.DelayTimeParam;
+                                    serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.DelayTimeParam);
                                 }
                                 if(IsTriggerRadarType)
                                     ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
@@ -2331,19 +2315,66 @@ namespace MbitGate.model
                         ShowErrorWindow(Tips.ResetFail);
                         mutex.Set();
                     }
+                    else if (lastOperation == SerialArguments.DelayTimeParam)
+                    {
+                        Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d+").Value;
+                        OnPropertyChanged("Delay");
+                        await TaskEx.Delay(100);
+
+                        if(toResetBaud)
+                        {
+                            lastOperation = SerialRadarCommands.WriteBaudRate;
+                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
+                        }
+                        else
+                        {
+                            ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                            mutex.Set();
+                            serial.close();
+                        }
+                    }
+                    else if (lastOperation == SerialRadarCommands.WriteBaudRate)
+                    {
+                        lastOperation = string.Empty;
+                        await TaskEx.Delay(100);
+                        serial.WriteLine(SerialRadarCommands.SoftReset);
+                        mutex.Set();
+                        serial.close();
+                        ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                    }
                 }
-                else if (msg.Contains(SerialRadarReply.Error))
+                else
                 {
-                    ShowErrorWindow(Tips.ResetFail);
-                    mutex.Set();
+                    if(lastOperation == SerialRadarCommands.Output)
+                    {
+                        serial.Rate = int.Parse(BauRate.Rate115200);
+                        serial.EndStr = SerialRadarReply.Start;
+                        serial.CompareEndString = true;
+                        //lastOperation = SerialRadarCommands.ReadCLI;
+                        //await TaskEx.Delay(800);
+                        //serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
+                    }
                 }
-                else if(msg.Contains(SerialRadarReply.Start))
-                {
-                    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
-                }
+                //else if (msg.Contains(SerialRadarReply.Error))
+                //{
+                //    ShowErrorWindow(Tips.ResetFail);
+                //    mutex.Set();
+                //}
+                //else if (msg.Contains(SerialRadarReply.Start))
+                //{
+                //    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                //}
             };
-            serial.EndStr = SerialRadarReply.Start;
+            if(toResetBaud)
+            {
+                serial.CompareEndString = false;
+            }
+            else
+            {
+                serial.EndStr = SerialRadarReply.Start;
+            }
             serial.WriteLine(SerialRadarCommands.Output + " 13");
+            //serial.Rate = int.Parse(BauRate.Rate115200);
         }
 
         private void ToGet()
