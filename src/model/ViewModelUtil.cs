@@ -1988,6 +1988,30 @@ namespace MbitGate.model
                     });
             }
         }
+        private void StepWork(Action towork, bool toShowOverTimeTip = true, int waitmillionseoconds = 500, Action overTimeToDo = null)
+        {
+            if (serial != null)
+                serial.close();
+            serial = new SerialManager(GetSerialPortName(ConfigModel.CustomItem));
+            serial.Rate = (int)ConfigModel.CustomRate;
+            serial.Type = SerialReceiveType.Chars;
+            if (!serial.open())
+            {
+                ShowErrorWindow(ErrorString.SerialOpenError);
+                return;
+            }
+            towork();
+            if (!mutex.WaitOne(waitmillionseoconds))
+            {
+                if (toShowOverTimeTip)
+                    ShowErrorWindow(ErrorString.OverTime);
+                if (overTimeToDo != null)
+                {
+                    overTimeToDo();
+                }
+            }
+            mutex.Reset();
+        }
         private void ToGetDelay(string tip)
         {
             string lastOperation = SerialRadarCommands.ReadCLI;
