@@ -181,4 +181,5 @@
     <s:String x:Key="TipResetFail">Reset Fail</s:String>
 
     <s:String x:Key="CustomUpdateRate">Update Baud</s:String>
+    <s:String x:Key="FuncLogout">LogOut</s:String>
 </ResourceDictionary>

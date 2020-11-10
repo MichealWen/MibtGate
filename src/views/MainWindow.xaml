@@ -66,7 +66,7 @@
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <Image Source="/MbitGate;component/image/log-out.png"  Width="16" Height="16" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown"/>
+            <Image Source="/MbitGate;component/image/log-out.png"  Width="32" Height="32" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown" ToolTip="{StaticResource FuncLogout}"/>
             <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 5 0" HorizontalAlignment="Right" MouseDown="VersionTextBox_MouseDown"/>
         </DockPanel>
 
