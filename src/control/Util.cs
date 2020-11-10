@@ -288,8 +288,8 @@ namespace MbitGate.control
         public static string Up = Application.Current.Resources["Up"].ToString();
         public static string Down = Application.Current.Resources["Down"].ToString();
 
-        public const string UpValue = @"Dalay:1";
-        public const string DownValue = @"Dalay:0";
+        public const string UpValue = @"Relay:1";
+        public const string DownValue = @"Relay:0";
     }
 
     public class ThresholdType
