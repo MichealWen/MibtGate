@@ -155,6 +155,7 @@ namespace MbitGate.control
     public class ErrorString
     {
         public const string Error = "[Error]";
+        public static string Warning = Application.Current.Resources["Warnning"].ToString();
         public static string ParamError = Application.Current.Resources["ParamsError"].ToString();
         public static string BinPathError = Application.Current.Resources["BinPathError"].ToString();
         public static string SerialError = Application.Current.Resources["SerialError"].ToString();
@@ -218,6 +219,7 @@ namespace MbitGate.control
         public static string ReasonAnomalousSearching = Application.Current.Resources["ReasonAnomalousSearching"].ToString();
         public static string ResetSuccess = Application.Current.Resources["TipResetSuccess"].ToString();
         public static string ResetFail = Application.Current.Resources["TipResetFail"].ToString();
+        public static string ToReset = Application.Current.Resources["TipToReset"].ToString();
     }
 
     public class GateType

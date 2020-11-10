@@ -968,7 +968,10 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(()=>ToReset());
+                    ShowConfirmCancelWindow(string.Empty, Tips.ToReset,
+                        () => {
+                            SerialWork(() => ToReset());
+                        });
                 }
             };
 
@@ -2286,7 +2289,7 @@ namespace MbitGate.model
         {
             bool toResetBaud = (ConfigModel.CustomRate != uint.Parse(BauRate.Rate115200));
             string lastOperation = SerialRadarCommands.Output;
-            serial.StringDataReceivedHandler =async msg =>
+            serial.StringDataReceivedHandler = async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Start))
                 {
@@ -2298,7 +2301,7 @@ namespace MbitGate.model
                         serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
                     }
                 }
-                else if(msg.Contains(SerialRadarReply.Done))
+                else if (msg.Contains(SerialRadarReply.Done))
                 {
                     if (lastOperation == SerialRadarCommands.ReadCLI)
                     {
@@ -2328,7 +2331,7 @@ namespace MbitGate.model
                                     lastOperation = SerialArguments.DelayTimeParam;
                                     serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.DelayTimeParam);
                                 }
-                                if(IsTriggerRadarType)
+                                if (IsTriggerRadarType)
                                     ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
                                 return;
                             }
@@ -2345,7 +2348,7 @@ namespace MbitGate.model
                         OnPropertyChanged("Delay");
                         await TaskEx.Delay(100);
 
-                        if(toResetBaud)
+                        if (toResetBaud)
                         {
                             lastOperation = SerialRadarCommands.WriteBaudRate;
                             serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
@@ -2369,7 +2372,7 @@ namespace MbitGate.model
                 }
                 else
                 {
-                    if(lastOperation == SerialRadarCommands.Output)
+                    if (lastOperation == SerialRadarCommands.Output)
                     {
                         serial.Rate = int.Parse(BauRate.Rate115200);
                         serial.EndStr = SerialRadarReply.Start;
@@ -2389,7 +2392,7 @@ namespace MbitGate.model
                 //    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
                 //}
             };
-            if(toResetBaud)
+            if (toResetBaud)
             {
                 serial.CompareEndString = false;
             }
