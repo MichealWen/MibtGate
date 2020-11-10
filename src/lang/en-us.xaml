@@ -94,8 +94,8 @@
     <s:String x:Key="RadarError">Radar Error</s:String>
     <s:String x:Key="DistacneMaxError">Max Distance should in[1~ 6] meters</s:String>
     <s:String x:Key="DistacneMinError">Min Distance should in [0.2~1]meters</s:String>
-    <s:String x:Key="RangeError1">Either Side shoule between 0.4 ~1 meter</s:String>
-    <s:String x:Key="RangeError2">Either Side shoule between 0.7 ~1 meter</s:String>
+    <s:String x:Key="RangeError1">Either Side shoule between 0.1 ~1.5 meter</s:String>
+    <s:String x:Key="RangeError2">Either Side shoule between 0.7 ~1.5 meter</s:String>
     <s:String x:Key="DelayError">Delay Must Between 3~300 Seconds</s:String>
     <s:String x:Key="Opening">Serial Opening</s:String>
     <s:String x:Key="Initializing">Initializing</s:String>

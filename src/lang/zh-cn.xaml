@@ -94,8 +94,8 @@
     <s:String x:Key="RadarError">雷达标号错误</s:String>
     <s:String x:Key="DistacneMaxError">作用最大前向距离1~6米</s:String>
     <s:String x:Key="DistacneMinError">作用最小前向距离0.2~1米</s:String>
-    <s:String x:Key="RangeError1">左右范围0.4~1米</s:String>
-    <s:String x:Key="RangeError2">左右范围0.7~1米</s:String>
+    <s:String x:Key="RangeError1">左右范围0.1~1.5米</s:String>
+    <s:String x:Key="RangeError2">左右范围0.7~1.5米</s:String>
     <s:String x:Key="DelayError">延时时间区间3~300秒</s:String>
     <s:String x:Key="Opening">正在打开串口</s:String>
     <s:String x:Key="Initializing">正在初始化设置</s:String>
