@@ -1016,7 +1016,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => ToSearch());
+                    SerialWork(() => ToSearch(), false, -1);
                 }
             };
             SearchResult = new ObservableCollection<string>();
@@ -1636,6 +1636,7 @@ namespace MbitGate.model
             {
                 SearchResult.Clear();
             }));
+            serial.EndStr = SerialRadarReply.NewLine;
             serial.StringDataReceivedHandler = msg =>
             {
                 if(msg.Contains(SerialRadarReply.Done))
@@ -1656,7 +1657,7 @@ namespace MbitGate.model
                                                                                                                            " " + EndTime.Day +
                                                                                                                            " " + EndTime.Hour +
                                                                                                                            " " + EndTime.Minute +
-                                                                                                                           " " + EndTime.Second);
+                                                                                                                           " " + EndTime.Second, 6000);
                             break;
                         case SerialRadarCommands.SearchTime:
                             lastOperation = string.Empty;
@@ -1667,8 +1668,8 @@ namespace MbitGate.model
                                     {
                                         if (str != string.Empty)
                                         {
-                                            str = str.Replace(OperationType.UpValue, OperationType.Up);
-                                            str = str.Replace(OperationType.DownValue, OperationType.Down);
+                                            //str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                            //str = str.Replace(OperationType.DownValue, OperationType.Down);
                                             SearchResult.Add(str);
                                         }
                                     });
@@ -1704,10 +1705,35 @@ namespace MbitGate.model
                     serial.StringDataReceivedHandler = null;
                     mutex.Set();
                 }
-                else
+                else if(msg.Contains(SerialRadarReply.Error))
                 {
                     mutex.Set();
                     ShowErrorWindow(Tips.SearchTimeFail);
+                }
+                else
+                {
+                    if(lastOperation == SerialRadarCommands.SearchTime)
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
+                            lock (SearchResult)
+                            {
+                                msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
+                                {
+                                    if (str != string.Empty)
+                                    {
+                                        //str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                        //str = str.Replace(OperationType.DownValue, OperationType.Down);
+                                        SearchResult.Add(str);
+                                    }
+                                });
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        mutex.Set();
+                        ShowErrorWindow(Tips.SearchTimeFail);
+                    }
                 }
             };
             serial.WriteLine(SerialRadarCommands.SearchTime + " " + StartTime.Year +
@@ -1721,7 +1747,7 @@ namespace MbitGate.model
                                                                                                                            " " + EndTime.Day +
                                                                                                                            " " + EndTime.Hour +
                                                                                                                            " " + EndTime.Minute +
-                                                                                                                           " " + EndTime.Second);
+                                                                                                                           " " + EndTime.Second, 6000);
         }
 
         private void ToInvertSearch()
@@ -2278,7 +2304,7 @@ namespace MbitGate.model
         }
         private async void ToReboot()
         {
-            serial.WriteLine(SerialRadarCommands.SoftReset, 0, false);
+            serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
             ShowConfirmWindow(Tips.RebootSuccess, Tips.ConfigSuccess);
             await TaskEx.Delay(500);
             serial.StringDataReceivedHandler = null;
@@ -2523,7 +2549,7 @@ namespace MbitGate.model
                     {
                         lastOperation = SerialRadarCommands.WriteCLI;
                         await TaskEx.Delay(300);
-                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (lrange * 10).ToString("F0") + " " + (mindistance * 10).ToString("F0")  + " 2 " + (maxdistance * 10).ToString("F0") + " " + (rrange * 10).ToString("F0") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold) + " " + control.RecordKind.GetValue(Record));
+                        serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.FilterParam + " 0 0 " + (lrange * 10).ToString("F1") + " " + (mindistance * 10).ToString("F1")  + " 2 " + (maxdistance * 10).ToString("F1") + " " + (rrange * 10).ToString("F1") + " 32 " + control.GateType.GetValue(Gate) + " " + control.ThresholdType.GetValue(Threshold) + " " + control.RecordKind.GetValue(Record));
                     }
                     else if (lastOperation == SerialRadarCommands.WriteCLI)
                     {
@@ -3202,7 +3228,7 @@ namespace MbitGate.model
             base.Dispose();
             if (serial != null)
             {
-                serial.WriteLine(SerialRadarCommands.SoftReset, 0, false);
+                serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
                 serial.close();
             }
         }
