@@ -970,7 +970,7 @@ namespace MbitGate.model
                 {
                     ShowConfirmCancelWindow(string.Empty, Tips.ToReset,
                         () => {
-                            SerialWork(() => ToReset());
+                            SerialWork(() => ToReset(), true, 6000);
                         });
                 }
             };
@@ -2431,7 +2431,7 @@ namespace MbitGate.model
             {
                 serial.EndStr = SerialRadarReply.Start;
             }
-            serial.WriteLine(SerialRadarCommands.Output + " 13");
+            serial.WriteLine(SerialRadarCommands.Output + " 13", 3000);
             //serial.Rate = int.Parse(BauRate.Rate115200);
         }
 
