@@ -1216,6 +1216,7 @@ namespace MbitGate.model
                 {
                     ShowErrorWindow(Tips.ConfigFail);
                 }
+                serial.StringDataReceivedHandler = null;
                 mutex.Set();
             };
             serial.WriteLine(SerialRadarCommands.WriteCLI + " setThresholdParas  325 0.86 0.00 120 5 0.68 1.50");
