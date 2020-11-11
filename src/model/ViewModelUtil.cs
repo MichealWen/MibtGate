@@ -1193,7 +1193,12 @@ namespace MbitGate.model
         private void ToRelogin()
         {
             this.Dispose();
-            Application.Current.Dispatcher.Invoke((Action)(()=> {
+            Application.Current.Dispatcher.Invoke((Action)(() => {
+                ConfigModel = new ConfigViewModel(
+                async cancel => { await _dialogCoordinator.HideMetroDialogAsync(this, _settingView); },
+                confirm => { connect(); }
+                );
+                _settingView.DataContext = ConfigModel;
                 this.start();
             }));
         }
@@ -2496,27 +2501,34 @@ namespace MbitGate.model
             float mindistance = 0.0f, maxdistance = 0.0f, lrange = 0.0f, rrange = 0.0f;
             try
             {
-                mindistance = float.Parse(MinDistance);
                 maxdistance = float.Parse(MaxDistance);
+                if (maxdistance > 6.0 || maxdistance < 1.0)
+                    throw new Exception();
+            }
+            catch
+            {
+                ShowErrorWindow(ErrorString.DistacneMaxError);
+                mutex.Set();
+                return;
+            }
+            try
+            {
+                mindistance = float.Parse(MinDistance);
+                if (mindistance > 0.99999 || mindistance < 0.2)
+                    throw new Exception();
+            }
+            catch (Exception)
+            {
+                ShowErrorWindow(ErrorString.DistacneMinError);
+                mutex.Set();
+                return;
+            }
+            try
+            {
                 lrange = float.Parse(LRange);
                 rrange = float.Parse(RRange);
                 string error = string.Empty;
-                if (maxdistance < 0 || lrange < 0 || rrange < 0)
-                {
-                    error = ErrorString.ParamError;
-                    throw new Exception(error);
-                }
-                else if (maxdistance > 6.0 || maxdistance < 1.0)
-                {
-                    error = ErrorString.DistacneMaxError;
-                    throw new Exception(error);
-                }
-                else if(mindistance > 1.0 || mindistance < 0.2)
-                {
-                    error = ErrorString.DistacneMinError;
-                    throw new Exception(error);
-                }
-                else if(Gate == control.GateType.Straight)
+                if(Gate == control.GateType.Straight)
                 {
                     if (lrange < 0.09999 || rrange < 0.09999 || lrange > 1.50001 || rrange > 1.50001)
                     {
