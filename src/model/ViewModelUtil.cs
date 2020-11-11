@@ -3244,7 +3244,6 @@ namespace MbitGate.model
             base.Dispose();
             if (serial != null)
             {
-                serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
                 serial.close();
             }
         }
