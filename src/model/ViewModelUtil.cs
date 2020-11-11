@@ -1194,8 +1194,9 @@ namespace MbitGate.model
         {
             this.Dispose();
             Application.Current.Dispatcher.Invoke((Action)(() => {
+                ConfigViewModel tmp = ConfigModel;
                 ConfigModel = new ConfigViewModel(
-                async cancel => { await _dialogCoordinator.HideMetroDialogAsync(this, _settingView); },
+                async cancel => { ConfigModel.CustomRate = tmp.CustomRate; await _dialogCoordinator.HideMetroDialogAsync(this, _settingView); },
                 confirm => { connect(); }
                 );
                 _settingView.DataContext = ConfigModel;
@@ -1971,15 +1972,18 @@ namespace MbitGate.model
                         await _dialogCoordinator.HideMetroDialogAsync(this, _settingView);
                     }
                 }));
+                if (ConfigModel.SelectedRadarType == Application.Current.Resources["RadarTriggerType"].ToString())
+                {
+                    ConnectedRadarType = RadarType.Trigger;
+                }
+                else
+                {
+                    ConnectedRadarType = RadarType.Hold;
+                }
+                OnPropertyChanged("IsHoldRadarType");
             }), false, 1000, ()=> {
                 ShowErrorWindow(ErrorString.ConnectError);
             });
-
-            if (ConfigModel.SelectedRadarType == Application.Current.Resources["RadarTriggerType"].ToString())
-            {
-                ConnectedRadarType = RadarType.Trigger;
-                OnPropertyChanged("IsHoldRadarType");
-            }
         }
 
         ManualResetEvent mutex = new ManualResetEvent(false);
@@ -2341,10 +2345,10 @@ namespace MbitGate.model
                         {
                             try
                             {
-                                LRange = (float.Parse(collection[2].Value) / 10).ToString();
-                                MinDistance = (float.Parse(collection[3].Value) / 10).ToString();
-                                MaxDistance = (float.Parse(collection[5].Value) / 10).ToString();
-                                RRange = (float.Parse(collection[6].Value) / 10).ToString();
+                                LRange = (float.Parse(collection[2].Value) / 10).ToString("F1");
+                                MinDistance = (float.Parse(collection[3].Value) / 10).ToString("F1");
+                                MaxDistance = (float.Parse(collection[5].Value) / 10).ToString("F1");
+                                RRange = (float.Parse(collection[6].Value) / 10).ToString("F1");
                                 Gate = control.GateType.GetType(collection[8].Value);
                                 Threshold = control.ThresholdType.GetType(collection[9].Value);
                                 Record = control.RecordKind.GetType(collection[10].Value);
@@ -2454,10 +2458,10 @@ namespace MbitGate.model
                         {
                             try
                             {
-                                LRange = (float.Parse(collection[2].Value) / 10).ToString();
-                                MinDistance = (float.Parse(collection[3].Value) / 10).ToString();
-                                MaxDistance = (float.Parse(collection[5].Value) / 10).ToString();
-                                RRange = (float.Parse(collection[6].Value) / 10).ToString();
+                                LRange = (float.Parse(collection[2].Value) / 10).ToString("F1");
+                                MinDistance = (float.Parse(collection[3].Value) / 10).ToString("F1");
+                                MaxDistance = (float.Parse(collection[5].Value) / 10).ToString("F1");
+                                RRange = (float.Parse(collection[6].Value) / 10).ToString("F1");
                                 Gate = control.GateType.GetType(collection[8].Value);
                                 Threshold = control.ThresholdType.GetType(collection[9].Value);
                                 Record = control.RecordKind.GetType(collection[10].Value);
