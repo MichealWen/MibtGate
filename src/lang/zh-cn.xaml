@@ -30,7 +30,7 @@
     <s:String  x:Key="Position">杆位置</s:String>
     <s:String  x:Key="Threshold">人车区分</s:String>
     <s:String  x:Key="Delay">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;延时</s:String>
-    <s:String  x:Key="UnitM">m</s:String>
+    <s:String  x:Key="UnitM">米</s:String>
     <s:String  x:Key="UnitS">秒</s:String>
     <s:String  x:Key="Get">获取</s:String>
     <s:String  x:Key="Set">重设</s:String>
@@ -39,7 +39,7 @@
     <s:String  x:Key="Verify">验证</s:String>
     <s:String x:Key="Study">自学习</s:String>
     <s:String x:Key="Reboot">软重启</s:String>
-    <s:String x:Key="AdvertisingFence">广告栅栏道闸</s:String>
+    <s:String x:Key="Fence">栅栏道闸</s:String>
     <s:String x:Key="Advertising">广告道闸</s:String>
     <s:String x:Key="Straight">直杆道闸</s:String>
     <s:String x:Key="GateType">道闸类型</s:String>
@@ -183,4 +183,8 @@
     <s:String x:Key="CustomUpdateRate">升级波特率</s:String>
     <s:String x:Key="FuncLogout">重新进入登录界面</s:String>
     <s:String x:Key="TipToReset">恢复所有参数到默认值，清除学习信息</s:String>
+
+    <s:String x:Key="FencePosition">杆件位置</s:String>
+    <s:String x:Key="PositionLeft">雷达左侧</s:String>
+    <s:String x:Key="PositionRight">雷达右侧</s:String>
 </ResourceDictionary>

@@ -10,7 +10,7 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" Height="450" Width="1000" ResizeMode="CanMinimize"
+        Title="{StaticResource MainWindowTitle}" Height="490" Width="1000" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" >
     <Grid x:Name="MainWin">
         <Grid.Resources>
@@ -32,41 +32,41 @@
         <DockPanel Height="48" VerticalAlignment="Top" Background="#202020" Grid.Row="0">
             <ToggleButton x:Name="ic_tab_config" Style="{StaticResource STYLE_TabToggle}" Click="Config_Choose_Click">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/config.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/config.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource ConfigModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_update" Style="{StaticResource STYLE_TabToggle}" Click="Update_Choose_Click">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/update.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/update.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource SerialModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_search" Style="{StaticResource STYLE_TabToggle}" Click="Record_Choose_Click" Visibility="{Binding Record, Converter={StaticResource SearchModelVisibilityConverter}}">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/search.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/search.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource RecordModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_alarm" Style="{StaticResource STYLE_TabToggle}" Click="Alarm_Choose_Click" Visibility="Visible">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource AlarmModelTitile}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_comparison" Style="{StaticResource STYLE_TabToggle}" Click="Compare_Choose_Click" Visibility="Visible">
                 <DockPanel Width="150">
-                    <Image Source="/MbitGate;component/image/triangle.png"    DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/triangle.png"    DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource CompareModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_develop" Style="{StaticResource STYLE_TabToggle}" Click="Develop_Choose_Click">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/develop.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/develop.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <Image Source="/MbitGate;component/image/log-out.png"  Width="32" Height="32" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown" ToolTip="{StaticResource FuncLogout}"/>
+            <Image Source="/DAHUA_ITS_A08;component/image/log-out.png"  Width="32" Height="32" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown" ToolTip="{StaticResource FuncLogout}"/>
             <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 5 0" HorizontalAlignment="Right" MouseDown="VersionTextBox_MouseDown"/>
         </DockPanel>
 
@@ -88,19 +88,23 @@
                     <TextBox x:Name="FrontMinDistance" Text="{Binding MinDistance}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
                     <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                    <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 5 10" Visibility="{Binding IsFencePositionTypeVisible, Converter={StaticResource bool2VisibilityConverter}}">
+                    <TextBlock Text="{StaticResource FencePosition}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                    <ComboBox  ItemsSource="{Binding FencePositionTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding FencePosition}" IsEnabled="{Binding IsFencePositionEnable}"/>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
                     <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox x:Name="LRange" Text="{Binding LRange,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True,Mode=TwoWay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    <TextBox x:Name="LRange" Text="{Binding LRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsLeftRangeEditable}"/>
                     <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
                     <TextBlock Text="{StaticResource RRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox x:Name="RRange" Text="{Binding RRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    <TextBox x:Name="RRange" Text="{Binding RRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsRightRangeEditable}"/>
                     <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
-                    <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
                     <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>

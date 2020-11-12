@@ -141,6 +141,7 @@ namespace MbitGate.control
         public const string FrameCfg = "frameCfg";
         public const string BootLoaderFlag = "bootLoaderFlag";
         public const string DelayTimeParam = "setDelayTimeParas";
+        public const string RodDirection = "rodDirection";
     }
 
     public class SerialRadarReply
@@ -226,19 +227,25 @@ namespace MbitGate.control
     public class GateType
     {
         public static string Straight = Application.Current.Resources["Straight"].ToString();
-        public static string AdvertisingFence = Application.Current.Resources["AdvertisingFence"].ToString();
+        public static string Fence = Application.Current.Resources["Fence"].ToString();
+        public static string Advertising = Application.Current.Resources["Advertising"].ToString();
 
         public static List<string> GetAllTypes()
         {
-            return new List<string>() { Straight, AdvertisingFence };
+            return new List<string>() { Straight, Advertising, Fence};
         }
-
+        public static List<string> getAllTypesWithoutFence()
+        {
+            return new List<string>() { Straight, Advertising };
+        }
         public static string GetType(string value)
         {
             if (value == "0")
                 return Straight;
             else if (value == "1")
-                return AdvertisingFence;
+                return Advertising;
+            else if (value == "2")
+                return Fence;
             else
                 return value;
         }
@@ -246,8 +253,10 @@ namespace MbitGate.control
         {
             if (type == Straight)
                 return "0";
-            else if (type == AdvertisingFence)
+            else if (type == Advertising)
                 return "1";
+            else if (type == Fence)
+                return "2";
             else
                 return type;
         }
@@ -334,6 +343,36 @@ namespace MbitGate.control
                 default:
                     return value;
             }
+        }
+    }
+
+    public class FencePositionType
+    {
+        public static string Left = Application.Current.Resources["PositionLeft"].ToString();
+        public static string Right = Application.Current.Resources["PositionRight"].ToString();
+
+        public static List<string> GetAllTypes()
+        {
+            return new List<string>() { Left, Right };
+        }
+
+        public static string GetType(string value)
+        {
+            if (value == "0")
+                return Left;
+            else if (value == "1")
+                return Right;
+            else
+                return value;
+        }
+        public static string GetValue(string type)
+        {
+            if (type == Left)
+                return "0";
+            else if (type == Right)
+                return "1";
+            else
+                return type;
         }
     }
 }

@@ -805,8 +805,28 @@ namespace MbitGate.model
 
         public string BinPath { get; set; }
 
-        public List<string> GateTypes { get { return control.GateType.GetAllTypes(); } }
-        public string Gate { get; set; }
+        public List<string> GateTypes { get; set; }
+        string gate = string.Empty;
+        public string Gate { 
+            get=>gate;
+            set {
+                if(value == control.GateType.Straight)
+                {
+                    IsFencePositionEnable = false;
+                    IsLeftRangeEditable = true;
+                    IsRightRangeEditable = true;
+                    OnPropertyChanged("IsLeftRangeEditable");
+                    OnPropertyChanged("IsRightRangeEditable");
+                }
+                else
+                {
+                    IsFencePositionEnable = true;
+                    FencePosition = _fencePosition;
+                }
+                gate = value;
+                OnPropertyChanged("IsFencePositionEnable");
+            } 
+        }
         public List<string> ThresholdTypes { get { return control.ThresholdType.GetAllTypes(); } }
 
         public bool Developer { get; set; }
@@ -872,6 +892,45 @@ namespace MbitGate.model
 
         public List<string> UpdateRates { get => BauRate.GetUpdateRates(); }
         public string CustomUpdateRate { get; set; }
+
+        public List<string> FencePositionTypes { get; set; }
+        private string _fencePosition = string.Empty;
+        public string FencePosition 
+        {
+            get => _fencePosition;
+            set 
+            {
+                if(IsFencePositionTypeVisible)
+                {
+                   if(value == control.FencePositionType.Left)
+                    {
+                        IsLeftRangeEditable = false;
+                        IsRightRangeEditable = true;
+                        LRange = "1.0";
+                    }
+                   else if(value == control.FencePositionType.Right)
+                    {
+                        IsRightRangeEditable = false;
+                        IsLeftRangeEditable = true;
+                        RRange = "1.0";
+                    }
+                }
+                else
+                {
+                    IsLeftRangeEditable = true;
+                    IsRightRangeEditable = true;
+                }
+                _fencePosition = value;
+                OnPropertyChanged("IsLeftRangeEditable");
+                OnPropertyChanged("IsRightRangeEditable");
+                OnPropertyChanged("RRange");
+                OnPropertyChanged("LRange");
+            } 
+        }
+        public bool IsFencePositionTypeVisible { get; set; }
+        public bool IsLeftRangeEditable { get; set; }
+        public bool IsRightRangeEditable { get; set; }
+        public bool IsFencePositionEnable { get; set; }
 
         public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
         {
@@ -2056,7 +2115,7 @@ namespace MbitGate.model
             }
             mutex.Reset();
         }
-        private void ToGetDelay(string tip)
+        private void ToGetDelayAndFencePosition(string tip)
         {
             string lastOperation = SerialRadarCommands.ReadCLI;
             serial.StringDataReceivedHandler =async msg =>
@@ -2073,9 +2132,35 @@ namespace MbitGate.model
                     {
                         Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d+").Value;
                         OnPropertyChanged("Delay");
-                        await TaskEx.Delay(300);
+                        await TaskEx.Delay(100);
+                        if(IsFencePositionTypeVisible)
+                        {
+                            lastOperation = SerialArguments.RodDirection;
+                            serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.RodDirection);
+                        }
+                        else
+                        {
+                            lastOperation = string.Empty;
+                            if (tip != string.Empty)
+                                ShowConfirmWindow(tip, string.Empty);
+                            mutex.Set();
+                            serial.close();
+                        }
+                    }
+                    else if(lastOperation == SerialArguments.RodDirection)
+                    {
+                        string position = System.Text.RegularExpressions.Regex.Match(msg, @"\d").Value;
+                        FencePosition = control.FencePositionType.GetType(position);
+                        OnPropertyChanged("FencePosition");
+                        if(Gate == control.GateType.Straight)
+                        {
+                            IsLeftRangeEditable = true;
+                            IsRightRangeEditable = true;
+                            OnPropertyChanged("IsLeftRangeEditable");
+                            OnPropertyChanged("IsRightRangeEditable");
+                        }
                         lastOperation = string.Empty;
-                        if(tip != string.Empty)
+                        if (tip != string.Empty)
                             ShowConfirmWindow(tip, string.Empty);
                         mutex.Set();
                         serial.close();
@@ -2093,7 +2178,7 @@ namespace MbitGate.model
             };
             serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.DelayTimeParam);
         }
-        private void ToSetDelay(bool reset=false)
+        private void ToSetDelayAndFencePosition(bool reset=false)
         {
             int delay = 6;
             try
@@ -2131,15 +2216,35 @@ namespace MbitGate.model
                             Delay = delay.ToString();
                             OnPropertyChanged("Delay");
                         }
+                        if (IsFencePositionTypeVisible && gate != control.GateType.Straight)
+                        {
+                            lastOperation = SerialArguments.RodDirection;
+                            await TaskEx.Delay(100);
+                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.RodDirection + " " + control.FencePositionType.GetValue(FencePosition));
+                        }
+                        else
+                        {
+                            lastOperation = string.Empty;
+                            ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
+                            await TaskEx.Delay(300);
+                            serial.EndStr = SerialRadarReply.Start;
+                            serial.WriteLine(SerialRadarCommands.SoftReset);
+                            mutex.Set();
+                        }
+                    }
+                    else if (lastOperation == SerialArguments.RodDirection)
+                    {
+                        lastOperation = string.Empty;
                         ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
                         await TaskEx.Delay(300);
                         serial.EndStr = SerialRadarReply.Start;
                         serial.WriteLine(SerialRadarCommands.SoftReset);
-                        mutex.Set(); 
+                        mutex.Set();
                     }
                 }
                 else if (msg.Contains(SerialRadarReply.Error))
                 {
+                    serial.StringDataReceivedHandler = null;
                     ShowErrorWindow(Tips.ConfigFail);
                     mutex.Set();
                 }
@@ -2388,7 +2493,38 @@ namespace MbitGate.model
                         Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d+").Value;
                         OnPropertyChanged("Delay");
                         await TaskEx.Delay(100);
-
+                        if (IsFencePositionTypeVisible)
+                        {
+                            lastOperation = SerialArguments.RodDirection;
+                            serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.RodDirection);
+                        }
+                        else
+                        {
+                            if (toResetBaud)
+                            {
+                                lastOperation = SerialRadarCommands.WriteBaudRate;
+                                serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
+                            }
+                            else
+                            {
+                                ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                                mutex.Set();
+                                serial.close();
+                            }
+                        }
+                    }
+                    else if (lastOperation == SerialArguments.RodDirection)
+                    {
+                        string position = System.Text.RegularExpressions.Regex.Match(msg, @"\d").Value;
+                        FencePosition = control.FencePositionType.GetType(position);
+                        OnPropertyChanged("FencePosition");
+                        if (Gate == control.GateType.Straight)
+                        {
+                            IsLeftRangeEditable = true;
+                            IsRightRangeEditable = true;
+                            OnPropertyChanged("IsLeftRangeEditable");
+                            OnPropertyChanged("IsRightRangeEditable");
+                        }
                         if (toResetBaud)
                         {
                             lastOperation = SerialRadarCommands.WriteBaudRate;
@@ -2483,7 +2619,7 @@ namespace MbitGate.model
                                 Thread.Sleep(500);
                                 if (DelayVisible)
                                 {
-                                    SerialWork(() => ToGetDelay(Tips.GetSuccess));
+                                    SerialWork(() => ToGetDelayAndFencePosition(Tips.GetSuccess));
                                 }
                                 if(IsTriggerRadarType)
                                     ShowConfirmWindow(Tips.GetSuccess, string.Empty);
@@ -2546,7 +2682,7 @@ namespace MbitGate.model
                         throw new Exception(error);
                     }
                 }
-                else if (Gate == control.GateType.AdvertisingFence)
+                else if (Gate == control.GateType.Advertising)
                 {
                     if (lrange < 0.69999 || rrange < 0.69999 || lrange > 1.50001 || rrange > 1.50001)
                     {
@@ -2580,7 +2716,7 @@ namespace MbitGate.model
                         if (DelayVisible)
                         {
                             finished = true;
-                            SerialWork(() => ToSetDelay());
+                            SerialWork(() => ToSetDelayAndFencePosition());
                         }
                         else
                         {
@@ -2617,12 +2753,26 @@ namespace MbitGate.model
                         int startIndex = msg.IndexOf("ITS");
                         int endIndex = msg.IndexOf("Done");
                         Version = msg.Substring(startIndex, endIndex-startIndex).Trim('\r', '\n');
+                        GateTypes = control.GateType.getAllTypesWithoutFence();
+                        IsLeftRangeEditable = true;
+                        IsRightRangeEditable = true;
                         if (compareVersion2("1.1.1"))
                         {
                             DelayVisible = true;
                             if(compareVersion2("1.2.7"))
                             {
                                 NewVersion = true;
+                                if(compareVersion2("1.2.9"))
+                                {
+                                    IsFencePositionTypeVisible = true;
+                                    GateTypes = control.GateType.GetAllTypes();
+                                    FencePositionTypes = control.FencePositionType.GetAllTypes();
+                                    OnPropertyChanged("FencePositionTypes");
+                                }
+                                else
+                                {
+                                    IsFencePositionTypeVisible = false;
+                                }
                             }
                             else
                             {
@@ -2635,6 +2785,10 @@ namespace MbitGate.model
                         }
                         OnPropertyChanged("Version");
                         OnPropertyChanged("DelayVisible");
+                        OnPropertyChanged("IsFencePositionTypeVisible");
+                        OnPropertyChanged("GateTypes");
+                        OnPropertyChanged("IsLeftRangeEditable");
+                        OnPropertyChanged("IsRightRangeEditable");
                         mutex.Set();
                         if (proceedToDo != null)
                             proceedToDo();
