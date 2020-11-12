@@ -32,41 +32,41 @@
         <DockPanel Height="48" VerticalAlignment="Top" Background="#202020" Grid.Row="0">
             <ToggleButton x:Name="ic_tab_config" Style="{StaticResource STYLE_TabToggle}" Click="Config_Choose_Click">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/config.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/ITS_A08;component/image/config.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource ConfigModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_update" Style="{StaticResource STYLE_TabToggle}" Click="Update_Choose_Click">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/update.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/ITS_A08;component/image/update.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource SerialModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_search" Style="{StaticResource STYLE_TabToggle}" Click="Record_Choose_Click" Visibility="{Binding Record, Converter={StaticResource SearchModelVisibilityConverter}}">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/search.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/ITS_A08;component/image/search.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource RecordModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_alarm" Style="{StaticResource STYLE_TabToggle}" Click="Alarm_Choose_Click" Visibility="Visible">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/ITS_A08;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource AlarmModelTitile}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_comparison" Style="{StaticResource STYLE_TabToggle}" Click="Compare_Choose_Click" Visibility="Visible">
                 <DockPanel Width="150">
-                    <Image Source="/MbitGate;component/image/triangle.png"    DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/ITS_A08;component/image/triangle.png"    DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource CompareModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
             <ToggleButton x:Name="ic_tab_develop" Style="{StaticResource STYLE_TabToggle}" Click="Develop_Choose_Click">
                 <DockPanel Width="120">
-                    <Image Source="/MbitGate;component/image/develop.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
+                    <Image Source="/ITS_A08;component/image/develop.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
                     <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
                 </DockPanel>
             </ToggleButton>
-            <Image Source="/MbitGate;component/image/log-out.png"  Width="32" Height="32" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown" ToolTip="{StaticResource FuncLogout}"/>
+            <Image Source="/ITS_A08;component/image/log-out.png"  Width="32" Height="32" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown" ToolTip="{StaticResource FuncLogout}"/>
             <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 5 0" HorizontalAlignment="Right" MouseDown="VersionTextBox_MouseDown"/>
         </DockPanel>
 

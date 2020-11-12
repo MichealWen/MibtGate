@@ -18,10 +18,10 @@
                         <Style TargetType="Image">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsDrive}" Value="true">
-                                    <Setter Property="Source" Value="/MbitGate;component/image/harddrive.png"/>
+                                    <Setter Property="Source" Value="/ITS_A08;component/image/harddrive.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsDirectory}" Value="true">
-                                    <Setter Property="Source" Value="/MbitGate;component/image/folderdrive.png"/>
+                                    <Setter Property="Source" Value="/ITS_A08;component/image/folderdrive.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -92,8 +92,8 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Grid.Column="0">
                 <StackPanel Orientation="Horizontal" Visibility="Collapsed">
-                    <Image Source="/MbitGate;component/image/arrow_left.png" Width="20" Height="20" Margin="20 0" MouseLeftButtonUp="Back_MouseClick"/>
-                    <Image Source="/MbitGate;component/image/arrow_right.png" Width="20" Height="20" Margin="20 0" MouseLeftButtonUp="Forward_MouseClick"/>
+                    <Image Source="/ITS_A08;component/image/arrow_left.png" Width="20" Height="20" Margin="20 0" MouseLeftButtonUp="Back_MouseClick"/>
+                    <Image Source="/ITS_A08;component/image/arrow_right.png" Width="20" Height="20" Margin="20 0" MouseLeftButtonUp="Forward_MouseClick"/>
                 </StackPanel>
                 <TreeView Name="treeview" ItemsSource="{Binding Drives}" helpers:TreeViewHelper.Attach="True"  VirtualizingStackPanel.IsVirtualizing="True" helpers:TreeViewHelper.SelectedItem="{Binding Path=SelectedTreeViewItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
@@ -108,10 +108,10 @@
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsFile}" Value="true">
-                                                        <Setter Property="Source" Value="/MbitGate;component/image/file.png"/>
+                                                        <Setter Property="Source" Value="/ITS_A08;component/image/file.png"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding IsDirectory}" Value="true">
-                                                        <Setter Property="Source" Value="/MbitGate;component/image/folderdrive.png"/>
+                                                        <Setter Property="Source" Value="/ITS_A08;component/image/folderdrive.png"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
