@@ -1009,7 +1009,7 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => ToClarTime());
+                    SerialWork(() => ToClarTime(), true, 6000);
                 }
             };
             SearchCmd = new SimpleCommand()
@@ -1675,8 +1675,6 @@ namespace MbitGate.model
                                     {
                                         if (str != string.Empty)
                                         {
-                                            //str = str.Replace(OperationType.UpValue, OperationType.Up);
-                                            //str = str.Replace(OperationType.DownValue, OperationType.Down);
                                             SearchResult.Add(str);
                                         }
                                     });
@@ -1788,8 +1786,6 @@ namespace MbitGate.model
                                     {
                                         if (str != string.Empty)
                                         {
-                                            str = str.Replace(OperationType.UpValue, OperationType.Up);
-                                            str = str.Replace(OperationType.DownValue, OperationType.Down);
                                             SearchResult.Add(str);
                                         }
                                     });
@@ -1809,26 +1805,33 @@ namespace MbitGate.model
                             break;
                     }
                 }
-                else if (lastOperation == SerialRadarCommands.SensorStart)
-                {
-                    lock (SearchResult)
-                    {
-                        if (SearchResult.Count == 0)
-                        {
-                            ShowConfirmWindow(Tips.SearchTimeGetNone, string.Empty);
-                        }
-                        else
-                        {
-                            ShowConfirmWindow(Tips.SearchTimeSuccess, string.Empty);
-                        }
-                    }
-                    serial.StringDataReceivedHandler = null;
-                    mutex.Set();
-                }
-                else
+                else if (msg.Contains(SerialRadarReply.Error))
                 {
                     mutex.Set();
                     ShowErrorWindow(Tips.SearchTimeFail);
+                }
+                else
+                {
+                    if (lastOperation == SerialRadarCommands.SearchTime)
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() => {
+                            lock (SearchResult)
+                            {
+                                msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
+                                {
+                                    if (str != string.Empty)
+                                    {
+                                        SearchResult.Add(str);
+                                    }
+                                });
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        mutex.Set();
+                        ShowErrorWindow(Tips.SearchTimeFail);
+                    }
                 }
             };
             serial.WriteLine(SerialRadarCommands.SearchInvert + " " + InvertSearchCount);
@@ -1838,6 +1841,7 @@ namespace MbitGate.model
         {
             string lastOperation = SerialRadarCommands.SensorStop;
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async ()=> {
+                _progressViewModel.IsIndeterminate = true;
                 _progressViewModel.Message = Tips.ClearTiming;
                 await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
             }));
@@ -1849,16 +1853,17 @@ namespace MbitGate.model
                     {
                         case SerialRadarCommands.SensorStop:
                             lastOperation = SerialRadarCommands.ClearTime;
-                            serial.WriteLine(SerialRadarCommands.ClearTime);
+                            serial.WriteLine(SerialRadarCommands.ClearTime, 2000);
                             break;
                         case SerialRadarCommands.ClearTime:
+                            lastOperation = string.Empty;
                             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () => {
                                 _progressViewModel.Message = Tips.ClearTimeSuccess;
                                 await TaskEx.Delay(1000);
                                 if (_progressCtrl.IsVisible)
                                     await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                             }));
-                            serial.WriteLine(SerialRadarCommands.SoftReset);
+                            serial.WriteLine(SerialRadarCommands.SoftReset, 1000, false);
                             mutex.Set();
                             break; 
                         case SerialRadarCommands.SensorStart:
@@ -1872,9 +1877,8 @@ namespace MbitGate.model
                         _progressViewModel.MaxValue = 1;
                         _progressViewModel.Value = 0;
                         _progressViewModel.IsIndeterminate = false;
-                        if(_progressCtrl.IsVisible)
-                            await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                     }));
+                    serial.StringDataReceivedHandler = null;
                     mutex.Set();
                 }
             };
@@ -1912,9 +1916,10 @@ namespace MbitGate.model
                             serial.WriteLine(SerialRadarCommands.GetTIme);
                             break;
                         case SerialRadarCommands.GetTIme:
-                            string[] date = msg.Trim('\n', ' ').Split('\r', '\n', ' ' );
                             try
                             {
+                                msg = msg.Substring(msg.IndexOf("Time(GMT)"));
+                                string[] date = msg.Trim('\n', ' ').Split('\r', '\n', ' ');
                                 if (date[3] == "")
                                     CurrentTime = DateTime.Parse(date[1] + " " + date[2] + " " + date[4] + " " + date[6] + " " + date[5]);
                                 else
