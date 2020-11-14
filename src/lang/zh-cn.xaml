@@ -183,6 +183,7 @@
     <s:String x:Key="CustomUpdateRate">升级波特率</s:String>
     <s:String x:Key="FuncLogout">重新进入登录界面</s:String>
     <s:String x:Key="TipToReset">恢复所有参数到默认值，清除学习信息</s:String>
+    <s:String x:Key="TipReseting">正在恢复出厂设置</s:String>
 
     <s:String x:Key="FencePosition">杆件位置</s:String>
     <s:String x:Key="PositionLeft">雷达左侧</s:String>

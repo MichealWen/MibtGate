@@ -2433,6 +2433,11 @@ namespace MbitGate.model
 
         private void ToReset()
         {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                _progressViewModel.IsIndeterminate = true;
+                _progressViewModel.Message = Tips.Reseting;
+                await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
+            }));
             bool toResetBaud = (ConfigModel.CustomRate != uint.Parse(BauRate.Rate115200));
             string lastOperation = SerialRadarCommands.Output;
             serial.StringDataReceivedHandler = async msg =>
@@ -2478,14 +2483,22 @@ namespace MbitGate.model
                                     serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.DelayTimeParam);
                                 }
                                 if (IsTriggerRadarType)
-                                    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                                {
+                                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                                        await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                        ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                                    }));
+                                }
                                 return;
                             }
                             catch (Exception)
                             {
                             }
                         }
-                        ShowErrorWindow(Tips.ResetFail);
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                            await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                            ShowErrorWindow(Tips.ResetFail);
+                        }));
                         mutex.Set();
                     }
                     else if (lastOperation == SerialArguments.DelayTimeParam)
@@ -2507,7 +2520,10 @@ namespace MbitGate.model
                             }
                             else
                             {
-                                ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                                    await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                                }));
                                 mutex.Set();
                                 serial.close();
                             }
@@ -2532,7 +2548,10 @@ namespace MbitGate.model
                         }
                         else
                         {
-                            ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                                await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                            }));
                             mutex.Set();
                             serial.close();
                         }
@@ -2544,7 +2563,10 @@ namespace MbitGate.model
                         serial.WriteLine(SerialRadarCommands.SoftReset);
                         mutex.Set();
                         serial.close();
-                        ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                            await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                            ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                        }));
                     }
                 }
                 else

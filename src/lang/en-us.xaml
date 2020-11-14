@@ -179,6 +179,7 @@
     <s:String x:Key="ConnectError" xml:space="preserve">Connect Fail, Check:&#x000D;&#x000A;&#160;&#160;&#160;&#160;Wires&#x000D;&#x000A;&#160;&#160;&#160;&#160;Baud&#x000D;&#x000A;&#160;&#160;&#160;&#160;UART Occupied</s:String>
     <s:String x:Key="TipResetSuccess">Reset Success</s:String>
     <s:String x:Key="TipResetFail">Reset Fail</s:String>
+    <s:String x:Key="TipReseting">Reseting</s:String>
 
     <s:String x:Key="CustomUpdateRate">Update Baud</s:String>
     <s:String x:Key="FuncLogout">LogOut</s:String>
