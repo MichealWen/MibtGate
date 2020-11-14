@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">Radar Config(RS485_TTL) V</s:String>
+    <s:String  x:Key="MainWindowTitle">DAHUA-Radar Config(RS485_TTL) V</s:String>
     <s:String  x:Key="SerialModelTitle">Update</s:String>
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
@@ -39,7 +39,7 @@
     <s:String  x:Key="Verify">Verify</s:String>
     <s:String x:Key="Study">Study</s:String>
     <s:String x:Key="Reboot">Reboot</s:String>
-    <s:String x:Key="AdvertisingFence">Fence</s:String>
+    <s:String x:Key="Fence">Fence</s:String>
     <s:String x:Key="Advertising">Advertising</s:String>
     <s:String x:Key="Straight">Straight</s:String>
     <s:String x:Key="GateType">GateType</s:String>
@@ -187,4 +187,6 @@
     <s:String x:Key="FencePosition">Position</s:String>
     <s:String x:Key="PositionLeft">Left</s:String>
     <s:String x:Key="PositionRight">Right</s:String>
+    <s:String x:Key="SynchronizeTime">Synchronize</s:String>
+    <s:String x:Key="FuncSynTime">Synchronize Local Time To Radar</s:String>
 </ResourceDictionary>

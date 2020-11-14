@@ -77,7 +77,12 @@
                 <RowDefinition Height="290*"/> 
                 <RowDefinition Height="10*"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
                     <TextBlock Text="{StaticResource FrontMaxDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                     <TextBox x:Name="FrontMaxDistance" Text="{Binding MaxDistance}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
@@ -126,6 +131,7 @@
                     <TextBlock Text="{StaticResource UnitS}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
+            <Image Source="{Binding GateTypePosition, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <!--<Grid Grid.Row="2" Visibility="{Binding Developer, Converter={StaticResource bool2VisibilityConverter}}">-->
         <Grid Grid.Row="1">
@@ -322,7 +328,7 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                 <Button Content="{StaticResource GetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetTimeCmd}"  ToolTip="{StaticResource FuncGetTime}"/>
-                <Button Content="{StaticResource SetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetTimeCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSetTime}"/>
+                <Button Content="{StaticResource SynchronizeTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SynTimeCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSynTime}"/>
                 <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearTimeCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncClearTime}"/>
                 <Button Content="{StaticResource Search}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCmd}" Margin="60 0 10 0"  ToolTip="{StaticResource FuncRecord}"/>
                 <Button Content="{StaticResource InvertSearch}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding InvertSearchCmd}" Margin="20 0 10 0"  ToolTip="{StaticResource FuncInvertRecord}"/>

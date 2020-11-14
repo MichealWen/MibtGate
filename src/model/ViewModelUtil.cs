@@ -817,15 +817,39 @@ namespace MbitGate.model
                     IsRightRangeEditable = true;
                     OnPropertyChanged("IsLeftRangeEditable");
                     OnPropertyChanged("IsRightRangeEditable");
+                    GateTypePosition = imagepath;
                 }
                 else
                 {
                     IsFencePositionEnable = true;
                     FencePosition = _fencePosition;
+                    if (value == control.GateType.Advertising)
+                    {
+                        if(_fencePosition == control.FencePositionType.Left)
+                        {
+                            GateTypePosition = imagepath + "radar_advertising_left.png";
+                        }
+                        else if(_fencePosition == control.FencePositionType.Right)
+                        {
+                            GateTypePosition = imagepath + "radar_advertising_right.png";
+                        }
+                    }
+                    else if(value == control.GateType.Fence)
+                    {
+                        if (_fencePosition == control.FencePositionType.Left)
+                        {
+                            GateTypePosition = imagepath + "radar_fence_left.png";
+                        }
+                        else if (_fencePosition == control.FencePositionType.Right)
+                        {
+                            GateTypePosition = imagepath + "radar_fence_right.png";
+                        }
+                    }
                 }
                 gate = value;
                 OnPropertyChanged("IsFencePositionEnable");
-            } 
+                OnPropertyChanged("GateTypePosition");
+            }
         }
         public List<string> ThresholdTypes { get { return control.ThresholdType.GetAllTypes(); } }
 
@@ -839,6 +863,7 @@ namespace MbitGate.model
 
         public ICommand GetTimeCmd { get; set; }
         public ICommand SetTimeCmd { get; set; }
+        public ICommand SynTimeCmd { get; set; }
         public ICommand ClearTimeCmd { get; set; }
         public ICommand SearchCmd { get; set; }
         public string InvertSearchCount { get; set; }
@@ -907,31 +932,52 @@ namespace MbitGate.model
                         IsLeftRangeEditable = false;
                         IsRightRangeEditable = true;
                         LRange = "1.0";
+
+                        if (gate == control.GateType.Advertising)
+                        {
+                            GateTypePosition = imagepath + "radar_advertising_left.png";
+                        }
+                        else if (gate == control.GateType.Fence)
+                        {
+                            GateTypePosition = imagepath + "radar_fence_left.png";
+                        }
                     }
                    else if(value == control.FencePositionType.Right)
                     {
                         IsRightRangeEditable = false;
                         IsLeftRangeEditable = true;
                         RRange = "1.0";
+                        if (gate == control.GateType.Advertising)
+                        {
+                            GateTypePosition = imagepath + "radar_advertising_right.png";
+                        }
+                        else if (gate == control.GateType.Fence)
+                        {
+                            GateTypePosition = imagepath + "radar_fence_right.png";
+                        }
                     }
                 }
                 else
                 {
                     IsLeftRangeEditable = true;
                     IsRightRangeEditable = true;
+                    GateTypePosition = imagepath;
                 }
                 _fencePosition = value;
                 OnPropertyChanged("IsLeftRangeEditable");
                 OnPropertyChanged("IsRightRangeEditable");
                 OnPropertyChanged("RRange");
                 OnPropertyChanged("LRange");
-            } 
+                OnPropertyChanged("GateTypePosition");
+            }
         }
         public bool IsFencePositionTypeVisible { get; set; }
         public bool IsLeftRangeEditable { get; set; }
         public bool IsRightRangeEditable { get; set; }
         public bool IsFencePositionEnable { get; set; }
 
+        public string imagepath = @"/DAHUA_ITS_A08;component/image/";
+        public string GateTypePosition { get;set;}
         public SerialMainViewModel(MahApps.Metro.Controls.Dialogs.IDialogCoordinator dialogCoordinator):base(dialogCoordinator)
         {
             _progressViewModel = new ProgressViewModel()
@@ -1062,6 +1108,13 @@ namespace MbitGate.model
                 ExecuteDelegate = param =>
                 {
                     SerialWork(() => ToSetTime());
+                }
+            };
+            SynTimeCmd = new SimpleCommand()
+            {
+                ExecuteDelegate = param =>
+                {
+                    SerialWork(() => ToSynchronizeTime());
                 }
             };
             ClearTimeCmd = new SimpleCommand()
@@ -1732,8 +1785,10 @@ namespace MbitGate.model
                                 {
                                     msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
                                     {
-                                        if (str != string.Empty)
+                                        if (str != string.Empty && str.Contains(OperationType.Value))
                                         {
+                                            str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                            str = str.Replace(OperationType.DownValue, OperationType.Down);
                                             SearchResult.Add(str);
                                         }
                                     });
@@ -1783,10 +1838,10 @@ namespace MbitGate.model
                             {
                                 msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
                                 {
-                                    if (str != string.Empty)
+                                    if (str != string.Empty && str.Contains(OperationType.Value))
                                     {
-                                        //str = str.Replace(OperationType.UpValue, OperationType.Up);
-                                        //str = str.Replace(OperationType.DownValue, OperationType.Down);
+                                        str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                        str = str.Replace(OperationType.DownValue, OperationType.Down);
                                         SearchResult.Add(str);
                                     }
                                 });
@@ -1843,8 +1898,10 @@ namespace MbitGate.model
                                 {
                                     msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
                                     {
-                                        if (str != string.Empty)
+                                        if (str != string.Empty && str.Contains(OperationType.Value))
                                         {
+                                            str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                            str = str.Replace(OperationType.DownValue, OperationType.Down);
                                             SearchResult.Add(str);
                                         }
                                     });
@@ -1878,8 +1935,10 @@ namespace MbitGate.model
                             {
                                 msg.Split(new char[] { '\r', '\n' }).ToList().ForEach(str =>
                                 {
-                                    if (str != string.Empty)
+                                    if (str != string.Empty && str.Contains(OperationType.Value))
                                     {
+                                        str = str.Replace(OperationType.UpValue, OperationType.Up);
+                                        str = str.Replace(OperationType.DownValue, OperationType.Down);
                                         SearchResult.Add(str);
                                     }
                                 });
@@ -1960,7 +2019,26 @@ namespace MbitGate.model
             };
             serial.WriteLine(SerialRadarCommands.SetTime + " " + CurrentTime.Year.ToString() + " " + CurrentTime.Month + " " + CurrentTime.Day + " " + CurrentTime.Hour + " " + CurrentTime.Minute + " " + CurrentTime.Second);
         }
-
+        private void ToSynchronizeTime()
+        {
+            string lastOperation = SerialRadarCommands.SetTime;
+            serial.StringDataReceivedHandler = msg =>
+            {
+                if (msg.Contains(SerialRadarReply.Done))
+                {
+                    ShowSplashWindow(Tips.SetTimeSuccess, 1000);
+                }
+                else
+                {
+                    ShowErrorWindow(Tips.SetTimeFail);
+                }
+                mutex.Set();
+            };
+            CurrentTime = System.DateTime.Now;
+            OnPropertyChanged("CurrentTime");
+            serial.WriteLine(SerialRadarCommands.SetTime + " " + CurrentTime.Year.ToString() + " " + CurrentTime.Month + " " + CurrentTime.Day + " " + CurrentTime.Hour + " " + CurrentTime.Minute + " " + CurrentTime.Second);
+        }
+        
         private void ToGetTime()
         {
             string lastOperation = SerialRadarCommands.GetTIme;
@@ -2133,19 +2211,24 @@ namespace MbitGate.model
                         Delay = System.Text.RegularExpressions.Regex.Match(msg, @"\d+").Value;
                         OnPropertyChanged("Delay");
                         await TaskEx.Delay(100);
-                        if(IsFencePositionTypeVisible)
+                        if(Gate == control.GateType.Straight)
+                        {
+                            IsLeftRangeEditable = true;
+                            IsRightRangeEditable = true;
+                            OnPropertyChanged("IsLeftRangeEditable");
+                            OnPropertyChanged("IsRightRangeEditable");
+                        }
+                        else if (IsFencePositionTypeVisible)
                         {
                             lastOperation = SerialArguments.RodDirection;
                             serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.RodDirection);
+                            return;
                         }
-                        else
-                        {
-                            lastOperation = string.Empty;
-                            if (tip != string.Empty)
-                                ShowConfirmWindow(tip, string.Empty);
-                            mutex.Set();
-                            serial.close();
-                        }
+                        lastOperation = string.Empty;
+                        if (tip != string.Empty)
+                            ShowConfirmWindow(tip, string.Empty);
+                        mutex.Set();
+                        serial.close();
                     }
                     else if(lastOperation == SerialArguments.RodDirection)
                     {
@@ -2389,7 +2472,7 @@ namespace MbitGate.model
                 if (msg.Contains(SerialRadarReply.StudyEnd) || msg.Contains("end"))
                 {
                     _progressViewModel.Message = string.Empty;
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () =>
                     {
                         await TaskEx.Delay(500);
                         if (_progressCtrl.IsVisible)
@@ -2406,7 +2489,7 @@ namespace MbitGate.model
                     _progressViewModel.IsIndeterminate = true;
                     _progressViewModel.MaxValue = 100;
                     _progressViewModel.Value = 0;
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () =>
                     {
                         if (!_progressCtrl.IsVisible && _progressViewModel.Message != Tips.Studying)
                         {
@@ -2617,6 +2700,7 @@ namespace MbitGate.model
                     }
                     else if (lastOperation == SerialRadarCommands.ReadCLI)
                     {
+                        msg = msg.Substring(msg.IndexOf(SerialArguments.FilterParam));
                         var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
                         if (collection.Count > 10)
                         {
@@ -2682,7 +2766,7 @@ namespace MbitGate.model
             try
             {
                 mindistance = float.Parse(MinDistance);
-                if (mindistance > 0.99999 || mindistance < 0.2)
+                if (mindistance > 1.0 || mindistance < 0.2)
                     throw new Exception();
             }
             catch (Exception)

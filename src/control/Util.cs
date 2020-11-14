@@ -301,6 +301,7 @@ namespace MbitGate.control
 
         public const string UpValue = @"Relay:1";
         public const string DownValue = @"Relay:0";
+        public const string Value = @"Relay:";
     }
 
     public class ThresholdType

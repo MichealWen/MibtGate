@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">道闸RS485_TTL雷达设置V</s:String>
+    <s:String  x:Key="MainWindowTitle">大华-道闸RS485_TTL雷达设置V</s:String>
     <s:String  x:Key="SerialModelTitle">升级</s:String>
     <s:String  x:Key="ConfigModelTitle">设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
@@ -188,4 +188,6 @@
     <s:String x:Key="FencePosition">杆件位置</s:String>
     <s:String x:Key="PositionLeft">雷达左侧</s:String>
     <s:String x:Key="PositionRight">雷达右侧</s:String>
+    <s:String x:Key="SynchronizeTime">同步时间</s:String>
+    <s:String x:Key="FuncSynTime">同步电脑时间到雷达</s:String>
 </ResourceDictionary>
