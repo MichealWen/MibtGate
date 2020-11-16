@@ -282,5 +282,10 @@ namespace MbitGate.helper
                 }
             }
         }
+
+        internal void Clear()
+        {
+            ReplayContentBuffer = string.Empty;
+        }
     }
 }

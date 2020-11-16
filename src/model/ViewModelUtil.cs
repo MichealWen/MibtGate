@@ -2144,6 +2144,7 @@ namespace MbitGate.model
                 serial.Type = SerialReceiveType.Chars;
                 serial.CompareEndString = true;
                 serial.EndStr = SerialRadarReply.Done;
+                serial.ClearBuffer();
                 if (!serial.IsOpen && !serial.open())
                 {
                     ShowErrorWindow(ErrorString.SerialOpenError);
@@ -2591,25 +2592,34 @@ namespace MbitGate.model
                         await TaskEx.Delay(100);
                         if (IsFencePositionTypeVisible)
                         {
-                            lastOperation = SerialArguments.RodDirection;
-                            serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.RodDirection);
-                        }
-                        else
-                        {
-                            if (toResetBaud)
+                            if (Gate == control.GateType.Straight)
                             {
-                                lastOperation = SerialRadarCommands.WriteBaudRate;
-                                serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
+                                IsLeftRangeEditable = true;
+                                IsRightRangeEditable = true;
+                                OnPropertyChanged("IsLeftRangeEditable");
+                                OnPropertyChanged("IsRightRangeEditable");
                             }
                             else
                             {
-                                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
-                                    await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
-                                    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
-                                }));
-                                mutex.Set();
-                                serial.close();
+                                lastOperation = SerialArguments.RodDirection;
+                                serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.RodDirection);
+                                return;
                             }
+                        }
+
+                        if (toResetBaud)
+                        {
+                            lastOperation = SerialRadarCommands.WriteBaudRate;
+                            serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialRadarCommands.WriteBaudRate + " " + ConfigModel.CustomRate);
+                        }
+                        else
+                        {
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(async () => {
+                                await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
+                                ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
+                            }));
+                            mutex.Set();
+                            serial.close();
                         }
                     }
                     else if (lastOperation == SerialArguments.RodDirection)
@@ -2617,13 +2627,6 @@ namespace MbitGate.model
                         string position = System.Text.RegularExpressions.Regex.Match(msg, @"\d").Value;
                         FencePosition = control.FencePositionType.GetType(position);
                         OnPropertyChanged("FencePosition");
-                        if (Gate == control.GateType.Straight)
-                        {
-                            IsLeftRangeEditable = true;
-                            IsRightRangeEditable = true;
-                            OnPropertyChanged("IsLeftRangeEditable");
-                            OnPropertyChanged("IsRightRangeEditable");
-                        }
                         if (toResetBaud)
                         {
                             lastOperation = SerialRadarCommands.WriteBaudRate;
@@ -2788,7 +2791,7 @@ namespace MbitGate.model
                         throw new Exception(error);
                     }
                 }
-                else if (Gate == control.GateType.Advertising)
+                else if (Gate == control.GateType.Advertising || Gate == control.GateType.Fence)
                 {
                     if (lrange < 0.69999 || rrange < 0.69999 || lrange > 1.50001 || rrange > 1.50001)
                     {

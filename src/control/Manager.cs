@@ -525,5 +525,15 @@ namespace MbitGate.control
             }
             catch{ }
         }
+
+        internal void ClearBuffer()
+        {
+            lock(ReplayData)
+            {
+                byte tmp;
+                while (ReplayData.TryDequeue(out tmp)) { }
+            }
+            stringDecoder.Clear();
+        }
     }
 }
