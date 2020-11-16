@@ -166,6 +166,8 @@
     <s:String x:Key="CustomCommand">Command</s:String>
     
     <s:String x:Key="WriteCLIRainCommand">Rain Config</s:String>
+    <s:String x:Key="WriteCLIRangeMax">Max</s:String>
+    <s:String x:Key="WriteCLIRangeMin">Min</s:String>
     <s:String x:Key="WriteCLIRangeCommand">Rod Region Config</s:String>
     <s:String x:Key="WorkAnomalousCommand">Get Anomalous Reason</s:String>
 
@@ -189,4 +191,8 @@
     <s:String x:Key="PositionRight">Right</s:String>
     <s:String x:Key="SynchronizeTime">Synchronize</s:String>
     <s:String x:Key="FuncSynTime">Synchronize Local Time To Radar</s:String>
+    <s:String x:Key="AdvertisingLeft">Advertising At Left</s:String>
+    <s:String x:Key="AdvertisingRight">Advertising At Right</s:String>
+    <s:String x:Key="FenceLeft">Fence At Left</s:String>
+    <s:String x:Key="FenceRight">Fence At Right</s:String>
 </ResourceDictionary>

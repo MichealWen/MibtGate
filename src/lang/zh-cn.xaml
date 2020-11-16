@@ -166,6 +166,8 @@
     <s:String x:Key="CustomCommand">其它命令</s:String>
 
     <s:String x:Key="WriteCLIRainCommand">雨天配置</s:String>
+    <s:String x:Key="WriteCLIRangeMax">最大值</s:String>
+    <s:String x:Key="WriteCLIRangeMin">最小值</s:String>
     <s:String x:Key="WriteCLIRangeCommand">杆件区域配置</s:String>
     <s:String x:Key="WorkAnomalousCommand">落杆异常原因</s:String>
 
@@ -190,4 +192,8 @@
     <s:String x:Key="PositionRight">雷达右侧</s:String>
     <s:String x:Key="SynchronizeTime">同步时间</s:String>
     <s:String x:Key="FuncSynTime">同步电脑时间到雷达</s:String>
+    <s:String x:Key="AdvertisingLeft">广告杆在雷达左侧</s:String>
+    <s:String x:Key="AdvertisingRight">广告杆在雷达右侧</s:String>
+    <s:String x:Key="FenceLeft">栅栏杆在雷达左侧</s:String>
+    <s:String x:Key="FenceRight">栅栏杆在雷达右侧</s:String>
 </ResourceDictionary>

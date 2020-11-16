@@ -228,12 +228,16 @@ namespace MbitGate.control
     public class GateType
     {
         public static string Straight = Application.Current.Resources["Straight"].ToString();
-        public static string Fence = Application.Current.Resources["Fence"].ToString();
+        public static string FenceLeft = Application.Current.Resources["FenceLeft"].ToString();
+        public static string FenceRight = Application.Current.Resources["FenceRight"].ToString();
+        public static string AdvertisingLeft = Application.Current.Resources["AdvertisingLeft"].ToString();
+        public static string AdvertisingRight = Application.Current.Resources["AdvertisingRight"].ToString();
         public static string Advertising = Application.Current.Resources["Advertising"].ToString();
+        public static string Fence = Application.Current.Resources["Fence"].ToString();
 
         public static List<string> GetAllTypes()
         {
-            return new List<string>() { Straight, Advertising, Fence};
+            return new List<string>() { Straight, AdvertisingLeft, AdvertisingRight, FenceLeft, FenceRight};
         }
         public static List<string> getAllTypesWithoutFence()
         {
@@ -250,13 +254,31 @@ namespace MbitGate.control
             else
                 return value;
         }
+        public static string GetTypeByPosition(string gate, string position)
+        {
+            if(position == "0")
+            {
+                if (gate == "1" || gate == Advertising)
+                    return AdvertisingLeft;
+                else if (gate == "2" || gate == Fence)
+                    return FenceLeft;
+            }
+            else if(position == "1")
+            {
+                if (gate == "1" || gate == Advertising)
+                    return AdvertisingRight;
+                else if (gate == "2" || gate == Fence)
+                    return FenceRight;
+            }
+            return gate + "|" + position;
+        }
         public static string GetValue(string type)
         {
             if (type == Straight)
                 return "0";
-            else if (type == Advertising)
+            else if (type == Advertising || type == AdvertisingLeft || type == AdvertisingRight)
                 return "1";
-            else if (type == Fence)
+            else if (type == Fence || type == FenceLeft || type == FenceRight)
                 return "2";
             else
                 return type;
@@ -369,9 +391,9 @@ namespace MbitGate.control
         }
         public static string GetValue(string type)
         {
-            if (type == Left)
+            if (type == Left || type == GateType.AdvertisingLeft || type == GateType.FenceLeft)
                 return "0";
-            else if (type == Right)
+            else if (type == Right || type == GateType.AdvertisingRight || type == GateType.FenceRight)
                 return "1";
             else
                 return type;

@@ -10,7 +10,7 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" Height="490" Width="1000" ResizeMode="CanMinimize"
+        Title="{StaticResource MainWindowTitle}" Height="480" Width="1000" ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" >
     <Grid x:Name="MainWin">
         <Grid.Resources>
@@ -96,10 +96,6 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
                     <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                     <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 5 10" Visibility="{Binding IsFencePositionTypeVisible, Converter={StaticResource bool2VisibilityConverter}}">
-                    <TextBlock Text="{StaticResource FencePosition}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <ComboBox  ItemsSource="{Binding FencePositionTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding FencePosition}" IsEnabled="{Binding IsFencePositionEnable}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
                     <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
@@ -193,7 +189,10 @@
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" >
-                <TextBox Text="{Binding  WriteCLIRangeCommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                <TextBlock Text="{StaticResource WriteCLIRangeMax}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBox Text="{Binding  WriteCLIRangeCommandMaxStr}" Width="60" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"  Margin="0,0,10,0"/>
+                <TextBlock Text="{StaticResource WriteCLIRangeMin}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBox Text="{Binding  WriteCLIRangeCommandMinStr}" Width="60" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" Margin="0,0,20,0"/>
                 <Button Content="{StaticResource WriteCLIRangeCommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLIRangeCommand}" BorderBrush="#02a8f3"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" Margin="188,0">
