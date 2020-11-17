@@ -23,7 +23,11 @@ namespace MbitGate.views
             DataContext = mainVModel;
             ic_tab_config.IsChecked = true;
             this.AddHandler(MahApps.Metro.Controls.Dialogs.CustomDialog.MouseMoveEvent, new MouseEventHandler(DialogCoordinatorWindow_Drag));
+#if DEBUG
+            this.Title = Application.Current.Resources["MainWindowTitle"].ToString() + FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion + "_" + System.IO.File.GetLastWriteTime(this.GetType().Assembly.Location) + "_BETA";
+#else
             this.Title = Application.Current.Resources["MainWindowTitle"].ToString() + FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+#endif
         }
 
         private void Choose_Click(object sender, RoutedEventArgs e)

@@ -247,9 +247,9 @@ namespace MbitGate.control
         {
             if (value == "0")
                 return Straight;
-            else if (value == "1")
-                return Advertising;
             else if (value == "2")
+                return Advertising;
+            else if (value == "1")
                 return Fence;
             else
                 return value;
@@ -258,16 +258,16 @@ namespace MbitGate.control
         {
             if(position == "0")
             {
-                if (gate == "1" || gate == Advertising)
+                if (gate == "2" || gate == Advertising)
                     return AdvertisingLeft;
-                else if (gate == "2" || gate == Fence)
+                else if (gate == "1" || gate == Fence)
                     return FenceLeft;
             }
             else if(position == "1")
             {
-                if (gate == "1" || gate == Advertising)
+                if (gate == "2" || gate == Advertising)
                     return AdvertisingRight;
-                else if (gate == "2" || gate == Fence)
+                else if (gate == "1" || gate == Fence)
                     return FenceRight;
             }
             return gate + "|" + position;
@@ -277,9 +277,9 @@ namespace MbitGate.control
             if (type == Straight)
                 return "0";
             else if (type == Advertising || type == AdvertisingLeft || type == AdvertisingRight)
-                return "1";
-            else if (type == Fence || type == FenceLeft || type == FenceRight)
                 return "2";
+            else if (type == Fence || type == FenceLeft || type == FenceRight)
+                return "1";
             else
                 return type;
         }
