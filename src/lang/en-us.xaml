@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">DAHUA-Radar Config(RS485_TTL) V</s:String>
+    <s:String  x:Key="MainWindowTitle">Radar Config(RS485_TTL) V</s:String>
     <s:String  x:Key="SerialModelTitle">Update</s:String>
     <s:String  x:Key="ConfigModelTitle">Config</s:String>
     <s:String  x:Key="CANModelTitle">CAN</s:String>
@@ -39,8 +39,8 @@
     <s:String  x:Key="Verify">Verify</s:String>
     <s:String x:Key="Study">Study</s:String>
     <s:String x:Key="Reboot">Reboot</s:String>
-    <s:String x:Key="Fence">Fence</s:String>
-    <s:String x:Key="Advertising">Advertising</s:String>
+    <s:String x:Key="Fence">FenceAdvertising</s:String>
+    <s:String x:Key="Advertising">AdvertisingFence</s:String>
     <s:String x:Key="Straight">Straight</s:String>
     <s:String x:Key="GateType">GateType</s:String>
     <s:String x:Key="FuncGet">To Get The Current Parameters Of Radar</s:String>

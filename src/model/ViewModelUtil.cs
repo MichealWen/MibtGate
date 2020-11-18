@@ -810,7 +810,7 @@ namespace MbitGate.model
         public string Gate { 
             get=>gate;
             set {
-                if(value == control.GateType.Straight)
+                if (value == control.GateType.Straight)
                 {
                     IsLeftRangeEditable = true;
                     IsRightRangeEditable = true;
@@ -818,29 +818,7 @@ namespace MbitGate.model
                 }
                 else
                 {
-                    if (value == control.GateType.Advertising)
-                    {
-                        if(FencePosition == control.FencePositionType.Left)
-                        {
-                            GateTypePosition = imagepath + "radar_advertising_left.png";
-                        }
-                        else if(FencePosition == control.FencePositionType.Right)
-                        {
-                            GateTypePosition = imagepath + "radar_advertising_right.png";
-                        }
-                    }
-                    else if(value == control.GateType.Fence)
-                    {
-                        if (FencePosition == control.FencePositionType.Left)
-                        {
-                            GateTypePosition = imagepath + "radar_fence_left.png";
-                        }
-                        else if (FencePosition == control.FencePositionType.Right)
-                        {
-                            GateTypePosition = imagepath + "radar_fence_right.png";
-                        }
-                    }
-                    else if(value == control.GateType.AdvertisingLeft)
+                    if(value == control.GateType.AdvertisingLeft)
                     {
                         IsLeftRangeEditable = false;
                         IsRightRangeEditable = true;

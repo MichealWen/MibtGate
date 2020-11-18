@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <!--window-->
-    <s:String  x:Key="MainWindowTitle">大华-道闸RS485_TTL雷达设置V</s:String>
+    <s:String  x:Key="MainWindowTitle">道闸RS485_TTL雷达设置V</s:String>
     <s:String  x:Key="SerialModelTitle">升级</s:String>
     <s:String  x:Key="ConfigModelTitle">设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
@@ -39,8 +39,8 @@
     <s:String  x:Key="Verify">验证</s:String>
     <s:String x:Key="Study">自学习</s:String>
     <s:String x:Key="Reboot">软重启</s:String>
-    <s:String x:Key="Fence">栅栏道闸</s:String>
-    <s:String x:Key="Advertising">广告道闸</s:String>
+    <s:String x:Key="Fence">栅栏广告道闸</s:String>
+    <s:String x:Key="Advertising">广告栅栏道闸</s:String>
     <s:String x:Key="Straight">直杆道闸</s:String>
     <s:String x:Key="GateType">道闸类型</s:String>
     <s:String x:Key="FuncGet">获取雷达当前参数</s:String>

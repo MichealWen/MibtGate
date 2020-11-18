@@ -241,7 +241,7 @@ namespace MbitGate.control
         }
         public static List<string> getAllTypesWithoutFence()
         {
-            return new List<string>() { Straight, Advertising };
+            return new List<string>() { Straight, Fence };
         }
         public static string GetType(string value)
         {
@@ -276,9 +276,11 @@ namespace MbitGate.control
         {
             if (type == Straight)
                 return "0";
-            else if (type == Advertising || type == AdvertisingLeft || type == AdvertisingRight)
+            else if(type == Advertising || type == Fence)
+                return "1";
+            else if (type == AdvertisingLeft || type == AdvertisingRight)
                 return "2";
-            else if (type == Fence || type == FenceLeft || type == FenceRight)
+            else if (type == FenceLeft || type == FenceRight)
                 return "1";
             else
                 return type;
@@ -344,7 +346,7 @@ namespace MbitGate.control
             }
             else if (type == Middle)
             {
-                return "3500";
+                return "3150";
             }
             else if (type == High)
             {
@@ -356,16 +358,19 @@ namespace MbitGate.control
 
         public static string GetType(string value)
         {
-            switch(value)
+            try
             {
-                case "4500":
-                    return Low;
-                case "3500":
-                    return Middle;
-                case "0":
+                int val = int.Parse(value);
+                if (val < 3150)
                     return High;
-                default:
-                    return value;
+                else if (val < 4500)
+                    return Middle;
+                else
+                    return Low;
+            }
+            catch (Exception)
+            {
+                return value;
             }
         }
     }
