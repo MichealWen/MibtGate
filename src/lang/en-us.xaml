@@ -195,4 +195,5 @@
     <s:String x:Key="AdvertisingRight">Advertising At Right</s:String>
     <s:String x:Key="FenceLeft">Fence At Left</s:String>
     <s:String x:Key="FenceRight">Fence At Right</s:String>
+    <s:String x:Key="KeepLifting">Keep Rod Lifted</s:String>
 </ResourceDictionary>

@@ -223,6 +223,7 @@ namespace MbitGate.control
         public static string ResetFail = Application.Current.Resources["TipResetFail"].ToString();
         public static string ToReset = Application.Current.Resources["TipToReset"].ToString();
         public static string Reseting = Application.Current.Resources["TipReseting"].ToString();
+        public static string KeepLifting = Application.Current.Resources["KeepLifting"].ToString();
     }
 
     public class GateType

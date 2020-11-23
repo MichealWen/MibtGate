@@ -1106,7 +1106,10 @@ namespace MbitGate.model
             {
                 ExecuteDelegate = param =>
                 {
-                    SerialWork(() => toRemoveWeakPonints());
+                    ShowConfirmCancelWindow(string.Empty, Tips.KeepLifting,
+                        () => {
+                            SerialWork(() => toRemoveWeakPonints());
+                        });
                 }
             };
             RegetWeakPointsCmd = new SimpleCommand()
@@ -2607,20 +2610,9 @@ namespace MbitGate.model
                         serial.Rate = int.Parse(BauRate.Rate115200);
                         serial.EndStr = SerialRadarReply.Start;
                         serial.CompareEndString = true;
-                        //lastOperation = SerialRadarCommands.ReadCLI;
-                        //await TaskEx.Delay(800);
-                        //serial.WriteLine(SerialRadarCommands.ReadCLI + " " + SerialArguments.FilterParam);
                     }
                 }
-                //else if (msg.Contains(SerialRadarReply.Error))
-                //{
-                //    ShowErrorWindow(Tips.ResetFail);
-                //    mutex.Set();
-                //}
-                //else if (msg.Contains(SerialRadarReply.Start))
-                //{
-                //    ShowConfirmWindow(Tips.ResetSuccess, string.Empty);
-                //}
+               
             };
             if (toResetBaud)
             {
@@ -2631,7 +2623,6 @@ namespace MbitGate.model
                 serial.EndStr = SerialRadarReply.Start;
             }
             serial.WriteLine(SerialRadarCommands.Output + " 13", 3000);
-            //serial.Rate = int.Parse(BauRate.Rate115200);
         }
 
         private void ToGet()
