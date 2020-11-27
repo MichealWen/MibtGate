@@ -1,12 +1,10 @@
-﻿using System;
+﻿using MbitGate.control;
+using System;
 using System.Collections.Concurrent;
-using System.Data;
-using System.Linq;
-using System.Windows.Navigation;
 
 namespace MbitGate.helper
 {
-    class CommunicateHexProtocolDecoder
+    class CommHexProtocolDecoder
     {
         private const byte HEADER = 0x55;
         private const byte FOOT = 0xAA;
@@ -16,10 +14,24 @@ namespace MbitGate.helper
 
         public const byte ADDRESS_PUBLIC = 0xFF;
 
-        public const byte ERROVERTIME = 0x05;
+        public const byte ERROR_OVERTIME = 0x05;
+        public const byte ERROR_CRC = 0x04;
 
-        private const ushort FUNCTION_HARD_VER = 0x0001;
-        private const ushort FUNCTION_SOFT_VER = 0x0002;
+        public const ushort FUNCTION_HARD_VER = 0x0001;
+        public const ushort FUNCTION_SOFT_VER = 0x0002;
+        public const ushort FUNCTION_SENSOR_STOP = 0x0003;
+        public const ushort FUNCTION_SENSOR_START = 0x0004;
+        public const ushort FUNCTION_SOFTRESET = 0x0005;
+
+        public const ushort FUNCTION_WRITECLI = 0x0101;
+        public const ushort FUNCTION_FALSEALARMORDER = 0x0102;
+        public const ushort FUNCTION_CLIOUTPUT = 0x0103;
+        public const ushort FUNCTION_READCLI = 0x0100;
+        public const ushort FUNCTION_GET_SYSTEM_TIME = 0x010A;
+        public const ushort FUNCTION_SET_SYSTEM_TIME = 0x0109;
+        public const ushort FUNCTION_CLEAR_RECORD = 0x010B;
+        public const ushort FUNCTION_OUT_DATA_POINT = 0x010E;
+        public const ushort FUNCTION_SEARCH = 0x0104;
 
         public const ushort FUNCTION_UPDATE_TEST = 0x00F0;
         public const ushort FUNCTION_UPDATE_ERASE = 0x00F1;
@@ -97,11 +109,11 @@ namespace MbitGate.helper
         }
 
         public Action NotifyCRCError { get; set; }
-        public Action<byte> NotifyReplayError { get; set; }
+        public Action<ushort, byte> NotifyReplayError { get; set; }
 
         public Action<Tuple<byte/*address*/, byte/*error*/, ushort/*function*/, byte[]/*data*/>> NotifyDecodeResult { get; set; }
         public Action<byte[]> NotifyFullResult { get; set; }
-        internal void Decode(byte[] frame)
+        private void Decode(byte[] frame)
         {
             if(frame[0] == HEADER && frame[1] == HEADER && frame[frame.Length-1] == FOOT && frame[frame.Length-2] == FOOT)
             {
@@ -111,13 +123,13 @@ namespace MbitGate.helper
                 {
                     if (data[1] != SUCCESS)
                     {
-                        NotifyReplayError(data[1]);
+                        NotifyReplayError(BitConverter.ToUInt16(data, 2), data[1]);
                     }
                     else
                     {
                         byte[] values = new byte[data.Length - 6];
                         Array.Copy(data, 6, values, 0, values.Length);
-                        NotifyDecodeResult?.Invoke(new Tuple<byte, byte, ushort, byte[]>(data[0], data[1], BitConverter.ToUInt16(data, 2), data));
+                        NotifyDecodeResult?.Invoke(new Tuple<byte, byte, ushort, byte[]>(data[0], data[1], BitConverter.ToUInt16(data, 2), values));
                     }
                 }
                 else
@@ -131,7 +143,7 @@ namespace MbitGate.helper
             }
         }
 
-        private bool CheckCRC(byte[] data, byte val)
+        private static bool CheckCRC(byte[] data, byte val)
         {
             return (val==0xFF)?true:(Crc8(data) == val);
         }
@@ -218,10 +230,6 @@ namespace MbitGate.helper
                             {
                                 data.TryDequeue(out frame[i]);
                             }
-                            if(framelength==0)
-                            {
-                                int stophere = 0;
-                            }
                             System.Threading.Tasks.Task.Factory.StartNew(() => { Decode(frame); });
                             //Decode(frame);
                             decodeCount = 0;
@@ -246,12 +254,42 @@ namespace MbitGate.helper
         {
             return 2/*header*/+ 1/*address*/+ 1/*error*/+ 2/*function*/+ 2/*length*/+ dataLen + 1/*crc*/+ 2/*foot*/;
         }
+
+        internal static Tuple<byte, byte, ushort, byte[]> DecodeFrame(byte[] frame)
+        {
+            if (frame[0] == HEADER && frame[1] == HEADER && frame[frame.Length - 1] == FOOT && frame[frame.Length - 2] == FOOT)
+            {
+                byte[] data = new byte[frame.Length - 2 - 2 - 1];
+                Array.Copy(frame, 2, data, 0, data.Length);
+                if (CheckCRC(data, frame[frame.Length - 3]))
+                {
+                    if (data[1] != SUCCESS)
+                    {
+                        return new Tuple<byte, byte, ushort, byte[]>(data[0], data[1], BitConverter.ToUInt16(data, 2), new byte[] { });
+                    }
+                    else
+                    {
+                        byte[] values = new byte[data.Length - 6];
+                        Array.Copy(data, 6, values, 0, values.Length);
+                        return new Tuple<byte, byte, ushort, byte[]>(data[0], data[1], BitConverter.ToUInt16(data, 2), values);
+                    }
+                }
+                else
+                {
+                    return new Tuple<byte, byte, ushort, byte[]>(data[0], ERROR_CRC, BitConverter.ToUInt16(data, 2), new byte[] { });
+                }
+            }
+            else
+            {
+                throw new Exception("Frame Decode Error");
+            }
+        }
     }
 
-    class CommunicateStringProtocolDecoder
+    class CommStringProtocolDecoder
     {
-        private const string Done = "Done";
-        private const string Error = "Error";
+        internal const string Done = "Done";
+        internal const string Error = "Error";
 
         string customFoot = Done;
         public string CustomFoot { 
@@ -286,6 +324,389 @@ namespace MbitGate.helper
         internal void Clear()
         {
             ReplayContentBuffer = string.Empty;
+        }
+    }
+    class Translater
+    {
+        internal byte[] Translate(string command) 
+        {
+            try
+            {
+                string[] cmds = command.Split(' ');
+                switch (cmds[0])
+                {
+                    case SerialRadarCommands.SoftReset:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SOFTRESET, new byte[] { });
+                    case SerialRadarCommands.SensorStart:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SENSOR_START, new byte[] { });
+                    case SerialRadarCommands.SensorStop:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SENSOR_STOP, new byte[] { });
+                    case SerialRadarCommands.WriteCLI:
+                        {
+                            byte[] data = null;
+                            switch (cmds[1])
+                            {
+                                case SerialArguments.BootLoaderFlag:
+                                    {
+                                        data = new byte[3] { 0x00, 0x06, 0x00};
+                                        data[3] = byte.Parse(cmds[2]);
+                                    }
+                                    break;
+                                case SerialArguments.CommandBoundRate:
+                                    {
+                                        data = new byte[6] { 0x00, 0x05, 0x00, 0x00, 0x00, 0x00 };
+                                        Array.Copy(BitConverter.GetBytes(int.Parse(cmds[2])), 0, data, 2, 4);
+                                    }
+                                    break;
+                                case SerialArguments.DelayTimeParam:
+                                    {
+                                        data = new byte[4] { 0x00, 0x02, 0x00, 0x00 };
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[2])), 0, data, 2, 2);
+                                    }
+                                    break;
+                                case SerialArguments.FilterParam:
+                                    {
+                                        data = new byte[14];
+                                        data[0] = 0x00;
+                                        data[1] = 0x01;
+                                        data[2] = byte.Parse(cmds[2]);
+                                        data[3] = byte.Parse(cmds[3]);
+                                        data[4] = byte.Parse(cmds[4]);
+                                        data[5] = byte.Parse(cmds[5]);
+                                        data[6] = byte.Parse(cmds[6]);
+                                        data[7] = byte.Parse(cmds[7]);
+                                        data[8] = byte.Parse(cmds[8]);
+                                        data[9] = byte.Parse(cmds[9]);
+                                        data[10] = byte.Parse(cmds[10]);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[11])), 0, data, 11, 2);
+                                        data[13] = byte.Parse(cmds[12]);
+                                    }
+                                    break;
+                                case SerialArguments.RodDirection:
+                                    {
+                                        data = new byte[3] { 0x00, 0x07, 0x00 };
+                                        data[2] = byte.Parse(cmds[2]);
+                                    }
+                                    break;
+                                case SerialArguments.RodArea:
+                                    {
+                                        data = new byte[8] { 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[2]) * 100), 0, data, 2, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[3]) * 100), 0, data, 2, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[4]) * 100), 0, data, 2, 2);
+                                    }
+                                    break;
+                            }
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_WRITECLI, data);
+                        }
+                    case SerialRadarCommands.ReadCLI:
+                        {
+                            byte[] data = null;
+                            switch (cmds[1])
+                            {
+                                case SerialArguments.BootLoaderFlag:
+                                    {
+                                        data = new byte[2] { 0x00, 0x06};
+                                    }
+                                    break;
+                                case SerialArguments.CommandBoundRate:
+                                    {
+                                        data = new byte[2] { 0x00, 0x05};
+                                    }
+                                    break;
+                                case SerialArguments.DelayTimeParam:
+                                    {
+                                        data = new byte[2] { 0x00, 0x02};
+                                    }
+                                    break;
+                                case SerialArguments.FilterParam:
+                                    {
+                                        data = new byte[2] { 0x00, 0x01};
+                                    }
+                                    break;
+                                case SerialArguments.RodDirection:
+                                    {
+                                        data = new byte[2] { 0x00, 0x07};
+                                    }
+                                    break;
+                                case SerialArguments.RodArea:
+                                    {
+                                        data = new byte[2] { 0x00, 0x03};
+                                    }
+                                    break;
+                            }
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_READCLI, data);
+                        }
+                    case SerialRadarCommands.FlashErase:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_UPDATE_ERASE, new byte[] { });
+                    case SerialRadarCommands.CRC:
+                        break;
+                    case SerialRadarCommands.Output:
+                        {
+                            byte[] data = new byte[2] { 0x00, 0x00};
+                            data[0] = byte.Parse(cmds[1]);
+                            if(data[0] == 11)
+                            {
+                                data[1] = byte.Parse(cmds[2]);
+                            }
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_CLIOUTPUT, data);
+                        }
+                    case SerialRadarCommands.Version:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SOFT_VER, new byte[] { });
+                    case SerialRadarCommands.SetTime:
+                        {
+                            byte[] data = new byte[7];
+                            Array.Copy(BitConverter.GetBytes(short.Parse(cmds[1])), 0, data, 0, 2); /* — 年*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[2])), 0, data, 1, 1);  /* — 月*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[3])), 0, data, 2, 1);  /* — 日*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[4])), 0, data, 3, 1);  /* — 时*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[5])), 0, data, 4, 1);  /* — 分*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[6])), 0, data, 5, 1);  /* — 秒*/
+
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SET_SYSTEM_TIME, data);
+                        }
+                    case SerialRadarCommands.GetTIme:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_GET_SYSTEM_TIME, new byte[] { });
+                    case SerialRadarCommands.ClearTime:
+                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_CLEAR_RECORD, new byte[] { });
+                    case SerialRadarCommands.SearchTime:
+                        {
+                            byte[] data = new byte[15];
+                            data[0] = 0x00;
+                            Array.Copy(BitConverter.GetBytes(short.Parse(cmds[1])), 0, data, 1, 2); /*起始时间 — 年*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[2])), 0, data, 3, 1);  /*起始时间 — 月*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[3])), 0, data, 4, 1);  /*起始时间 — 日*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[4])), 0, data, 5, 1);  /*起始时间 — 时*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[5])), 0, data, 6, 1);  /*起始时间 — 分*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[6])), 0, data, 7, 1);  /*起始时间 — 秒*/
+
+                            Array.Copy(BitConverter.GetBytes(short.Parse(cmds[7])), 0, data, 8, 2); /*结束时间 — 年*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[8])), 0, data, 10, 1);  /*结束时间 — 月*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[9])), 0, data, 11, 1);  /*结束时间 — 日*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[10])), 0, data, 12, 1);  /*结束时间 — 时*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[11])), 0, data, 13, 1);  /*结束时间 — 分*/
+                            Array.Copy(BitConverter.GetBytes(byte.Parse(cmds[12])), 0, data, 14, 1);  /*结束时间 — 秒*/
+
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SEARCH, data);
+                        }
+                    case SerialRadarCommands.SearchInvert:
+                        {
+                            byte[] data = new byte[3] { 0x01, 0x00, 0x00 };
+                            Array.Copy(BitConverter.GetBytes(short.Parse(cmds[1])), 0, data, 1, 2);
+
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_SEARCH, data);
+                        }
+                    case SerialRadarCommands.AlarmOrder:
+                        {
+                            byte[] data = new byte[1];
+                            data[0] = byte.Parse(cmds[1]);
+
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_PUBLIC, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_FALSEALARMORDER, data);
+                        }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        internal string Translate(Tuple<byte/*address*/, byte/*error*/, ushort/*function*/, byte[]/*data*/> data) 
+        {
+            try
+            {
+                string result = string.Empty;
+                switch (data.Item3)
+                {
+                    case CommHexProtocolDecoder.FUNCTION_FALSEALARMORDER:
+                        switch(data.Item4[0])
+                        {
+                            case 0x00:
+                                return "X:" + (BitConverter.ToInt16(data.Item4, 1) * 0.01f).ToString("F2") + " Y:" + (BitConverter.ToInt16(data.Item4, 3) * 0.01f).ToString("F2");
+                            case 0x02:
+                                result = string.Empty;
+                                for(int i=1;i<data.Item4.Length;i+=4)
+                                {
+                                    result += (BitConverter.ToInt16(data.Item4, i) * 0.01f).ToString("F2") + (BitConverter.ToInt16(data.Item4, i + 2) * 0.01f).ToString("F2");
+                                }
+                                return result;
+                        }
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_SEARCH:
+                        result = string.Empty;
+                        for(int i=0; i<data.Item4.Length;i+=8)
+                        {
+                            result += BitConverter.ToInt16(data.Item4, i) + "-" + data.Item4[i + 2] + "-" + data.Item4[i + 3] + "   " + data.Item4[i + 4] + ":" + data.Item4[i + 5] + ":" + data.Item4[i + 6] + "Relay:" + data.Item4[i + 7] + "\n";
+                        }
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_CLEAR_RECORD:
+                        result = data.Item4[0] == 0x00 ? "Success" : "Fail";
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_GET_SYSTEM_TIME:
+                        result = BitConverter.ToInt16(data.Item4, 0) + "-" + data.Item4[2] + "-" + data.Item4[3] + "   " + data.Item4[4] + ":" + data.Item4[5] + ":" + data.Item4[6];
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_SET_SYSTEM_TIME:
+                        result = data.Item4[0] == 0x00 ? "Success" : "Fail";
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_SOFT_VER:
+                        result = BitConverter.ToString(data.Item4);
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_CLIOUTPUT:
+                        switch(data.Item4[0])
+                        {
+                            case 0x01:
+                                result = "X:" + BitConverter.ToInt16(data.Item4, 2) * 0.01f + " Y:" + BitConverter.ToInt16(data.Item4, 4) * 0.01f + " P:" + BitConverter.ToInt16(data.Item4, 6) + " DL:" + BitConverter.ToInt16(data.Item4, 8) + " THS:" + BitConverter.ToInt16(data.Item4, 10) + " did:" + BitConverter.ToInt16(data.Item4, 12);
+                                break;
+                            case 0x02:
+                                result = "MC:" + BitConverter.ToInt16(data.Item4, 2) * 0.01f + " Var:" + BitConverter.ToInt16(data.Item4, 4);
+                                break;
+                            case 0x03:
+                                result = "X:" + BitConverter.ToInt16(data.Item4, 2) * 0.01f + " Y:" + BitConverter.ToInt16(data.Item4, 4) * 0.01f;
+                                break;
+                            case 0x06:
+                                result = data.Item4[0] == 0x00 ? "up" : "down";
+                                break;
+                            case 0x0B:
+                                result = string.Empty;
+                                for (int i = 1; i < data.Item4.Length; i += 4)
+                                {
+                                    result += "X:" + (BitConverter.ToInt16(data.Item4, i) * 0.01f).ToString("F2") + "Y:" + (BitConverter.ToInt16(data.Item4, i + 2) * 0.01f).ToString("F2") +  "    ";
+                                }
+                                break;
+                            case 0x0C:
+                                result = string.Empty;
+                                for (int i = 1; i < data.Item4.Length; i += 4)
+                                {
+                                    result += "X:" + (BitConverter.ToInt16(data.Item4, i) * 0.01f).ToString("F2") + "Y:" + (BitConverter.ToInt16(data.Item4, i + 2) * 0.01f).ToString("F2") + "    ";
+                                }
+                                break;
+                            case 0x0D:
+                                result = BitConverter.ToString(data.Item4);
+                                break;
+                        }
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_UPDATE_ERASE:
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_READCLI:
+                        switch(data.Item4[1])
+                        {
+                            case 0x01:
+                                result = SerialArguments.FilterParam + " " + data.Item4[2] * 0.1f + data.Item4[3] * 0.1f + data.Item4[4] * 0.1f + data.Item4[5] * 0.1f + data.Item4[6] * 0.1f + data.Item4[7] * 0.1f + data.Item4[8] * 0.1f + data.Item4[9] * 0.1f + data.Item4[10] * 0.1f + BitConverter.ToInt16(data.Item4, 11) * 0.1f + data.Item4[13] * 0.1f;
+                                break;
+                            case 0x02:
+                                result = SerialArguments.DelayTimeParam + " " + BitConverter.ToInt16(data.Item4, 2);
+                                break;
+                            case 0x03:
+                                result = SerialArguments.RodArea + " " + BitConverter.ToInt16(data.Item4, 2)* 0.01f + " " + BitConverter.ToInt16(data.Item4, 4) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 6);
+                                break;
+                            case 0x04:
+                                result = SerialArguments.ThresholdParas + " " + BitConverter.ToInt16(data.Item4, 2) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 4) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 6) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 8) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 10) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 12) * 0.01f + " " + BitConverter.ToInt16(data.Item4, 14) * 0.01f;
+                                break;
+                        }
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_WRITECLI:
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_SENSOR_STOP:
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_SENSOR_START:
+                        break;
+                    case CommHexProtocolDecoder.FUNCTION_SOFTRESET:
+                        break;
+                }
+                return result + " \nDone";
+            }
+            catch (Exception)
+            {
+                throw new Exception("Data Decode Error");
+            }
+        }
+        internal string TranslateErrorCode(ushort func, byte err)
+        {
+            string result = ErrorString.Error + ":";
+            if(func > 0x00FF)
+            {
+                //道闸项目错误码
+                switch (err)
+                {
+                    case 0x01:
+                        result += SerialRadarCommands.CRC;
+                        break;
+                    case 0x02:
+                        result += ErrorString.ParamError;
+                        break;
+                    case 0x03:
+                        result += ErrorString.StudyError;
+                        break;
+                    case 0x04:
+                        result += ErrorString.ParamError;
+                        break;
+                    case 0x05:
+                        result += ErrorString.FunctionError;
+                        break;
+                    case 0x06:
+                        result += ErrorString.AddressError;
+                        break;
+                    case 0x07:
+                        result += ErrorString.PreCondition;
+                        break;
+                }
+            }
+            else
+            {
+                //通用错误码
+                switch(err)
+                {
+                    case 0x01:
+                        result += ErrorString.AddressError;
+                        break;
+                    case 0x02:
+                        result += ErrorString.FunctionError;
+                        break;
+                    case 0x03:
+                        result += ErrorString.FrameError;
+                        break;
+                    case 0x04:
+                        result += SerialRadarCommands.CRC;
+                        break;
+                    case 0x05:
+                        result += ErrorString.OverTime;
+                        break;
+                    case 0x06:
+                        result += ErrorString.UnknowError;
+                        break;
+                    case 0x14:
+                        result += ErrorString.EraseError;
+                        break;
+                    case 0x15:
+                        result += ErrorString.FrameCountError;
+                        break;
+                    case 0x16:
+                        result += ErrorString.FrameNumberError;
+                        break;
+                    case 0x17:
+                        result += ErrorString.FrameNumberError;
+                        break;
+                    case 0x18:
+                        result += ErrorString.FrameLengthError;
+                        break;
+                    case 0x19:
+                        result += ErrorString.DataWriteError;
+                        break;
+                    case 0x1A:
+                        result += ErrorString.BinCRCError;
+                        break;
+                    case 0x1B:
+                        result += ErrorString.BinFreshError;
+                        break;
+                    case 0x1C:
+                        result += ErrorString.UnknowError;
+                        break;
+                    case 0x1D:
+                        result += ErrorString.FunctionError;
+                        break;
+                }
+            }
+            return result;
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using System.Windows.Controls;
-using HexProtocol = MbitGate.helper.CommunicateHexProtocolDecoder;
+using HexProtocol = MbitGate.helper.CommHexProtocolDecoder;
 
 namespace MbitGate.control
 {
@@ -165,16 +165,19 @@ namespace MbitGate.control
     public class SerialManager
     {
         private System.IO.Ports.SerialPort _serial;
-        CommunicateHexProtocolDecoder hexDecoder;
-        CommunicateStringProtocolDecoder stringDecoder;
+        CommHexProtocolDecoder hexDecoder;
+        CommStringProtocolDecoder stringDecoder;
+        Translater translater;
         Timer overTimer = null;
         Timer consumerTimer = null;
-        ConcurrentQueue<byte> ReplayData;
+        ConcurrentQueue<byte> ReplayBytesQueue;
         string preStrCommand;
         byte[] preHexCommand;
         int preMilliseconds;
         byte repeat;
         const byte MaxRepeatCount = 4;
+        //为了兼容以前的字符串命令，设置一个标志位，表示是否需要将字符串命令翻译成十六进制命令
+        internal bool ToTranslate { get; set; }
         public SerialManager(SerialReceiveType type = SerialReceiveType.Chars)
         {
             _serial = new System.IO.Ports.SerialPort();
@@ -187,8 +190,9 @@ namespace MbitGate.control
             _serial.ReceivedBytesThreshold = 2;
             _serial.ReadTimeout = 1000;
             _serial.DataReceived += OnSerialDataReceived;
-            stringDecoder = new CommunicateStringProtocolDecoder();
-            hexDecoder = new CommunicateHexProtocolDecoder();
+            stringDecoder = new CommStringProtocolDecoder();
+            hexDecoder = new CommHexProtocolDecoder();
+            translater = new Translater();
             stringDecoder.NotifyDecodeResult = OnStringResultReach;
             hexDecoder.NotifyCRCError = OnHexResultCRCFail;
             hexDecoder.NotifyReplayError = OnHexResultError;
@@ -203,7 +207,7 @@ namespace MbitGate.control
             overTimer = new Timer(300);
             overTimer.Elapsed += OverTimer_Elapsed;
 
-            ReplayData = new ConcurrentQueue<byte>();
+            ReplayBytesQueue = new ConcurrentQueue<byte>();
             preStrCommand = null;
             preHexCommand = null;
             repeat = 0;
@@ -212,9 +216,11 @@ namespace MbitGate.control
             consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
             consumerTimer.Start();
 
-            hexDecoder.MaxCantDecodeCount = (300 / 3) - 10;  /*300 = overTimer.Interval   5=consumerTimer.Interval*/
+            hexDecoder.MaxCantDecodeCount = (300 / 3) - 10;  /*300 = overTimer.Interval   3=consumerTimer.Interval*/
         }
 
+        //十六进制与字符串统一回复出口
+        public Action<string> ReplayReachHandler { get; set; }
         public Action<string> StringDataReceivedHandler { get; set; }
         public Action<byte[]> BytesFrameDataReceivedHandler { get; set; }
         public Action<Tuple<byte/*address*/, byte/*error*/, ushort/*function*/, byte[]/*data*/>> BytesDecodedDataReceivedHandler { get; set; }
@@ -233,8 +239,9 @@ namespace MbitGate.control
             _serial.ReadTimeout = 1000;
             PortName = name;
             _serial.DataReceived += OnSerialDataReceived;
-            stringDecoder = new CommunicateStringProtocolDecoder();
-            hexDecoder = new CommunicateHexProtocolDecoder();
+            stringDecoder = new CommStringProtocolDecoder();
+            hexDecoder = new CommHexProtocolDecoder();
+            translater = new Translater();
             stringDecoder.NotifyDecodeResult = OnStringResultReach;
             hexDecoder.NotifyCRCError = OnHexResultCRCFail;
             hexDecoder.NotifyReplayError = OnHexResultError;
@@ -250,7 +257,7 @@ namespace MbitGate.control
             overTimer.AutoReset = true;
             overTimer.Elapsed += OverTimer_Elapsed;
 
-            ReplayData = new ConcurrentQueue<byte>();
+            ReplayBytesQueue = new ConcurrentQueue<byte>();
             preStrCommand = null;
             preHexCommand = null;
             repeat = 0;
@@ -259,8 +266,7 @@ namespace MbitGate.control
             consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
             consumerTimer.Start();
 
-            hexDecoder.MaxCantDecodeCount = (300/3) - 10;  /*300 = overTimer.Interval   5=consumerTimer.Interval*/
-
+            hexDecoder.MaxCantDecodeCount = (300/3) - 10;  /*300 = overTimer.Interval   3=consumerTimer.Interval*/
         }
 
         public string EndStr { 
@@ -289,7 +295,7 @@ namespace MbitGate.control
                         {
                             foreach (byte val in data)
                             {
-                                ReplayData.Enqueue(val);
+                                ReplayBytesQueue.Enqueue(val);
                             }
                         }
                         else
@@ -310,11 +316,12 @@ namespace MbitGate.control
 
         private void ToDecodeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            hexDecoder.Decode(ref ReplayData);
+            hexDecoder.Decode(ref ReplayBytesQueue);
         }
 
         private void OverTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            //重发机制
            if(preStrCommand != null)
             {
                 if(MaxRepeatCount == repeat)
@@ -337,7 +344,7 @@ namespace MbitGate.control
                     overTimer.Stop();
                     preHexCommand = null;
                     repeat = 0;
-                    ErrorReceivedHandler?.Invoke(HexProtocol.ERROVERTIME);
+                    ErrorReceivedHandler?.Invoke(HexProtocol.ERROR_OVERTIME);
                 }
                 else
                 {
@@ -353,7 +360,12 @@ namespace MbitGate.control
             preHexCommand = null;
             overTimer.Stop();
             repeat = 0;
-            BytesFrameDataReceivedHandler?.Invoke(frame);
+            if(ToTranslate)
+            {
+                StringDataReceivedHandler?.Invoke(translater.Translate(CommHexProtocolDecoder.DecodeFrame(frame)));
+            }
+            else
+                BytesFrameDataReceivedHandler?.Invoke(frame);
         }
 
         private void OnHexResultReach(Tuple<byte, byte, ushort, byte[]> data)
@@ -361,16 +373,27 @@ namespace MbitGate.control
             preHexCommand = null;
             overTimer.Stop();
             repeat = 0;
-            BytesDecodedDataReceivedHandler?.Invoke(data);
+
+            if (ToTranslate)
+            {
+                StringDataReceivedHandler?.Invoke(translater.Translate(data));
+            }
+            else
+                BytesDecodedDataReceivedHandler?.Invoke(data);
         }
 
-        private void OnHexResultError(byte err)
+        private void OnHexResultError(ushort func, byte err)
         {
             overTimer.Stop();
             preHexCommand[3] = err;
             preHexCommand = null;
             repeat = 0;
-            ErrorReceivedHandler(err);
+            if(ToTranslate)
+            {
+                StringDataReceivedHandler?.Invoke(translater.TranslateErrorCode(func, err));
+            }
+            else
+                ErrorReceivedHandler(err);
         }
 
         private void OnHexResultCRCFail()
@@ -465,17 +488,21 @@ namespace MbitGate.control
             {
                 lock(_serial)
                 {
-                    preStrCommand = content;
-                    preMilliseconds = milliseconds;
-                    _serial.DiscardOutBuffer();
-                    _serial.WriteLine(content);
-                    overTimer.Interval = milliseconds;
-                    //if (content == SerialRadarCommands.SoftReset)
-                    //    overTimer.Interval = 1000;
-                    //else
-                    //    overTimer.Interval = 300;
-                    if (toStartTime)
-                        overTimer.Start();
+                    if(ToTranslate)
+                    {
+                        preHexCommand = translater.Translate(content);
+                        Write(preHexCommand, milliseconds, toStartTime);
+                    }
+                    else
+                    {
+                        preStrCommand = content;
+                        preMilliseconds = milliseconds;
+                        _serial.DiscardOutBuffer();
+                        _serial.WriteLine(content);
+                        overTimer.Interval = milliseconds;
+                        if (toStartTime)
+                            overTimer.Start();
+                    }
                 }
             }
             catch (Exception ex)
@@ -528,10 +555,10 @@ namespace MbitGate.control
 
         internal void ClearBuffer()
         {
-            lock(ReplayData)
+            lock(ReplayBytesQueue)
             {
                 byte tmp;
-                while (ReplayData.TryDequeue(out tmp)) { }
+                while (ReplayBytesQueue.TryDequeue(out tmp)) { }
             }
             stringDecoder.Clear();
         }

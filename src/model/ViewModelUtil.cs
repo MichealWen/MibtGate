@@ -15,7 +15,7 @@ using System.Windows.Threading;
 using System.Linq;
 using LiveCharts.Defaults;
 using LiveCharts;
-using HexProtocol = MbitGate.helper.CommunicateHexProtocolDecoder;
+using HexProtocol = MbitGate.helper.CommHexProtocolDecoder;
 using System.CodeDom;
 
 namespace MbitGate.model
@@ -3080,7 +3080,7 @@ namespace MbitGate.model
                             };
                             serial.ErrorReceivedHandler = data =>
                             {
-                                if(data == CommunicateHexProtocolDecoder.ERROVERTIME)
+                                if(data == CommHexProtocolDecoder.ERROR_OVERTIME)
                                 {
                                     _progressViewModel.Message = ErrorString.Error + ErrorString.OverTime;
                                 }

@@ -109,6 +109,7 @@ namespace MbitGate.control
         public const string SearchTime = "RelayFlipTime";
         public const string SearchInvert = "RelayTimeLog";
         public const string WriteBaudRate = "commandBaudRate ";
+        public const string AlarmOrder = "falseAlarmOrder";
         public const string AlarmOrder0 = "falseAlarmOrder 0";
         public const string AlarmOrder1 = "falseAlarmOrder 1";
         public const string AlarmOrder2 = "falseAlarmOrder 2";
@@ -142,6 +143,8 @@ namespace MbitGate.control
         public const string BootLoaderFlag = "bootLoaderFlag";
         public const string DelayTimeParam = "setDelayTimeParas";
         public const string RodDirection = "rodDirection";
+        public const string RodArea = "setUpRodSubArea";
+        public const string ThresholdParas = "setThresholdParas";
     }
 
     public class SerialRadarReply
@@ -173,6 +176,20 @@ namespace MbitGate.control
         public static string OverTime = Application.Current.Resources["OverTime"].ToString();
         public static string DelayError = Application.Current.Resources["DelayError"].ToString();
         internal static string ConnectError = Application.Current.Resources["ConnectError"].ToString();
+
+        public const string StudyError = "Study";
+        public const string FunctionError = "Function Code";
+        public const string AddressError = "Address Error";
+        public const string PreCondition = "Lack of PreCondition";
+        public const string FrameError = "Data Length Or Frame End Byte";
+        public const string UnknowError = "Unknow";
+        public const string EraseError = "Flase Erase";
+        public const string FrameCountError = "Frame Count";
+        public const string FrameNumberError = "Frame Number";
+        public const string FrameLengthError = "Frame Length";
+        public const string DataWriteError = "Write Data";
+        public const string BinCRCError = "Bin File CRC";
+        public const string BinFreshError = "Bin Data Copy";
     }
 
     public class Tips
