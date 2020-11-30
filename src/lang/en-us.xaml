@@ -142,6 +142,7 @@
     <s:String x:Key="BinChoose">Bin Choose</s:String>
     <s:String x:Key="FileName">FileName</s:String>
     <s:String x:Key="LastModify">LastModify</s:String>
+    <s:String x:Key="FileSize">Size</s:String>
     <s:String x:Key="BinType">Bin (*.bin;)|*.bin!{0}|*.*</s:String>
     <s:String x:Key="PasswordTip">Input Password(Defaut 123)</s:String>
     <!--ThresholdType-->

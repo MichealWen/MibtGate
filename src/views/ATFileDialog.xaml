@@ -8,7 +8,7 @@
         xmlns:Model="clr-namespace:MbitGate.model"
         xmlns:helpers="clr-namespace:MbitGate.helper"
         mc:Ignorable="d"
-       Title="{DynamicResource BinChoose}" Height="400" Width="600" WindowStartupLocation="CenterScreen">
+       Title="{DynamicResource BinChoose}" Height="400" Width="620" WindowStartupLocation="CenterScreen">
     <Controls:MetroWindow.Resources>
         <HierarchicalDataTemplate DataType="{x:Type Model:FileFolderInfo}"
                                   ItemsSource="{Binding FileFolders}">
@@ -91,7 +91,7 @@
                 <ColumnDefinition Width="75*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Grid.Column="0">
-                <StackPanel Orientation="Horizontal" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal">
                     <Image Source="/ITS_A08;component/image/arrow_left.png" Width="20" Height="20" Margin="20 0" MouseLeftButtonUp="Back_MouseClick"/>
                     <Image Source="/ITS_A08;component/image/arrow_right.png" Width="20" Height="20" Margin="20 0" MouseLeftButtonUp="Forward_MouseClick"/>
                 </StackPanel>
@@ -123,6 +123,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn  Header="{DynamicResource LastModify}" Binding="{Binding DateModified}" Width="Auto"/>
+                    <DataGridTextColumn  Header="{DynamicResource FileSize}" Binding="{Binding FileSize}" Width="Auto"/>
                 </DataGrid.Columns>
                 <!--<DataGrid.InputBindings>
                     <MouseBinding

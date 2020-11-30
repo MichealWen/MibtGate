@@ -117,12 +117,15 @@ namespace MbitGate.views
 
         private void Back_MouseClick(object sender, MouseButtonEventArgs e)
         {
-
+            string parentPath = System.IO.Directory.GetParent(VMATFileDialogModel.Instance.SelectedTreeViewItem.Path)?.FullName;
+            if(parentPath != null)
+                VMATFileDialogModel.Instance.SelectedTreeViewItem = new FileFolderInfo() { Path = parentPath, IsDirectory = true };
         }
 
         private void Forward_MouseClick(object sender, MouseButtonEventArgs e)
         {
-
+            if(VMATFileDialogModel.Instance.PreSelectFileItem != null)
+                VMATFileDialogModel.Instance.SelectedTreeViewItem = VMATFileDialogModel.Instance.PreSelectFileItem;
         }
     }
 }
