@@ -19,6 +19,7 @@ namespace MbitGate.model
 
             set
             {
+                PreSelectFileItem = _selectedTreeViewItem;
                 _selectedTreeViewItem = value;
                 if (value != null)
                 {
@@ -33,7 +34,7 @@ namespace MbitGate.model
             }
         }
 
-        private FileFolderInfo _preSelectFileItem;
+        public FileFolderInfo PreSelectFileItem { get; set; }
 
         private FileFolderInfo _SelectedFileItem;
         public FileFolderInfo SelectedFileItem
@@ -291,6 +292,7 @@ namespace MbitGate.model
                             Name = directoryinfo.Name,
                             Path = directoryinfo.FullName,
                             DateModified = directoryinfo.LastWriteTime,
+                            FileSize = directoryinfo.Length,
                             IsFile = true
                         });
                     }
@@ -307,6 +309,7 @@ namespace MbitGate.model
                             Name = directoryinfo.Name,
                             Path = directoryinfo.FullName,
                             DateModified = directoryinfo.LastWriteTime,
+                            FileSize = directoryinfo.Length,
                             IsFile = true
                         });
                     }

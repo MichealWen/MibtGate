@@ -98,6 +98,20 @@ namespace MbitGate.model
             }
         }
 
+        private long _fileSize;
+        public long FileSize
+        {
+            get
+            {
+                return _fileSize;
+            }
+            set
+            {
+                _fileSize = value;
+                OnPropertyChanged("FileSize");
+            }
+        }
+
         private ObservableCollection<FileFolderInfo> _FileFolders;
         public ObservableCollection<FileFolderInfo> FileFolders
         {
