@@ -1,0 +1,47 @@
+﻿<MetroDialog:CustomDialog x:Class="MbitGate.views.RecordsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MbitGate.views"
+             xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:MetroControl="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" Height="320" Width="500" FontFamily="Helvetica,冬青黑简体">
+    <Grid Margin="-124,-43,-125,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="210*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#ededed"/>
+        <TextBlock FontSize="16" Foreground="#333333" Grid.Row="0" Style="{StaticResource STYLE_CONFIGVIEWTITLE}"  Text="{DynamicResource Record}"/>
+        <Button x:Name="ViewClose" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Background="Transparent" Margin="0,5,10,0" BorderThickness="0" Command="{Binding CancelCommand}">
+            <Image Source="/DAHUA_ITS_A08;component/image/close.png"/>
+        </Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="26,0,10,0" Width="463">
+            <TextBlock Text="{StaticResource Time}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+            <MetroControl:DateTimePicker SelectedDate="{Binding CurrentTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}" Width="200" FontSize="14" Foreground="#333333" Culture="zh-cn"  IsClockVisible="False" PickerVisibility="All"  Margin="0 0 60 0"/>
+            <Button Content="{StaticResource Get}" Width="40"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetTimeCommand}"  ToolTip="{StaticResource FuncGetTime}"/>
+            <Button Content="{StaticResource SynchronizeTime}" Width="40"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SynTimeCommand}"  Margin="20 0"  ToolTip="{StaticResource FuncSynTime}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" >
+            <ListBox BorderThickness="5" BorderBrush="AliceBlue" Width="300"  ItemsSource="{Binding SearchResult}"/>
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <TextBlock Text="{StaticResource StartTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333" Culture="zh-cn"  SelectedDate="{Binding StartTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True"/>
+                <TextBlock Text="{StaticResource EndTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333"  Culture="zh-cn" SelectedDate="{Binding EndTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True" />
+                <Button Content="{StaticResource Search}" Width="80"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCommand}" ToolTip="{StaticResource FuncRecord}" HorizontalAlignment="Right"/>
+                <TextBlock Text="{StaticResource InvertSearchCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,10,0"/>
+                <TextBox   Width="160" FontSize="14" Foreground="#333333"  Text="{Binding InvertSearchCount}"/>
+                <Button Content="{StaticResource InvertSearch}" Width="80"  Style="{StaticResource Style_Button_Ok}" Command="{Binding InvertSearchCommand}" ToolTip="{StaticResource FuncInvertRecord}" HorizontalAlignment="Right"/>
+                <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearRecordCommand}" Margin="0 10" ToolTip="{StaticResource FuncClearTime}"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</MetroDialog:CustomDialog>

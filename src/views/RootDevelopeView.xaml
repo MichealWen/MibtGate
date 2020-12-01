@@ -1,0 +1,56 @@
+﻿<MetroDialog:CustomDialog x:Class="MbitGate.views.RootDevelopeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MbitGate.views"
+             xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:MetroControl="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" Height="320" Width="500">
+    <Grid Margin="-125,-43,-124,0" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="100*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#ededed"/>
+        <TextBlock FontSize="16" Foreground="#333333" Grid.Row="0" Style="{StaticResource STYLE_CONFIGVIEWTITLE}"  Text="{DynamicResource DeveloperModelTitle}"/>
+        <Button x:Name="ViewClose" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Background="Transparent" Margin="0,5,10,0" BorderThickness="0" Command="{Binding CancelCommand}">
+            <Image Source="/DAHUA_ITS_A08;component/image/close.png"/>
+        </Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center">
+            <TextBlock Text="{StaticResource Threshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,30,0"/>
+            <TextBox x:Name="Thresold" Text="{Binding Threshold}" Width="200" FontFamily="Microsoft YaHei"  FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2">
+            <TextBlock Text="{StaticResource Delay}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,30,0"/>
+            <TextBox  Text="{Binding Delay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+            <TextBlock Text="{StaticResource UnitS}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center" >
+            <TextBox Text="{Binding  WriteCLICommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+            <Button Content="{StaticResource WriteCLICommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLICommand}" BorderBrush="#02a8f3"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Center" Height="30"  VerticalAlignment="Bottom" >
+            <TextBox Text="{Binding  CustomCommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+            <Button Content="{StaticResource CustomCommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding CustomCommand}" BorderBrush="#02a8f3"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="10" HorizontalAlignment="Center">
+            <Button Content="{StaticResource ReadCLIAllCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding ReadCLIAllCommand}" BorderBrush="#02a8f3"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="12" HorizontalAlignment="Center" >
+            <Button Content="{StaticResource SensorstopCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding SensorstopCommand}" BorderBrush="#02a8f3"/>
+        </StackPanel>
+    </Grid>
+</MetroDialog:CustomDialog>

@@ -1,0 +1,40 @@
+﻿<MetroDialog:CustomDialog x:Class="MbitGate.views.ComparisonView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MbitGate.views"
+             xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             xmlns:MetroControl="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d"  Height="320" Width="910">
+    <Grid Margin="-228,-44,-227,0">
+        <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="250*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#ededed"/>
+        <TextBlock FontSize="16" Foreground="#333333" Grid.Row="0" Style="{StaticResource STYLE_CONFIGVIEWTITLE}"  Text="{DynamicResource CompareModelTitle}"/>
+        <Button x:Name="ViewClose" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Background="Transparent" Margin="0,5,10,0" BorderThickness="0" Command="{Binding CancelCommand}">
+            <Image Source="/DAHUA_ITS_A08;component/image/close.png"/>
+        </Button>
+        <DockPanel Grid.Row="2" Margin="50 0">
+            <LiveChart:CartesianChart LegendLocation="Bottom" Width="700"  Series="{Binding BackgroundSeries}">
+                <!--<LiveChart:CartesianChart.Series>
+                        <LiveChart:LineSeries Values="{Binding BackgroundBeforePoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}" Title="{StaticResource BeforeChartPointsTitle}"/>
+                        <LiveChart:LineSeries Values="{Binding BackgroundAfterPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{StaticResource AfterChartPointsTitle}"/>
+                    </LiveChart:CartesianChart.Series>-->
+            </LiveChart:CartesianChart>
+            <TextBlock Text="{StaticResource ComparisionIntroduction}" Width="110" TextWrapping="Wrap" />
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center">
+            <Button Content="{StaticResource GetBackPoints}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetBackPointsCommand}" Margin="5 0" ToolTip="{StaticResource FuncBackPoints}"/>
+            <Button Content="{StaticResource Comparison}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ComparisonCommand}"  ToolTip="{StaticResource FuncBackPoints}" IsEnabled="{Binding CanCompare}"/>
+        </StackPanel>
+    </Grid>
+</MetroDialog:CustomDialog>

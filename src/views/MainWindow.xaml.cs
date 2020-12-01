@@ -21,22 +21,12 @@ namespace MbitGate.views
             InitializeComponent();
             mainVModel = new SerialMainViewModel(MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
             DataContext = mainVModel;
-            ic_tab_config.IsChecked = true;
             this.AddHandler(MahApps.Metro.Controls.Dialogs.CustomDialog.MouseMoveEvent, new MouseEventHandler(DialogCoordinatorWindow_Drag));
 #if DEBUG
             this.Title = Application.Current.Resources["MainWindowTitle"].ToString() + FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion + "_" + System.IO.File.GetLastWriteTime(this.GetType().Assembly.Location) + "_BETA";
 #else
             this.Title = Application.Current.Resources["MainWindowTitle"].ToString() + FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 #endif
-        }
-
-        private void Choose_Click(object sender, RoutedEventArgs e)
-        {
-            ATFileDialog dialog = new ATFileDialog(Application.Current.Resources["BinChoose"].ToString(), Application.Current.Resources["BinType"].ToString(), false, "");
-            if (dialog.ShowDialog() == true)
-            {
-                PathText.Text = model.VMATFileDialogModel.Instance.SelectedFileItem.Path;
-            }
         }
 
         private void DialogCoordinatorWindow_Drag(object sender, MouseEventArgs e)
@@ -57,38 +47,36 @@ namespace MbitGate.views
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            mainVModel?.start();
         }
 
         private void Develop_Choose_Click(object sender, RoutedEventArgs e)
         {
-            ic_tab_config.IsChecked = false;
+            ic_tab_connect.IsChecked = false;
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = true;
             ic_tab_search.IsChecked = false;
-            ic_tab_alarm.IsChecked = false;
             ic_tab_comparison.IsChecked = false;
-            mainVModel?.root();
+            mainVModel.ToRoot();
         }
 
         private void Update_Choose_Click(object sender, RoutedEventArgs e)
         {
-            ic_tab_config.IsChecked = false;
+            ic_tab_connect.IsChecked = false;
             ic_tab_update.IsChecked = true;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
-            ic_tab_alarm.IsChecked = false;
             ic_tab_comparison.IsChecked = false;
+            mainVModel.ToUpdate();
         }
 
-        private void Config_Choose_Click(object sender, RoutedEventArgs e)
+        private void Connect_Choose_Click(object sender, RoutedEventArgs e)
         {
-            ic_tab_config.IsChecked = true;
+            ic_tab_connect.IsChecked = true;
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
-            ic_tab_alarm.IsChecked = false;
             ic_tab_comparison.IsChecked = false;
+            mainVModel.ToConnect();
         }
 
         private void ComboxThreshold_LostFocus(object sender, RoutedEventArgs e)
@@ -103,32 +91,22 @@ namespace MbitGate.views
 
         private void Record_Choose_Click(object sender, RoutedEventArgs e)
         {
-            ic_tab_config.IsChecked = false;
+            ic_tab_connect.IsChecked = false;
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = true;
-            ic_tab_alarm.IsChecked = false;
             ic_tab_comparison.IsChecked = false;
-        }
-
-        private void Alarm_Choose_Click(object sender, RoutedEventArgs e)
-        {
-            ic_tab_config.IsChecked = false;
-            ic_tab_update.IsChecked = false;
-            ic_tab_develop.IsChecked = false;
-            ic_tab_search.IsChecked = false;
-            ic_tab_alarm.IsChecked = true;
-            ic_tab_comparison.IsChecked = false;
+            mainVModel.ToRecord();
         }
 
         private void Compare_Choose_Click(object sender, RoutedEventArgs e)
         {
-            ic_tab_config.IsChecked = false;
+            ic_tab_connect.IsChecked = false;
             ic_tab_update.IsChecked = false;
             ic_tab_develop.IsChecked = false;
             ic_tab_search.IsChecked = false;
-            ic_tab_alarm.IsChecked = false;
             ic_tab_comparison.IsChecked = true;
+            mainVModel.ToCompare();
         }
 
         private void VersionTextBox_MouseDown(object sender, MouseButtonEventArgs e)
@@ -139,6 +117,19 @@ namespace MbitGate.views
         private void LogoutImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             mainVModel.ReLoginCommand.Execute(null);
+        }
+
+        private void Test_Click(object sender, RoutedEventArgs e)
+        {
+            if (AnimationImage.Visibility == Visibility.Visible)
+                AnimationImage.Visibility = Visibility.Collapsed;
+            else
+                AnimationImage.Visibility = Visibility.Visible;
+        }
+
+        private void Chart_Double_Click(object sender, MouseButtonEventArgs e)
+        {
+            TargetsChart.DataLabels = !TargetsChart.DataLabels;
         }
     }
 
@@ -292,6 +283,58 @@ namespace MbitGate.views
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ConnectState2Enable : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            ConnectType type = (ConnectType)value;
+            if (type == ConnectType.Connected)
+                return true;
+            else
+                return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ConnectState2String : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            ConnectType type = (ConnectType)value;
+            string state = string.Empty;
+            switch(type)
+            {
+                case ConnectType.UnRegist:
+                    state = Application.Current.Resources["Unregist"].ToString();
+                    break;
+                case ConnectType.Ready:
+                    state = Application.Current.Resources["Ready"].ToString();
+                    break;
+                case ConnectType.Connecting:
+                    state = Application.Current.Resources["Connecting"].ToString();
+                    break;
+                case ConnectType.Connected:
+                    state = Application.Current.Resources["Connectied"].ToString();
+                    break;
+                case ConnectType.Disconnecting:
+                    state = Application.Current.Resources["Disconnecting"].ToString();
+                    break;
+                case ConnectType.Disconnected:
+                    state = Application.Current.Resources["Disconnected"].ToString();
+                    break;
+            }
+            return state;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

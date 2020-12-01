@@ -4,11 +4,11 @@
     <!--window-->
     <s:String  x:Key="MainWindowTitle">道闸RS485_TTL雷达设置V</s:String>
     <s:String  x:Key="SerialModelTitle">升级</s:String>
-    <s:String  x:Key="ConfigModelTitle">设置</s:String>
+    <s:String  x:Key="ConfigModelTitle">参数设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
     <s:String  x:Key="DeveloperModelTitle">开发设置</s:String>
     <s:String x:Key="RecordModelTitle">日志</s:String>
-    <s:String x:Key="AlarmModelTitile">虚警处理</s:String>
+    <s:String x:Key="AlarmModelTitile">目标信息</s:String>
     <s:String x:Key="CompareModelTitle">背景对比</s:String>
     <s:String  x:Key="Serial">串&#160;&#160;&#160;口</s:String>
     <s:String  x:Key="IP">I&#160;&#160;P</s:String>
@@ -23,12 +23,12 @@
     <s:String  x:Key="Fail">固件刷写失败</s:String>
     <s:String  x:Key="Config">配置</s:String>
     <s:String  x:Key="Baud">波特率</s:String>
-    <s:String  x:Key="FrontMaxDistance">最大前距离</s:String>
-    <s:String x:Key="FrontMinDistance">最小前距离</s:String>
+    <s:String  x:Key="FrontMaxDistance">纵向检测距离</s:String>
+    <s:String x:Key="FrontMinDistance">最小不检测距离</s:String>
     <s:String  x:Key="LRange">作用左范围</s:String>
     <s:String  x:Key="RRange">作用右范围</s:String>
     <s:String  x:Key="Position">杆位置</s:String>
-    <s:String  x:Key="Threshold">人车区分</s:String>
+    <s:String  x:Key="Threshold">是否人车区分</s:String>
     <s:String  x:Key="Delay">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;延时</s:String>
     <s:String  x:Key="UnitM">米</s:String>
     <s:String  x:Key="UnitS">秒</s:String>
@@ -42,7 +42,7 @@
     <s:String x:Key="Fence">栅栏广告道闸</s:String>
     <s:String x:Key="Advertising">广告栅栏道闸</s:String>
     <s:String x:Key="Straight">直杆道闸</s:String>
-    <s:String x:Key="GateType">道闸类型</s:String>
+    <s:String x:Key="GateType">杆型选择</s:String>
     <s:String x:Key="FuncGet">获取雷达当前参数</s:String>
     <s:String x:Key="FuncSet">设置雷达新参数</s:String>
     <s:String x:Key="FuncReset">设置雷达成默认参数</s:String>
@@ -56,8 +56,8 @@
     <s:String x:Key="GetTime">获取时间</s:String>
     <s:String x:Key="SetTime">设置时间</s:String>
     <s:String x:Key="ClearTime">清除日志</s:String>
-    <s:String x:Key="Search">按时间查询记录</s:String>
-    <s:String x:Key="InvertSearch">倒置查询记录</s:String>
+    <s:String x:Key="Search">按时间查询</s:String>
+    <s:String x:Key="InvertSearch">倒置查询</s:String>
     <s:String x:Key="InvertSearchCount">倒置查询数量</s:String>
     <s:String x:Key="SearchResult">查询结果</s:String>
     <s:String x:Key="FuncGetTime">获取雷达当前时间</s:String>
@@ -75,8 +75,10 @@
     <s:String x:Key="FuncRemoveAlarm">剔除视场内的虚警点</s:String>
     <s:String x:Key="FuncRegetAlarm">获取已经剔除的虚警点</s:String>
     <s:String x:Key="FuncCancelRemoveAlarm">取消剔除虚警点</s:String>
-    <s:String x:Key="SeriesStrongestWeakPoints">最强点</s:String>
-    <s:String x:Key="SeriesRemovedWeakPoints">剔除点</s:String>
+    <s:String x:Key="SeriesStrongestWeakPoints">目标位置</s:String>
+    <s:String x:Key="SeriesRemovedWeakPoints">已剔除虚警</s:String>
+    <s:String x:Key="StrongestWeakPoints">目标点</s:String>
+    <s:String x:Key="RangePoints">探测范围</s:String>
     <s:String x:Key="BeforeChartPointsTitle">上次背景</s:String>
     <s:String x:Key="AfterChartPointsTitle">当前背景</s:String>
     <s:String x:Key="RadarType">类&#160;&#160;&#160;&#160;型</s:String>
@@ -127,8 +129,8 @@
     <s:String x:Key="SearchTimeGetNone">查询数据为空</s:String>
     <s:String x:Key="Searching">正在查询数据</s:String>
     <s:String x:Key="SearchTimeEnd">查询数据结束</s:String>
-    <s:String x:Key="Persistence">记录(时间戳)</s:String>
-    <s:String x:Key="Ignore">不记录(时间戳)</s:String>
+    <s:String x:Key="Persistence">开启</s:String>
+    <s:String x:Key="Ignore">不开启</s:String>
     <s:String x:Key="Up">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;抬杆</s:String>
     <s:String x:Key="Down">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;降杆</s:String>
     <s:String x:Key="UpValue">Dalay:1</s:String>
@@ -179,7 +181,7 @@
 
     <s:String x:Key="ReasonAnomalousSearching">正在查找异常原因&#160;&#160;&#160;&#160;</s:String>
 
-    <s:String x:Key="ConnectError" xml:space="preserve">连接失败,请检查&#x000D;&#x000A;可能原因：&#x000D;&#x000A;&#160;&#160;&#160;&#160;线束问题&#x000D;&#x000A;&#160;&#160;&#160;&#160;波特率错误&#x000D;&#x000A;&#160;&#160;&#160;&#160;其它程序占用串口</s:String>
+    <s:String x:Key="ConnectError" xml:space="preserve">连接失败,请检查&#x000D;&#x000A;可能原因：&#x000D;&#x000A;&#160;&#160;&#160;&#160;1.线束问题&#x000D;&#x000A;&#160;&#160;&#160;&#160;2.波特率错误&#x000D;&#x000A;&#160;&#160;&#160;&#160;3.其它程序占用串口</s:String>
     <s:String x:Key="TipResetSuccess">恢复出厂设置成功</s:String>
     <s:String x:Key="TipResetFail">恢复出厂设置失败</s:String>
 
@@ -191,11 +193,22 @@
     <s:String x:Key="FencePosition">杆件位置</s:String>
     <s:String x:Key="PositionLeft">雷达左侧</s:String>
     <s:String x:Key="PositionRight">雷达右侧</s:String>
-    <s:String x:Key="SynchronizeTime">同步时间</s:String>
+    <s:String x:Key="SynchronizeTime">同步</s:String>
     <s:String x:Key="FuncSynTime">同步电脑时间到雷达</s:String>
     <s:String x:Key="AdvertisingLeft">广告杆在雷达左侧</s:String>
     <s:String x:Key="AdvertisingRight">广告杆在雷达右侧</s:String>
     <s:String x:Key="FenceLeft">栅栏杆在雷达左侧</s:String>
     <s:String x:Key="FenceRight">栅栏杆在雷达右侧</s:String>
     <s:String x:Key="KeepLifting">请保持杆件处于抬起状态</s:String>
+
+    <s:String x:Key="Connect">连接</s:String>
+    <s:String x:Key="Disconnect">断开</s:String>
+    <s:String x:Key="Unregist">未注册</s:String>
+    <s:String x:Key="Ready">准备连接</s:String>
+    <s:String x:Key="Connecting">正在连接</s:String>
+    <s:String x:Key="Connectied">已连接</s:String>
+    <s:String x:Key="Disconnecting">正在断开连接</s:String>
+    <s:String x:Key="Disconnected">已断开连接</s:String>
+    <s:String x:Key="StopShowPointsFirst">停止显示</s:String>
+    <s:String x:Key="NoTargets">无目标</s:String>
 </ResourceDictionary>

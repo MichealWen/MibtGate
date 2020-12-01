@@ -142,9 +142,16 @@ namespace MbitGate.control
         public const string FrameCfg = "frameCfg";
         public const string BootLoaderFlag = "bootLoaderFlag";
         public const string DelayTimeParam = "setDelayTimeParas";
+        public const string TriggerBox = "triggerBoxCfg";
+        public const string Direction = "directionCfg";
+        public const string CarNumber = "carNumTrigger";
+        public const string ClassifyBox = "classifyBoxCfg";
+        public const string TriggerThreshold = "triTher";
+        public const string StayThreshold = "staTher";
         public const string RodDirection = "rodDirection";
         public const string RodArea = "setUpRodSubArea";
         public const string ThresholdParas = "setThresholdParas";
+        public const string All = "all";
     }
 
     public class SerialRadarReply
@@ -190,6 +197,31 @@ namespace MbitGate.control
         public const string DataWriteError = "Write Data";
         public const string BinCRCError = "Bin File CRC";
         public const string BinFreshError = "Bin Data Copy";
+
+        public const string CommonAddress = "Address Error";
+        public const string CommonFunction = "Function Error";
+        public const string CommonLength = "Length Error";
+        public const string CommonCRC = "CRC Error";
+        public const string CommonOverTime = "OverTime Error";
+        public const string CommonUnknow = "Unknow Error";
+        public const string CommonUpdateErase = "Erase Error";
+        public const string CommonUpdatePacketCount = "PacketCount Error";
+        public const string CommonUpdatePacketOrder = "PacketOrder Error";
+        public const string CommonUpdatePacketNumber = "Packet Number Error";
+        public const string CommonUpdateDataLength = "Data Length Error";
+        public const string CommonUpdateDataWrite = "Data Write Error";
+        public const string CommonUpdateCRC = "CRC Error";
+        public const string CommonUpdateFresh = "Data Fresh Error";
+        public const string CommonUpdateOther = "Other Error";
+        public const string CommonUpdateUnknow = "Unknow Error";
+
+        public const string ITCRC = "CRC Error";
+        public const string ITLackParams = "Lack Params Error";
+        public const string ITStudy = "Study Error";
+        public const string ITParams = "Params Error";
+        public const string ITFunction = "Function Error";
+        public const string ITAddress= "Address Error";
+        public const string ITPreCondition = "PreCondition Error";
     }
 
     public class Tips
@@ -241,6 +273,16 @@ namespace MbitGate.control
         public static string ToReset = Application.Current.Resources["TipToReset"].ToString();
         public static string Reseting = Application.Current.Resources["TipReseting"].ToString();
         public static string KeepLifting = Application.Current.Resources["KeepLifting"].ToString();
+        public static string Connect = Application.Current.Resources["Connect"].ToString();
+        public static string Disconnect = Application.Current.Resources["Disconnect"].ToString();
+        public static string StopShowPointsFirst = Application.Current.Resources["StopShowPointsFirst"].ToString();
+        public static string NoTargets = Application.Current.Resources["NoTargets"].ToString();
+        //public static string StayThreshold = Application.Current.Resources["StayThreshold"].ToString();
+        public static string Threshold = Application.Current.Resources["Threshold"].ToString();
+        //public static string TriggerBox = Application.Current.Resources["TriggerBox"].ToString();
+        //public static string ClassifyBox = Application.Current.Resources["ClassifyBox"].ToString();
+        //public static string Direction = Application.Current.Resources["Direction"].ToString();
+        //public static string Count = Application.Current.Resources["Count"].ToString();
     }
 
     public class GateType
@@ -417,6 +459,65 @@ namespace MbitGate.control
             if (type == Left || type == GateType.AdvertisingLeft || type == GateType.FenceLeft)
                 return "0";
             else if (type == Right || type == GateType.AdvertisingRight || type == GateType.FenceRight)
+                return "1";
+            else
+                return type;
+        }
+    }
+    public class DirectionType
+    {
+        public static string Left = Application.Current.Resources["DirectionLeft"].ToString();
+        public static string Right = Application.Current.Resources["DirectionRight"].ToString();
+
+        public static List<string> GetAllTypes()
+        {
+            return new List<string>() { Left, Right };
+        }
+
+        public static string GetType(string value)
+        {
+            if (value.Contains('2'))
+                return Left;
+            else if (value.Contains('1'))
+                return Right;
+            else
+                return value;
+        }
+        public static string GetValue(string type)
+        {
+            if (type == Left)
+                return "2";
+            else if (type == Right)
+                return "1";
+            else
+                return type;
+        }
+    }
+
+    public class CountType
+    {
+        public static string Start = Application.Current.Resources["CountStart"].ToString();
+        public static string Stop = Application.Current.Resources["CountStop"].ToString();
+
+        public static List<string> GetAllTypes()
+        {
+            return new List<string>() { Start, Stop };
+        }
+
+        public static string GetType(string value)
+        {
+            if (value == "0")
+                return Stop;
+            else if (value == "1")
+                return Start;
+            else
+                return value;
+        }
+        public static string GetValue(string type)
+        {
+            if (type == Stop)
+                return "0";
+            else if (type == Start)
                 return "1";
             else
                 return type;

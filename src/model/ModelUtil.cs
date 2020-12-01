@@ -50,4 +50,11 @@ namespace MbitGate.model
         }
     }
 
+    public class ViewModelBase : NotifyPropertyChangedBase
+    {
+        public void Notify(string property)
+        {
+            OnPropertyChanged(property);
+        }
+    }
 }

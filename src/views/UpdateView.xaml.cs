@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace MbitGate.views
+{
+    /// <summary>
+    /// UpdateControl.xaml 的交互逻辑
+    /// </summary>
+    public partial class UpdateView
+    {
+        public UpdateView()
+        {
+            InitializeComponent();
+        }
+
+        private void Choose_Click(object sender, RoutedEventArgs e)
+        {
+            ATFileDialog dialog = new ATFileDialog(Application.Current.Resources["BinChoose"].ToString(), Application.Current.Resources["BinType"].ToString(), false, "");
+            if (dialog.ShowDialog() == true)
+            {
+                PathText.Text = model.VMATFileDialogModel.Instance.SelectedFileItem.Path;
+            }
+        }
+    }
+}

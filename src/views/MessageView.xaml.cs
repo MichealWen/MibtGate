@@ -3,9 +3,9 @@
     /// <summary>
     /// MessageControl.xaml 的交互逻辑
     /// </summary>
-    public partial class MessageControl
+    public partial class MessageView
     {
-        public MessageControl()
+        public MessageView()
         {
             InitializeComponent();
         }

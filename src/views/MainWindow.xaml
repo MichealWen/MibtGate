@@ -10,8 +10,8 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" Height="480" Width="1000" ResizeMode="CanMinimize"
-        WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded" >
+        Title="{StaticResource MainWindowTitle}" MinHeight="600" MinWidth="1024" Height="600" Width="1024"
+        WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded">
     <Grid x:Name="MainWin">
         <Grid.Resources>
             <ResourceDictionary>
@@ -22,339 +22,293 @@
                 <local:AndCheckedMultiVisibilityConverter  x:Key="AndCheckedMultiVisibilityConverter"/>
                 <local:OrCheckedMultiVisibilityConverter  x:Key="OrCheckedMultiVisibilityConverter"/>
                 <local:SearchModelVisibilityConverter x:Key="SearchModelVisibilityConverter"/>
+                <local:ConnectState2Enable x:Key="ConnectState2Enable"/>
+                <local:ConnectState2String x:Key="ConnectState2String"/>
             </ResourceDictionary>
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
-            <RowDefinition Height="312*"/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="75"/>
+            <RowDefinition Height="690*"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <DockPanel Height="48" VerticalAlignment="Top" Background="#202020" Grid.Row="0">
-            <ToggleButton x:Name="ic_tab_config" Style="{StaticResource STYLE_TabToggle}" Click="Config_Choose_Click">
-                <DockPanel Width="120">
-                    <Image Source="/DAHUA_ITS_A08;component/image/config.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
-                    <Label Content="{StaticResource ConfigModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+        <DockPanel Height="75" Background="#202020" Grid.Row="0">
+            <ToggleButton x:Name="ic_tab_connect" Style="{StaticResource STYLE_TabToggle}" Click="Connect_Choose_Click" VerticalAlignment="Center" >
+                <DockPanel Width="100">
+                    <Image Source="{Binding ConnectModelIcon}"  DockPanel.Dock="Top" Width="32" Height="32"/>
+                    <Label Content="{Binding ConnectModelName}"  DockPanel.Dock="Bottom" FontSize="16"  Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                 </DockPanel>
             </ToggleButton>
-            <ToggleButton x:Name="ic_tab_update" Style="{StaticResource STYLE_TabToggle}" Click="Update_Choose_Click">
+            <ToggleButton x:Name="ic_tab_update" Style="{StaticResource STYLE_TabToggle}" Click="Update_Choose_Click" VerticalAlignment="Center" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
                 <DockPanel Width="120">
-                    <Image Source="/DAHUA_ITS_A08;component/image/update.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
-                    <Label Content="{StaticResource SerialModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/update.png"  DockPanel.Dock="Top" Width="32" Height="32"/>
+                    <Label Content="{StaticResource SerialModelTitle}"  DockPanel.Dock="Bottom" FontSize="16"  Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                 </DockPanel>
             </ToggleButton>
-            <ToggleButton x:Name="ic_tab_search" Style="{StaticResource STYLE_TabToggle}" Click="Record_Choose_Click" Visibility="{Binding Record, Converter={StaticResource SearchModelVisibilityConverter}}">
+            <ToggleButton x:Name="ic_tab_search" Style="{StaticResource STYLE_TabToggle}" Click="Record_Choose_Click" VerticalAlignment="Center" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
                 <DockPanel Width="120">
-                    <Image Source="/DAHUA_ITS_A08;component/image/search.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
-                    <Label Content="{StaticResource RecordModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/search.png"  DockPanel.Dock="Top" Width="32" Height="32"/>
+                    <Label Content="{StaticResource RecordModelTitle}"  DockPanel.Dock="Bottom" FontSize="16"  Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                 </DockPanel>
             </ToggleButton>
-            <ToggleButton x:Name="ic_tab_alarm" Style="{StaticResource STYLE_TabToggle}" Click="Alarm_Choose_Click" Visibility="Visible">
-                <DockPanel Width="120">
-                    <Image Source="/DAHUA_ITS_A08;component/image/alarm.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
-                    <Label Content="{StaticResource AlarmModelTitile}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
-                </DockPanel>
-            </ToggleButton>
-            <ToggleButton x:Name="ic_tab_comparison" Style="{StaticResource STYLE_TabToggle}" Click="Compare_Choose_Click" Visibility="Visible">
+            <ToggleButton x:Name="ic_tab_comparison" Style="{StaticResource STYLE_TabToggle}" Click="Compare_Choose_Click" VerticalAlignment="Center" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
                 <DockPanel Width="150">
-                    <Image Source="/DAHUA_ITS_A08;component/image/triangle.png"    DockPanel.Dock="Left" Margin="12 12 12 12"/>
-                    <Label Content="{StaticResource CompareModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/alarm.png"    DockPanel.Dock="Top" Width="32" Height="32"/>
+                    <Label Content="{StaticResource CompareModelTitle}"  DockPanel.Dock="Bottom" FontSize="16"  Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                 </DockPanel>
             </ToggleButton>
-            <ToggleButton x:Name="ic_tab_develop" Style="{StaticResource STYLE_TabToggle}" Click="Develop_Choose_Click">
+            <ToggleButton x:Name="ic_tab_develop" Style="{StaticResource STYLE_TabToggle}" Click="Develop_Choose_Click" VerticalAlignment="Center" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
                 <DockPanel Width="120">
-                    <Image Source="/DAHUA_ITS_A08;component/image/develop.png"  DockPanel.Dock="Left" Margin="12 12 12 12"/>
-                    <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Left" FontSize="16"  Foreground="#FFFFFF" Margin="0 8 0 0"/>
+                    <Image Source="/DAHUA_ITS_A08;component/image/develop.png"  DockPanel.Dock="Top" Width="32" Height="32"/>
+                    <Label Content="{StaticResource DeveloperModelTitle}"  DockPanel.Dock="Bottom" FontSize="16"  Foreground="#FFFFFF" HorizontalAlignment="Center"/>
                 </DockPanel>
             </ToggleButton>
-            <Image Source="/DAHUA_ITS_A08;component/image/log-out.png"  Width="32" Height="32" DockPanel.Dock="Right"  MouseDown="LogoutImage_MouseDown" ToolTip="{StaticResource FuncLogout}"/>
-            <TextBlock Text="{Binding Version}" FontSize="12"  Foreground="#FFFFFF" Margin="0 15 5 0" HorizontalAlignment="Right" MouseDown="VersionTextBox_MouseDown"/>
         </DockPanel>
 
-        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">
-        <!--<Grid Grid.Row="1" Visibility="Visible">-->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="290*"/> 
-                <RowDefinition Height="10*"/>
-            </Grid.RowDefinitions>
+        <!--<Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_config, Converter={StaticResource CheckedVisibilityConverter}}">-->
+            <Grid Grid.Row="1" Visibility="Visible">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="700*"/>
+                <ColumnDefinition Width="230*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
-                    <TextBlock Text="{StaticResource FrontMaxDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox x:Name="FrontMaxDistance" Text="{Binding MaxDistance}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
-                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
-                    <TextBlock Text="{StaticResource FrontMinDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox x:Name="FrontMinDistance" Text="{Binding MinDistance}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
-                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
-                    <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
-                    <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox x:Name="LRange" Text="{Binding LRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsLeftRangeEditable}"/>
-                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 10">
-                    <TextBlock Text="{StaticResource RRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox x:Name="RRange" Text="{Binding RRange}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsRightRangeEditable}"/>
-                    <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10">
-                    <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Threshold}"   IsEditable="True"  GotFocus="ComboxThreshold_GetFocus" LostFocus="ComboxThreshold_LostFocus"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
-                    <TextBlock Text="{StaticResource Record}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <ComboBox  ItemsSource="{Binding RecordTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="200" Foreground="#333333" Text="{Binding Record}"   IsEditable="True" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel.Visibility>
-                        <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
-                            <Binding Path="DelayVisible" />
-                            <Binding Path="IsHoldRadarType" />
-                        </MultiBinding>
-                    </StackPanel.Visibility>
-                    <TextBlock Text="{StaticResource Delay}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox  Text="{Binding Delay}" Width="200" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                    <TextBlock Text="{StaticResource UnitS}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </StackPanel>
-            <Image Source="{Binding GateTypePosition, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        </Grid>
-        <!--<Grid Grid.Row="2" Visibility="{Binding Developer, Converter={StaticResource bool2VisibilityConverter}}">-->
-        <Grid Grid.Row="1">
-            <Grid.Visibility>
-                <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
-                    <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
-                    <Binding Path="Root"/>
-                </MultiBinding>
-            </Grid.Visibility>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="100*"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="100*"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Threshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,30,0"/>
-                <TextBox x:Name="Thresold" Text="{Binding Threshold}" Width="280" FontFamily="Microsoft YaHei"  FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" >
-                <TextBox Text="{Binding  WriteCLICommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <Button Content="{StaticResource WriteCLICommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLICommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center" >
-                <TextBox Text="{Binding  CustomCommandStr}" Width="270" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <Button Content="{StaticResource CustomCommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding CustomCommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Center" Margin="188,0">
-                <Button Content="{StaticResource ReadCLIAllCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding ReadCLIAllCommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="10" HorizontalAlignment="Center" Margin="188,0">
-                <Button Content="{StaticResource SensorstopCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding SensorstopCommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-        </Grid>
-
-        <Grid Grid.Row="1">
-            <Grid.Visibility>
-                <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
-                    <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
-                    <Binding Path="Developer"/>
-                </MultiBinding>
-            </Grid.Visibility>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="100*"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="100*"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" >
-                <TextBlock Text="{StaticResource WriteCLIRangeMax}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBox Text="{Binding  WriteCLIRangeCommandMaxStr}" Width="60" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"  Margin="0,0,10,0"/>
-                <TextBlock Text="{StaticResource WriteCLIRangeMin}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBox Text="{Binding  WriteCLIRangeCommandMinStr}" Width="60" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" Margin="0,0,20,0"/>
-                <Button Content="{StaticResource WriteCLIRangeCommand}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLIRangeCommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Center" Margin="188,0">
-                <Button Content="{StaticResource WorkAnomalousCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding WorkAnomalousCommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Center" Margin="188,0">
-                <Button Content="{StaticResource WriteCLIRainCommand}" Width="160"  Style="{StaticResource STYLE_Button}" Command="{Binding WriteCLIRainCommand}" BorderBrush="#02a8f3"/>
-            </StackPanel>
-        </Grid>
-        
-        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_update, Converter={StaticResource CheckedVisibilityConverter}}">
-        <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="100*"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="100*"/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" >
-                <TextBlock Text="{StaticResource BinFile}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="PathText" Text="{Binding  BinPath, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, Mode=OneWayToSource}" Width="280" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
-                <Button Content="{StaticResource Choose}" Width="100"  Style="{StaticResource STYLE_Button}" Command="{Binding ChooseCommand}" CommandParameter="{Binding DataContext,ElementName=OperateSetting}" BorderBrush="#02a8f3" Click="Choose_Click"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="3"  HorizontalAlignment="Center" >
-                <TextBlock Text="{DynamicResource CustomUpdateRate}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox x:Name="RateCombo" FontSize="14" Foreground="#333333" Width="180" ItemsSource="{Binding UpdateRates}"  Text="{Binding CustomUpdateRate}" IsEditable="False"/>
-            </StackPanel>
-            <StackPanel x:Name="CommandPanel" Orientation="Horizontal" Grid.Row="5"  HorizontalAlignment="Center" >
-                <Button Content="{StaticResource Update}" Width="130"  Style="{StaticResource Style_Button_Ok}" Command="{Binding UpdateCmd}"/>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
-        <!--<Grid Grid.Row="2" Visibility="Visible">-->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="210*"/>
-                <RowDefinition Height="10*"/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" Margin="188,0">
-                <TextBlock Text="{StaticResource Time}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                <MetroControl:DateTimePicker SelectedDate="{Binding CurrentTime,Mode=TwoWay}" Width="200" FontSize="14" Foreground="#333333" Culture="zh-cn"  IsClockVisible="False" PickerVisibility="All" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" >
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <TextBlock Text="{StaticResource StartTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333" Culture="zh-cn"  SelectedDate="{Binding StartTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True"/>
-                    <TextBlock Text="{StaticResource EndTime}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <MetroControl:DateTimePicker   Width="160" FontSize="14" Foreground="#333333"  Culture="zh-cn" SelectedDate="{Binding EndTime, Mode=TwoWay}" IsClockVisible="False" PickerVisibility="All" IsMilitaryTime="True" />
-                    <TextBlock Text="{StaticResource InvertSearchCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
-                    <TextBox   Width="160" FontSize="14" Foreground="#333333"  Text="{Binding InvertSearchCount}"/>
-                </StackPanel>
-                <ListBox BorderThickness="5" BorderBrush="AliceBlue" Width="300"  ItemsSource="{Binding SearchResult}"/>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
-            <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="250*"/>
-                <RowDefinition Height="10*"/>
-            </Grid.RowDefinitions>
-
-            <DockPanel Grid.Row="1" Margin="50 0">
-                <LiveChart:CartesianChart LegendLocation="Bottom">
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="460*"/>
+                    <RowDefinition Height="230*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="630*"/>
+                    <ColumnDefinition Width="200*"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderThickness="3" BorderBrush="AliceBlue">
+                    <LiveChart:CartesianChart Grid.Column="0"  DataTooltip="{x:Null}" Hoverable="False" DisableAnimations="True" MouseDoubleClick="Chart_Double_Click">
+                        <LiveChart:CartesianChart.Series>
+                            <LiveChart:ScatterSeries x:Name="TargetsChart" Values="{Binding StrongestWeakPoints}"  PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource StrongestWeakPoints}" DataLabels="False" StrokeThickness="5">
+                                <LiveChart:ScatterSeries.DataLabelsTemplate>
+                                    <DataTemplate>
+                                        <!--<StackPanel Orientation="Horizontal">
+                                            --><!--<TextBlock Text="{Binding Point.X}"/>
+                                            <TextBlock Text="{Binding Point.Y}"/>--><!--
+                                        </StackPanel>-->
+                                        <Label Content="{Binding Point.Instance.Message}"/>
+                                    </DataTemplate>
+                                </LiveChart:ScatterSeries.DataLabelsTemplate>
+                            </LiveChart:ScatterSeries>
+                            <LiveChart:ScatterSeries Values="{Binding RemovedWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource SeriesRemovedWeakPoints}"  StrokeThickness="5"  Stroke="Red"/>
+                            <LiveChart:StepLineSeries Values="{Binding RangePoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.None}" Title="{DynamicResource RangePoints}"  StrokeThickness="5"  Stroke="Orange"/>
+                        </LiveChart:CartesianChart.Series>
+                        <LiveChart:CartesianChart.AxisX >
+                            <LiveChart:Axis MinValue="-5"  MaxValue="5" />
+                        </LiveChart:CartesianChart.AxisX>
+                        <LiveChart:CartesianChart.AxisY>
+                            <LiveChart:Axis MinValue="0"  MaxValue="7"/>
+                        </LiveChart:CartesianChart.AxisY>
+                    </LiveChart:CartesianChart>
+                </Border>
+                <Border BorderThickness="3" BorderBrush="AliceBlue" Grid.Column="1">
+                    <StackPanel >
+                        <Border BorderThickness="1" BorderBrush="AliceBlue">
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="当前流量统计" FontSize="16" FontWeight="Bold" Margin="0 0 10 0" Foreground="#02a8f3"/>
+                                <TextBlock Text="10"  FontSize="16" FontWeight="Bold" Foreground="#02a8f3"/>
+                            </StackPanel>
+                        </Border>
+                        <ListBox >
+                            <ListBoxItem Content="抬杆     2020-11-11  11:11:11"/>
+                            <ListBoxItem Content="抬杆     2020-11-11  11:11:11"/>
+                            <ListBoxItem Content="抬杆     2020-11-11  11:11:11"/>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+                <Border BorderThickness="2" BorderBrush="AliceBlue" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
+                <Canvas x:Name="AnimationCanvas" Grid.Row="1" >
+                    <Image x:Name="AnimationImage"  Source="/DAHUA_ITS_A08;component/image/triangle.png"  Width="32" Height="32" Canvas.Top="60" Visibility="{Binding IsThroughing, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <Trigger Property="Visibility" Value="Visible">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="(Canvas.Left)" From="0"  To="400" Duration="0:0:10"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <!--<Image.Triggers>
+                            <EventTrigger RoutedEvent="Canvas.Showed">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Canvas.Left)" From="0"  To="400" Duration="0:0:10"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </Image.Triggers>-->
+                    </Image>
+                </Canvas>
+                <LiveChart:CartesianChart Grid.Row="1"  DataTooltip="{x:Null}" x:Name="testchart" VisualElements="{Binding Visuals}">
+                    <!--<LiveChart:CartesianChart.VisualElements>
+                        --><!--<LiveChart:VisualElement x:Name="Moto" X="0" Y="-0.2">
+                            <LiveChart:VisualElement.UIElement>
+                                <Path Fill="Red" Data="M17.42,10L13.41,6H9V8H12.59L14.59,10H6.5C4,10 2,12 2,14.5C2,17 4,19 6.5,19C8.72,19 10.56,17.38 10.92,15.27L13.04,14C13,14.17 13,14.33 13,14.5C13,17 15,19 17.5,19C20,19 22,17 22,14.5C22,12 20,10 17.5,10M8.84,15.26C8.5,16.27 7.58,17 6.47,17C5.09,17 3.97,15.88 3.97,14.5C3.97,13.12 5.09,12 6.47,12C7.59,12 8.5,12.74 8.84,13.75H6V15.25L8.84,15.26M17.47,17C16.09,17 14.97,15.88 14.97,14.5C14.97,13.12 16.09,12 17.47,12A2.5,2.5 0 0,1 19.97,14.5A2.5,2.5 0 0,1 17.47,17Z" Stretch="Fill"  Width="82" Height="42"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>
+                        <LiveChart:VisualElement x:Name="Car" X="-0.5" Y="-0.1">
+                            <LiveChart:VisualElement.UIElement>
+                                <Path Fill="Red" Data="M19,9.5h-.32L17.43,6.38A3,3,0,0,0,14.65,4.5h-6A3,3,0,0,0,5.7,6.91L5.18,9.5H5a3,3,0,0,0-3,3v3a1,1,0,0,0,1,1H4a3,3,0,0,0,6,0h4a3,3,0,0,0,6,0h1a1,1,0,0,0,1-1v-3A3,3,0,0,0,19,9.5Zm-6-3h1.65a1,1,0,0,1,.92.63l.95,2.37H13Zm-5.34.8a1,1,0,0,1,1-.8H11v3H7.22ZM7,17.5a1,1,0,1,1,1-1A1,1,0,0,1,7,17.5Zm10,0a1,1,0,1,1,1-1A1,1,0,0,1,17,17.5Zm3-3h-.78a3,3,0,0,0-4.44,0H9.22a3,3,0,0,0-4.44,0H4v-2a1,1,0,0,1,1-1H19a1,1,0,0,1,1,1Z" Stretch="Fill"  Width="82" Height="42"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>
+                        <LiveChart:VisualElement x:Name="Lorry" X="-0.3" Y="0.3">
+                            <LiveChart:VisualElement.UIElement>
+                                <Path Fill="Red" Data="M621.3 237.3l-58.5-58.5c-12-12-28.3-18.7-45.3-18.7H480V64c0-17.7-14.3-32-32-32H32C14.3 32 0 46.3 0 64v336c0 44.2 35.8 80 80 80 26.3 0 49.4-12.9 64-32.4 14.6 19.6 37.7 32.4 64 32.4 44.2 0 80-35.8 80-80 0-5.5-.6-10.8-1.6-16h163.2c-1.1 5.2-1.6 10.5-1.6 16 0 44.2 35.8 80 80 80s80-35.8 80-80c0-5.5-.6-10.8-1.6-16H624c8.8 0 16-7.2 16-16v-85.5c0-17-6.7-33.2-18.7-45.2zM80 432c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm128 0c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm272-224h37.5c4.3 0 8.3 1.7 11.3 4.7l43.3 43.3H480v-48zm48 224c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32z" Stretch="Fill"  Width="82" Height="42"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>
+                        <LiveChart:VisualElement x:Name="Truck" X="0.3" Y="0.2">
+                            <LiveChart:VisualElement.UIElement>
+                                <Path Fill="Red" Data="M16,6H10.5V10H1V15H3A3,3 0 0,0 6,18A3,3 0 0,0 9,15H15A3,3 0 0,0 18,18A3,3 0 0,0 21,15H23V12C23,10.89 22.11,10 21,10H19L16,6M12,7.5H15.5L17.46,10H12V7.5M6,13.5A1.5,1.5 0 0,1 7.5,15A1.5,1.5 0 0,1 6,16.5A1.5,1.5 0 0,1 4.5,15A1.5,1.5 0 0,1 6,13.5M18,13.5A1.5,1.5 0 0,1 19.5,15A1.5,1.5 0 0,1 18,16.5A1.5,1.5 0 0,1 16.5,15A1.5,1.5 0 0,1 18,13.5Z" Stretch="Fill"  Width="82" Height="42"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>-->
+                        <!--<LiveChart:VisualElement x:Name="Person" X="0.0" Y="0.0">
+                            <LiveChart:VisualElement.UIElement>
+                                <Path Fill="Red" Data="M 38,17.4167C 33.6278,17.4167 30.0833,20.9611 30.0833,25.3333C 30.0833,29.7056 33.6278,33.25 38,33.25C 42.3723,33.25 45.9167,29.7056 45.9167,25.3333C 45.9167,20.9611 42.3722,17.4167 38,17.4167 Z M 30.0833,44.3333L 29.4774,58.036C 32.2927,59.4011 35.4528,60.1667 38.7917,60.1667C 41.5308,60.1667 44.1496,59.6515 46.5564,58.7126L 45.9167,44.3333C 46.9722,44.8611 49.0834,49.0833 49.0834,49.0833C 49.0834,49.0833 50.1389,50.6667 50.6667,57L 55.4166,55.4167L 53.8333,47.5C 53.8333,47.5 50.6667,36.4167 44.3332,36.4168L 31.6666,36.4168C 25.3333,36.4167 22.1667,47.5 22.1667,47.5L 20.5833,55.4166L 25.3333,56.9999C 25.8611,50.6666 26.9167,49.0832 26.9167,49.0832C 26.9167,49.0832 29.0278,44.8611 30.0833,44.3333 Z " Stretch="Fill"  Width="42" Height="22"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>-->
+                        <!--<LiveChart:VisualElement X="0.3" Y="0.3" Width="1" Height="1">
+                            <LiveChart:VisualElement.UIElement>
+                                <Image  Source="/DAHUA_ITS_A08;component/image/mbit.ico"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>-->
+                        <!--<LiveChart:VisualElement x:Name="SportCar" X="{Binding TargetPositionX,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}" Y="{Binding TargetPositionY,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}">
+                            <LiveChart:VisualElement.UIElement>
+                                <Path Fill="Red" Data="M480 960h64v-256l-32-128-32 128v256zM544-64h-64v256l32 128 32-128v-256zM1024 480v-64h-256l-128 32 128 32h256zM0 416v64h256l128-32-128-32h-256zM512 800c194.404 0 352-157.596 352-352s-157.596-352-352-352c-194.404 0-352 157.596-352 352 0.364 194.258 157.742 351.636 351.965 352zM512 896c-247.424 0-448-200.576-448-448s200.576-448 448-448c247.424 0 448 200.576 448 448s-200.576 448-448 448v0z" Stretch="Fill"  Width="16" Height="16"/>
+                            </LiveChart:VisualElement.UIElement>
+                        </LiveChart:VisualElement>--><!--
+                    </LiveChart:CartesianChart.VisualElements>-->
+                    <!--<LiveChart:CartesianChart.Series>
+                        <LiveChart:LineSeries Values="{Binding Values1}" StrokeThickness="4" StrokeDashArray="2"
+                                Stroke="#6BBA45" Fill="Transparent" LineSmoothness="0" PointGeometrySize="75"
+                                PointForeground="#6BBA45" >
+                            <LiveChart:LineSeries.PointGeometry >
+                                <StreamGeometry>
+                                    M16,6H6L1,12V15H3A3,3 0 0,0 6,18A3,3 0 0,0 9,15H15A3,3 0 0,0 18,18A3,3 0 0,0 21,15H23V12C23,10.89 22.11,10 21,10H19L16,6M6.5,7.5H10.5V10H4.5L6.5,7.5M12,7.5H15.5L17.46,10H12V7.5M6,13.5A1.5,1.5 0 0,1 7.5,15A1.5,1.5 0 0,1 6,16.5A1.5,1.5 0 0,1 4.5,15A1.5,1.5 0 0,1 6,13.5M18,13.5A1.5,1.5 0 0,1 19.5,15A1.5,1.5 0 0,1 18,16.5A1.5,1.5 0 0,1 16.5,15A1.5,1.5 0 0,1 18,13.5Z
+                                </StreamGeometry>
+                            </LiveChart:LineSeries.PointGeometry>
+                        </LiveChart:LineSeries>
+                    </LiveChart:CartesianChart.Series>-->
                     <LiveChart:CartesianChart.Series>
-                        <LiveChart:ScatterSeries Values="{Binding StrongestWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}" Title="{DynamicResource SeriesStrongestWeakPoints}"/>
-                        <LiveChart:ScatterSeries Values="{Binding RemovedWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource SeriesRemovedWeakPoints}"/>
+                        <LiveChart:LineSeries Values="{Binding RodPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Square}" StrokeThickness="7" StrokeDashArray="2"
+                                Stroke="{Binding Light}" Fill="Transparent" LineSmoothness="0" PointGeometrySize="15">
+                            <!--<LiveChart:LineSeries.DataLabelsTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Point.X}"/>
+                                        <TextBlock Text="{Binding Point.Instance.Message}" FontSize="20"/>
+                                        <TextBlock Text="{Binding Point.Y}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </LiveChart:LineSeries.DataLabelsTemplate>-->
+                        </LiveChart:LineSeries>
                     </LiveChart:CartesianChart.Series>
-                    <LiveChart:CartesianChart.AxisX >
-                        <LiveChart:Axis MinValue="-2.5"  MaxValue="2.5" />
+                    <LiveChart:CartesianChart.AxisX>
+                        <LiveChart:Axis IsMerged="True" MaxValue="15" MinValue="-15">
+                            <LiveChart:Axis.Separator>
+                                <LiveChart:Separator StrokeThickness="1" StrokeDashArray="2">
+                                    <LiveChart:Separator.Stroke>
+                                        <SolidColorBrush Color="#404F56" />
+                                    </LiveChart:Separator.Stroke>
+                                </LiveChart:Separator>
+                            </LiveChart:Axis.Separator>
+                        </LiveChart:Axis>
                     </LiveChart:CartesianChart.AxisX>
                     <LiveChart:CartesianChart.AxisY>
-                        <LiveChart:Axis MinValue="0"  MaxValue="7"/>
+                        <LiveChart:Axis IsMerged="True" MaxValue="10" MinValue="0">
+                            <LiveChart:Axis.Separator>
+                                <LiveChart:Separator StrokeThickness="1.5" StrokeDashArray="4">
+                                    <LiveChart:Separator.Stroke>
+                                        <SolidColorBrush Color="#404F56" />
+                                    </LiveChart:Separator.Stroke>
+                                </LiveChart:Separator>
+                            </LiveChart:Axis.Separator>
+                        </LiveChart:Axis>
                     </LiveChart:CartesianChart.AxisY>
-                    <!--<LiveChart:CartesianChart.DataTooltip>
-                        <LiveChart:DefaultTooltip SelectionMode="OnlySender" ShowSeries="False"></LiveChart:DefaultTooltip>
-                    </LiveChart:CartesianChart.DataTooltip>-->
                 </LiveChart:CartesianChart>
-            </DockPanel>
+                <Image Source="{Binding GateTypePosition, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+            <Border Grid.Column="1" BorderBrush="AliceBlue" BorderThickness="5">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="6 10" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource FrontMaxDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,25,0"/>
+                        <TextBox x:Name="FrontMaxDistance" Text="{Binding MaxDistance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource FrontMinDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox x:Name="FrontMinDistance" Text="{Binding MinDistance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,33,0"/>
+                        <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="140" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,20,0"/>
+                        <TextBox x:Name="LRange" Text="{Binding LRange}" Width="120" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsLeftRangeEditable}"/>
+                        <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource RRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,20,0"/>
+                        <TextBox x:Name="RRange" Text="{Binding RRange}" Width="120" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsRightRangeEditable}"/>
+                        <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,5,0"/>
+                        <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="140" Foreground="#333333" Text="{Binding Threshold}"   IsEditable="True"  GotFocus="ComboxThreshold_GetFocus" LostFocus="ComboxThreshold_LostFocus"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <TextBlock Text="{StaticResource Record}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,32,0"/>
+                        <ComboBox  ItemsSource="{Binding RecordTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="140" Foreground="#333333" Text="{Binding Record}"   IsEditable="True" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource Get}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetCmd}"  ToolTip="{StaticResource FuncGet}"/>
+                        <Button Content="{StaticResource Set}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSet}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource Default}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncReset}"/>
+                        <Button Content="{StaticResource Study}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncStudy}" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource Reboot}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}"/>
+                        <Button Content="过闸机" Width="60"  Style="{StaticResource Style_Button_Ok}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}" Click="Test_Click"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource ConfirmAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetWeakPointsCmd}"  ToolTip="{StaticResource FuncConfirmAlarm}"/>
+                        <Button Content="{StaticResource CancelAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelGetWeakPointsCmd}"  Margin="5 0" ToolTip="{StaticResource FuncCancelAlarm}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource RemoveAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}" ToolTip="{StaticResource FuncRemoveAlarm}"/>
+                        <Button Content="{StaticResource RegetAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
+                        <Button Content="{StaticResource CancelRemoveAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
         </Grid>
-
-        <Grid Grid.Row="1" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_comparison, Converter={StaticResource CheckedVisibilityConverter}}">
-            <!--<Grid Grid.Row="2" Visibility="Collapsed">-->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="250*"/>
-                <RowDefinition Height="10*"/>
-            </Grid.RowDefinitions>
-
-            <DockPanel Grid.Row="1" Margin="50 0">
-                <LiveChart:CartesianChart LegendLocation="Bottom" Width="700"  Series="{Binding BackgroundSeries}">
-                    <!--<LiveChart:CartesianChart.Series>
-                        <LiveChart:LineSeries Values="{Binding BackgroundBeforePoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}" Title="{StaticResource BeforeChartPointsTitle}"/>
-                        <LiveChart:LineSeries Values="{Binding BackgroundAfterPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{StaticResource AfterChartPointsTitle}"/>
-                    </LiveChart:CartesianChart.Series>-->
-                </LiveChart:CartesianChart>
-                <TextBlock Text="{StaticResource ComparisionIntroduction}" Width="110" TextWrapping="Wrap" />
-            </DockPanel>
-        </Grid>
-
-        <Grid Grid.Row="3" x:Name="ConfigGrid">
-            <Grid.Visibility>
-                <MultiBinding Converter="{StaticResource OrCheckedMultiVisibilityConverter}">
-                    <Binding Path="IsChecked" ElementName="ic_tab_config"/>
-                    <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
-                </MultiBinding>
-            </Grid.Visibility>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-                <Button Content="{StaticResource Get}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetCmd}"  ToolTip="{StaticResource FuncGet}"/>
-                <Button Content="{StaticResource Set}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSet}"/>
-                <Button Content="{StaticResource Default}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding DefaultCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncReset}"/>
-                <Button Content="{StaticResource Study}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding StudyCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncStudy}" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}"/>
-                <Button Content="{StaticResource Reboot}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}"/>
+        <Grid Background="#202020" Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="100*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Grid.Column="0">
+                <Label Content="雷达连接状态:" FontSize="16"  Foreground="#FFFFFF" Width="110" Height="30"/>
+                <TextBlock Text="{Binding ConnectState, Converter={StaticResource ConnectState2String}}" FontSize="16"  Foreground="#FFFFFF" VerticalAlignment="Center"/>
             </StackPanel>
-        </Grid>
-        
-        <Grid Grid.Row="3"  x:Name="RecordGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_search, Converter={StaticResource CheckedVisibilityConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-                <Button Content="{StaticResource GetTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetTimeCmd}"  ToolTip="{StaticResource FuncGetTime}"/>
-                <Button Content="{StaticResource SynchronizeTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SynTimeCmd}"  Margin="20 0"  ToolTip="{StaticResource FuncSynTime}"/>
-                <Button Content="{StaticResource ClearTime}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ClearTimeCmd}" Margin="0 0 20 0" ToolTip="{StaticResource FuncClearTime}"/>
-                <Button Content="{StaticResource Search}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SearchCmd}" Margin="60 0 10 0"  ToolTip="{StaticResource FuncRecord}"/>
-                <Button Content="{StaticResource InvertSearch}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding InvertSearchCmd}" Margin="20 0 10 0"  ToolTip="{StaticResource FuncInvertRecord}"/>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="3"  x:Name="AlarmGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_alarm, Converter={StaticResource CheckedVisibilityConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-                <Button Content="{StaticResource ConfirmAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetWeakPointsCmd}"  ToolTip="{StaticResource FuncConfirmAlarm}"/>
-                <Button Content="{StaticResource CancelAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelGetWeakPointsCmd}"  Margin="5 0" ToolTip="{StaticResource FuncCancelAlarm}"/>
-                <Button Content="{StaticResource RemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}"  Margin="100 0 0 0"  ToolTip="{StaticResource FuncRemoveAlarm}"/>
-                <Button Content="{StaticResource RegetAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
-                <Button Content="{StaticResource CancelRemoveAlarm}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
-            </StackPanel>
-        </Grid>
-
-        <Grid Grid.Row="3"  x:Name="ComparisonGrid" Visibility="{Binding Path=IsChecked, ElementName=ic_tab_comparison, Converter={StaticResource CheckedVisibilityConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-                <Button Content="{StaticResource GetBackPoints}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetBackPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncBackPoints}"/>
-                <Button Content="{StaticResource Comparison}" Width="100"  Style="{StaticResource Style_Button_Ok}" Command="{Binding ComparisonCmd}"  ToolTip="{StaticResource FuncBackPoints}" IsEnabled="{Binding CanCompare}"/>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Grid.Column="1">
+                <Rectangle VerticalAlignment="Stretch" Fill="DarkGray" Width="5"/>
+                <Label Content="雷达版本号:" FontSize="16"  Foreground="#FFFFFF"/>
+                <TextBlock Text="{Binding Version}" FontSize="16"  Foreground="#FFFFFF" MouseDown="VersionTextBox_MouseDown" Margin="0 5 0 0"/>
             </StackPanel>
         </Grid>
     </Grid>

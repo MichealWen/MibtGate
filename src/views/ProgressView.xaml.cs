@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using MbitGate.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +16,20 @@ using System.Windows.Shapes;
 namespace MbitGate.views
 {
     /// <summary>
-    /// ConfirmControl.xaml 的交互逻辑
+    /// ProgressControl.xaml 的交互逻辑
     /// </summary>
-    public partial class ConfirmControl
+    public partial class ProgressView
     {
-        public ConfirmControl()
+        public ProgressViewModel DataViewModel
+        {
+            get { return MainGrid.DataContext as ProgressViewModel; }
+            set { MainGrid.DataContext = value; }
+        }
+
+        public ProgressView()
         {
             InitializeComponent();
         }
+        
     }
 }

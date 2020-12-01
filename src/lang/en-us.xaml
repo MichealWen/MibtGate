@@ -77,6 +77,8 @@
     <s:String x:Key="FuncCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">Strongest</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">Removed</s:String>
+    <s:String x:Key="StrongestWeakPoints">Targets</s:String>
+    <s:String x:Key="RangePoints">Detect Range</s:String>
     <s:String x:Key="BeforeChartPointsTitle">Previous</s:String>
     <s:String x:Key="AfterChartPointsTitle">Current</s:String>
     <s:String x:Key="RadarType">Type</s:String>
@@ -179,13 +181,14 @@
 
     <s:String x:Key="ReasonAnomalousSearching">Anomalous Reason Searching&#160;&#160;&#160;&#160;</s:String>
 
-    <s:String x:Key="ConnectError" xml:space="preserve">Connect Fail, Check:&#x000D;&#x000A;&#160;&#160;&#160;&#160;Wires&#x000D;&#x000A;&#160;&#160;&#160;&#160;Baud&#x000D;&#x000A;&#160;&#160;&#160;&#160;UART Occupied</s:String>
+    <s:String x:Key="ConnectError" xml:space="preserve">Connect Fail, Check:&#x000D;&#x000A;&#160;&#160;&#160;&#160;1.Wires&#x000D;&#x000A;&#160;&#160;&#160;&#160;2.Baud&#x000D;&#x000A;&#160;&#160;&#160;&#160;3.UART Occupied</s:String>
     <s:String x:Key="TipResetSuccess">Reset Success</s:String>
     <s:String x:Key="TipResetFail">Reset Fail</s:String>
-    <s:String x:Key="TipReseting">Reseting</s:String>
 
     <s:String x:Key="CustomUpdateRate">Update Baud</s:String>
     <s:String x:Key="FuncLogout">LogOut</s:String>
+    <s:String x:Key="TipToReset">To Set Parameters To Default，Clear Study Information</s:String>
+    <s:String x:Key="TipReseting">Reseting</s:String>
 
     <s:String x:Key="FencePosition">Position</s:String>
     <s:String x:Key="PositionLeft">Left</s:String>
@@ -197,4 +200,13 @@
     <s:String x:Key="FenceLeft">Fence At Left</s:String>
     <s:String x:Key="FenceRight">Fence At Right</s:String>
     <s:String x:Key="KeepLifting">Keep Rod Lifted</s:String>
+
+    <s:String x:Key="Connect">Connect</s:String>
+    <s:String x:Key="Disconnect">Disconnect</s:String>
+    <s:String x:Key="Unregist">Unregist</s:String>
+    <s:String x:Key="Ready">Ready</s:String>
+    <s:String x:Key="Connecting">Connecting</s:String>
+    <s:String x:Key="Connectied">Connectied</s:String>
+    <s:String x:Key="Disconnecting">Disconnecting</s:String>
+    <s:String x:Key="Disconnected">Disconnected</s:String>
 </ResourceDictionary>

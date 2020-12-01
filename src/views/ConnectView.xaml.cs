@@ -9,7 +9,7 @@ namespace MbitGate.views
     /// <summary>
     /// DCSettingView.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingView
+    public partial class ConnectView
     {
         //public MainElement DataConfig
         //{
@@ -22,7 +22,7 @@ namespace MbitGate.views
         //    set { CommandPanel.DataContext = value; ViewClose.DataContext = value; }
         //}
 
-        public SettingView()
+        public ConnectView()
         {
             InitializeComponent();
         }

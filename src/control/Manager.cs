@@ -106,14 +106,16 @@ namespace MbitGate.control
             byte[] content = new byte[1024 * 1024];
             if (size == -1) size = Length;
             int loopCount = (int)size / (1024 * 1024);
-            for (int i = 1; i < loopCount + 1; i++)
+            int i = 1;
+            for (; i < loopCount+1; i++)
             {
-                _stream.Read(content, 0, 1024 * 1024);
+                _stream.Read(content, (i-1)*1024*1024, 1024 * 1024);
                 _strBuilder.Append(System.Text.Encoding.Default.GetString(content));
                 Array.Clear(content, 0, 1024 * 1024);
             }
             loopCount = (int)size % (1024 * 1024);
-            _stream.Read(content, 0, loopCount);
+            content = new byte[loopCount];
+            _stream.Read(content, (i-1)*1024*1024, loopCount);
             _strBuilder.Append(System.Text.Encoding.Default.GetString(content));
 
             return _strBuilder.ToString();
@@ -127,9 +129,10 @@ namespace MbitGate.control
             int i = 1;
             for (; i < loopCount + 1; i++)
             {
-                _stream.Read(content, i * 1024 * 1024, 1024 * 1024);
+                _stream.Read(content, (i-1) * 1024 * 1024, 1024 * 1024);
             }
             loopCount = (int)size % (1024 * 1024);
+            content = new byte[loopCount];
             _stream.Read(content, (i - 1) * 1024 * 1024, loopCount);
             return content;
         }
@@ -173,11 +176,18 @@ namespace MbitGate.control
         ConcurrentQueue<byte> ReplayBytesQueue;
         string preStrCommand;
         byte[] preHexCommand;
-        int preMilliseconds;
+        int preWaitMilliseconds;
         byte repeat;
         const byte MaxRepeatCount = 4;
         //为了兼容以前的字符串命令，设置一个标志位，表示是否需要将字符串命令翻译成十六进制命令
-        internal bool ToTranslate { get; set; }
+        private bool _translate = false;
+        internal bool ToTranslate { get => _translate;
+            set
+            {
+                _translate = value;
+                if(value)
+                    Type = SerialReceiveType.Bytes;
+            } }
         public SerialManager(SerialReceiveType type = SerialReceiveType.Chars)
         {
             _serial = new System.IO.Ports.SerialPort();
@@ -291,7 +301,7 @@ namespace MbitGate.control
                         byte[] data = new byte[_serial.BytesToRead];
                         _serial.Read(data, 0, data.Length);
                         //System.Console.WriteLine("====================" + BitConverter.ToString(data));
-                        if(DecodeFrame)
+                        if(DecodeFrame || ToTranslate)
                         {
                             foreach (byte val in data)
                             {
@@ -300,6 +310,7 @@ namespace MbitGate.control
                         }
                         else
                         {
+                            overTimer.Stop();
                             BytesFrameDataReceivedHandler?.Invoke(data);
                         }
                         break;
@@ -333,7 +344,7 @@ namespace MbitGate.control
                 }
                 else
                 {
-                    WriteLine(preStrCommand, preMilliseconds, false);
+                    WriteLine(preStrCommand, preWaitMilliseconds, false);
                     System.Console.WriteLine("=================ReWrite " + preStrCommand);
                 }
             }
@@ -344,11 +355,14 @@ namespace MbitGate.control
                     overTimer.Stop();
                     preHexCommand = null;
                     repeat = 0;
-                    ErrorReceivedHandler?.Invoke(HexProtocol.ERROR_OVERTIME);
+                    if (ToTranslate)
+                        StringDataReceivedHandler?.Invoke(ErrorString.Error + ErrorString.OverTime);
+                    else
+                        ErrorReceivedHandler?.Invoke(HexProtocol.ERROR_COMMON_OVERTIME);
                 }
                 else
                 {
-                    Write(preHexCommand, preMilliseconds, false);
+                    Write(preHexCommand, preWaitMilliseconds, false);
                     System.Console.WriteLine("=================ReWrite " + BitConverter.ToString(preHexCommand));
                 }
             }
@@ -370,30 +384,41 @@ namespace MbitGate.control
 
         private void OnHexResultReach(Tuple<byte, byte, ushort, byte[]> data)
         {
-            preHexCommand = null;
-            overTimer.Stop();
-            repeat = 0;
-
-            if (ToTranslate)
+            if(CheckFunctionCode(data.Item3))
             {
-                StringDataReceivedHandler?.Invoke(translater.Translate(data));
+                if(preWaitMilliseconds != -1)
+                    preHexCommand = null;
+                overTimer.Stop();
+                repeat = 0;
+
+                if (ToTranslate)
+                {
+                    StringDataReceivedHandler?.Invoke(translater.Translate(data));
+                }
+                else
+                    BytesDecodedDataReceivedHandler?.Invoke(data);
             }
-            else
-                BytesDecodedDataReceivedHandler?.Invoke(data);
         }
 
         private void OnHexResultError(ushort func, byte err)
         {
-            overTimer.Stop();
-            preHexCommand[3] = err;
-            preHexCommand = null;
-            repeat = 0;
-            if(ToTranslate)
+            if(CheckFunctionCode(func))
             {
-                StringDataReceivedHandler?.Invoke(translater.TranslateErrorCode(func, err));
+                overTimer.Stop();
+                preHexCommand = null;
+                repeat = 0;
+                if (ToTranslate)
+                {
+                    StringDataReceivedHandler?.Invoke(translater.TranslateErrorCode(func, err));
+                }
+                else
+                    ErrorReceivedHandler(err);
             }
-            else
-                ErrorReceivedHandler(err);
+        }
+
+        private bool CheckFunctionCode(ushort func)
+        {
+            return preHexCommand==null?false:CommHexProtocolDecoder.CheckFunctionCode(ref preHexCommand, func);
         }
 
         private void OnHexResultCRCFail()
@@ -480,7 +505,17 @@ namespace MbitGate.control
             }
         }
 
-        public SerialReceiveType Type { get; set; }
+        SerialReceiveType _type;
+
+        public SerialReceiveType Type { 
+            get => _type; 
+            set {
+                if (ToTranslate)
+                    _type = SerialReceiveType.Bytes;
+                else
+                    _type = value;
+            } 
+        }
 
         public void WriteLine(string content, int milliseconds = 300, bool toStartTime = true)
         {
@@ -491,17 +526,26 @@ namespace MbitGate.control
                     if(ToTranslate)
                     {
                         preHexCommand = translater.Translate(content);
-                        Write(preHexCommand, milliseconds, toStartTime);
+                        if(preHexCommand == null)
+                        {
+                            StringDataReceivedHandler?.Invoke(ErrorString.Error + ErrorString.FunctionError);
+                        }
+                        else
+                            Write(preHexCommand, milliseconds, toStartTime);
                     }
                     else
                     {
                         preStrCommand = content;
-                        preMilliseconds = milliseconds;
+                        preHexCommand = null;
+                        preWaitMilliseconds = milliseconds;
                         _serial.DiscardOutBuffer();
                         _serial.WriteLine(content);
-                        overTimer.Interval = milliseconds;
-                        if (toStartTime)
-                            overTimer.Start();
+                        if(milliseconds > 0)
+                        {
+                            overTimer.Interval = milliseconds;
+                            if (toStartTime)
+                                overTimer.Start();
+                        }
                     }
                 }
             }
@@ -518,11 +562,15 @@ namespace MbitGate.control
                 lock(_serial)
                 {
                     preHexCommand = content;
-                    preMilliseconds = milliseconds;
+                    preStrCommand = null;
+                    preWaitMilliseconds = milliseconds;
                     _serial.Write(content, 0, content.Length);
-                    overTimer.Interval = milliseconds;
-                    if (toStartTimer)
-                        overTimer.Start();
+                    if(milliseconds > 0)
+                    {
+                        overTimer.Interval = milliseconds;
+                        if (toStartTimer)
+                            overTimer.Start();
+                    }
                 }
             }
             catch (Exception ex)

@@ -400,12 +400,12 @@ namespace MahApps.Metro.Controls.Dialogs
         private static SizeChangedEventHandler SetupAndOpenDialog(MetroWindow window, BaseMetroDialog dialog)
         {
             dialog.SetValue(Panel.ZIndexProperty, (int)window.overlayBox.GetValue(Panel.ZIndexProperty) + 1);
-            dialog.MinHeight = window.ActualHeight / 4.0;
+            dialog.MinHeight = window.ActualHeight / 6.0;
             dialog.MaxHeight = window.ActualHeight;
 
             SizeChangedEventHandler sizeHandler = (sender, args) =>
             {
-                dialog.MinHeight = window.ActualHeight / 4.0;
+                dialog.MinHeight = window.ActualHeight / 6.0;
                 dialog.MaxHeight = window.ActualHeight;
             };
 

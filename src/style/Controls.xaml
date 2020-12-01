@@ -13,7 +13,6 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
-    
     <!-- the custom style -->
     <Style x:Key="DataTimeButton" TargetType="{x:Type RadioButton}" BasedOn="{x:Null}">
         <Setter Property="Template">
@@ -168,7 +167,7 @@
     </Style>
 
     <Style x:Key="STYLE_TabToggle" BasedOn="{StaticResource STYLE_MetroFlatToggleButton}" TargetType="ToggleButton">
-        <Setter Property="Height" Value="48" />
+        <Setter Property="Height" Value="75" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="Transparent" />
@@ -185,8 +184,8 @@
                     <Condition Property="IsMouseOver" Value="True" />
                     <Condition Property="IsChecked" Value="False" />
                 </MultiTrigger.Conditions>
-                <Setter Property="Background" Value="#202020" />
-                <Setter Property="BorderBrush" Value="#202020" />
+                <Setter Property="Background" Value="#414141" />
+                <Setter Property="BorderBrush" Value="#414141" />
                 <Setter Property="BorderThickness" Value="0" />
             </MultiTrigger>
             <MultiTrigger>
@@ -201,10 +200,8 @@
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="#414141" />
             </Trigger>
-            <Trigger Property="IsChecked" Value="False">
-                <Setter Property="Background" Value="#202020" />
-                <Setter Property="BorderBrush" Value="#202020" />
-                <Setter Property="BorderThickness" Value="0" />
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="DarkGray"/>
             </Trigger>
         </Style.Triggers>
     </Style>
