@@ -283,6 +283,9 @@ namespace MbitGate.control
         //public static string ClassifyBox = Application.Current.Resources["ClassifyBox"].ToString();
         //public static string Direction = Application.Current.Resources["Direction"].ToString();
         //public static string Count = Application.Current.Resources["Count"].ToString();
+        public static string Configing = Application.Current.Resources["Configing"].ToString();
+        public static string RebootFail = Application.Current.Resources["RebootFail"].ToString();
+        public static string Rebooting = Application.Current.Resources["Rebooting"].ToString();
     }
 
     public class GateType

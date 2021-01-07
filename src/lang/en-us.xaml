@@ -105,6 +105,7 @@
     <s:String x:Key="Flashing">Flashing</s:String>
     <s:String x:Key="CRCing">Verifying</s:String>
     <s:String x:Key="Rating">To change rate</s:String>
+    <s:String x:Key="Configing">Configing...</s:String>
     <s:String x:Key="ConfigSuccess">Success</s:String>
     <s:String x:Key="ConfigFail">Fail</s:String>
     <s:String x:Key="GetFail">Fail</s:String>
@@ -116,6 +117,8 @@
     <s:String x:Key="ManualReboot">Reboot radar</s:String>
     <s:String x:Key="SmallVersion">Wrong Version</s:String>
     <s:String x:Key="RebootSuccess">Reboot Done</s:String>
+    <s:String x:Key="RebootFail">Reboot Fail</s:String>
+    <s:String x:Key="Rebooting">Rebooting...</s:String>
     <s:String x:Key="OverTime">No Response</s:String>
     <s:String x:Key="GetTimeFail">Get Time Fail</s:String>
     <s:String x:Key="GetTimeSuccess">Get Time Success</s:String>
