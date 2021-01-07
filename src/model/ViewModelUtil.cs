@@ -454,6 +454,8 @@ namespace MbitGate.model
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
             {
+                if (_progressCtrl.IsVisible)
+                    await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                 MessageView _dialog = new MessageView();
                 _dialog.DataContext = new MessageDialogViewModel()
                 {
@@ -500,6 +502,8 @@ namespace MbitGate.model
             {
                 try
                 {
+                    if (_progressCtrl.IsVisible)
+                        await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                     MessageView _dialog = new MessageView();
                     _dialog.DataContext = new MessageDialogViewModel()
                     {
@@ -527,6 +531,8 @@ namespace MbitGate.model
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
             {
+                if (_progressCtrl.IsVisible)
+                    await _dialogCoordinator.HideMetroDialogAsync(this, _progressCtrl);
                 ConfirmView _dialog = new ConfirmView();
                 SimpleCommand _defaultCmd = new SimpleCommand()
                 {
