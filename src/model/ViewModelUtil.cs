@@ -2827,7 +2827,7 @@ namespace MbitGate.model
                     await _dialogCoordinator.ShowMetroDialogAsync(this, _progressCtrl);
                 }
             }));
-            serial.CompareEndString = false;
+            serial.EndStr = SerialRadarReply.Start;
             serial.StringDataReceivedHandler = msg =>
             {
                 if(msg.Contains(SerialRadarReply.Start))
