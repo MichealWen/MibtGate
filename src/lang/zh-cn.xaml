@@ -6,7 +6,7 @@
     <s:String  x:Key="SerialModelTitle">升级</s:String>
     <s:String  x:Key="ConfigModelTitle">参数设置</s:String>
     <s:String  x:Key="CANModelTitle">CAN口</s:String>
-    <s:String  x:Key="DeveloperModelTitle">开发设置</s:String>
+    <s:String  x:Key="DeveloperModelTitle">开发模式</s:String>
     <s:String x:Key="RecordModelTitle">日志</s:String>
     <s:String x:Key="AlarmModelTitile">目标信息</s:String>
     <s:String x:Key="CompareModelTitle">背景对比</s:String>
@@ -44,7 +44,9 @@
     <s:String x:Key="Straight">直杆道闸</s:String>
     <s:String x:Key="GateType">杆型选择</s:String>
     <s:String x:Key="FuncGet">获取雷达当前参数</s:String>
+    <s:String x:Key="FuncGetDevParam">获取雷达开发参数</s:String>
     <s:String x:Key="FuncSet">设置雷达新参数</s:String>
+    <s:String x:Key="FuncSetDevParam">设置雷达开发参数</s:String>
     <s:String x:Key="FuncReset">设置雷达成默认参数</s:String>
     <s:String x:Key="FuncStudy">雷达学习识别区分栏杆运行</s:String>
     <s:String x:Key="FuncReboot">发送命令进行雷达软重启</s:String>
@@ -77,8 +79,11 @@
     <s:String x:Key="FuncCancelRemoveAlarm">取消剔除虚警点</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">目标位置</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">已剔除虚警</s:String>
-    <s:String x:Key="StrongestWeakPoints">目标点</s:String>
+    <s:String x:Key="UnTriggeredPoints">目标点</s:String>
+    <s:String x:Key="StrongestWeakPoints">最强点</s:String>
+    <s:String x:Key="TriggeredWeakPoints">触发点</s:String>
     <s:String x:Key="RangePoints">探测范围</s:String>
+    <s:String x:Key="RodPoints">杆件范围</s:String>
     <s:String x:Key="BeforeChartPointsTitle">上次背景</s:String>
     <s:String x:Key="AfterChartPointsTitle">当前背景</s:String>
     <s:String x:Key="RadarType">类&#160;&#160;&#160;&#160;型</s:String>
@@ -172,15 +177,15 @@
     <s:String x:Key="CustomCommand">其它命令</s:String>
 
     <s:String x:Key="WriteCLIRainCommand">雨天配置</s:String>
-    <s:String x:Key="WriteCLIRangeMax">最大值</s:String>
-    <s:String x:Key="WriteCLIRangeMin">最小值</s:String>
+    <s:String x:Key="WriteCLIRangeMax">杆件区域最大值</s:String>
+    <s:String x:Key="WriteCLIRangeMin">杆件区域最小值</s:String>
     <s:String x:Key="WriteCLIRangeCommand">杆件区域配置</s:String>
     <s:String x:Key="WorkAnomalousCommand">落杆异常原因</s:String>
 
     <s:String x:Key="RangeProfileError">距离像检测异常</s:String>
     <s:String x:Key="PointDataError">点云数据异常</s:String>
 
-    <s:String x:Key="RangeError">杆件区域配置超出范围</s:String>
+    <s:String x:Key="RangeError">杆件区域配置超出左右范围</s:String>
 
     <s:String x:Key="ReasonAnomalousSearching">正在查找异常原因&#160;&#160;&#160;&#160;</s:String>
 
@@ -206,7 +211,9 @@
 
     <s:String x:Key="Connect">连接</s:String>
     <s:String x:Key="Disconnect">断开</s:String>
-    <s:String x:Key="Unregist">未注册</s:String>
+    <s:String x:Key="UnRegist">未注册</s:String>
+    <s:String x:Key="UnAdjust">未校准</s:String>
+    <s:String x:Key="UnStudy">未学习</s:String>
     <s:String x:Key="Ready">准备连接</s:String>
     <s:String x:Key="Connecting">正在连接</s:String>
     <s:String x:Key="Connectied">已连接</s:String>
@@ -214,4 +221,54 @@
     <s:String x:Key="Disconnected">已断开连接</s:String>
     <s:String x:Key="StopShowPointsFirst">停止显示</s:String>
     <s:String x:Key="NoTargets">无目标</s:String>
+
+    <s:String x:Key="PointFlag">点云标志</s:String>
+    <s:String x:Key="TargetFlag">非杆件区域目标</s:String>
+    <s:String x:Key="PoleFlag">杆件区域目标</s:String>
+    <s:String x:Key="PoleDirectionTarget">杆件末端目标标志</s:String>
+    <s:String x:Key="CarFlag">人车区分标志</s:String>
+    <s:String x:Key="Maintain">全区域检测</s:String>
+    <s:String x:Key="TargetRelevance">背景相关性</s:String>
+    <s:String x:Key="RelayState">继电器状态</s:String>
+    <s:String x:Key="UpCount">目标触发计数</s:String>
+    <s:String x:Key="MissCount">目标消失计数</s:String>
+    <s:String x:Key="DplMapVariance">栅栏背景方差值</s:String>
+    <s:String x:Key="MaxFenceRelevance">栅栏最大相关性</s:String>
+    <s:String x:Key="RangeVariance">距离方差</s:String>
+
+    <s:String x:Key="TargetThreshold">目标阀值</s:String>
+    <s:String x:Key="StudyCorrelation">学习相关系数</s:String>
+    <s:String x:Key="MatchCorrelation">匹配相关系数</s:String>
+    <s:String x:Key="StayMultiple">维稳倍数</s:String>
+    <s:String x:Key="RelatePoint">关联点数</s:String>
+    <s:String x:Key="StayCorrelation">维稳系数</s:String>
+    <s:String x:Key="StudyMultiple">学习方差倍数</s:String>
+
+    <s:String x:Key="RadarState">雷达状态</s:String>
+    <s:String x:Key="FlowCount">当前流量统计</s:String>
+    
+    <s:String x:Key="GetDevelopParam">获取</s:String>
+    <s:String x:Key="SetDevelopParam">设置</s:String>
+
+    <s:String x:Key="PeakAverage">最强点均值</s:String>
+    <s:String x:Key="StrongestPosition">最强点位移</s:String>
+
+    <s:String x:Key="ConfigDelaySuccess">设置延时成功</s:String>
+    <s:String x:Key="ConfigDelayFail">设置延时失败</s:String>
+    <s:String x:Key="ConfigRodAreaSuccess">设置杆件区域成功</s:String>
+    <s:String x:Key="ConfigRodAreaFail">设置杆件区域失败</s:String>
+    <s:String x:Key="ConfigThresholdSuccess">设置阀值成功</s:String>
+    <s:String x:Key="ConfigThresholdFail">设置阀值失败</s:String>
+
+    <s:String x:Key="GetPoints">显示目标</s:String>
+    <s:String x:Key="GetStrongestPoint">最强目标</s:String>
+    <s:String x:Key="CancelGet">停止显示</s:String>
+
+    <s:String x:Key="FuncGetPoints">显示所有目标点云信息</s:String>
+    <s:String x:Key="FuncGetStrongestPoint">显示最强目标点云信息</s:String>
+    <s:String x:Key="FuncCancelGet">停止显示目标点云信息</s:String>
+
+    <s:String x:Key="DataSave">保存数据</s:String>
+    <s:String x:Key="SearchResultFullToFile">数据量过大，已保存到文件：</s:String>
+    <s:String x:Key="BarrierScene">闸机场景</s:String>
 </ResourceDictionary>

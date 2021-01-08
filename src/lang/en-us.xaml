@@ -44,7 +44,9 @@
     <s:String x:Key="Straight">Straight</s:String>
     <s:String x:Key="GateType">GateType</s:String>
     <s:String x:Key="FuncGet">To Get The Current Parameters Of Radar</s:String>
+    <s:String x:Key="FuncGetDevParam">To Get The Develop Parameters Of Radar</s:String>
     <s:String x:Key="FuncSet">To Set The new Parameters Of Radar</s:String>
+    <s:String x:Key="FuncSetDevParam">To Set The Develop Parameters Of Radar</s:String>
     <s:String x:Key="FuncReset">To Set The Parameters Of Radar To Default</s:String>
     <s:String x:Key="FuncStudy">Study To Distinguish The Movement Of Rod</s:String>
     <s:String x:Key="FuncReboot">Radar Reboot</s:String>
@@ -77,8 +79,11 @@
     <s:String x:Key="FuncCancelRemoveAlarm">Cancel Remove Weak Point</s:String>
     <s:String x:Key="SeriesStrongestWeakPoints">Strongest</s:String>
     <s:String x:Key="SeriesRemovedWeakPoints">Removed</s:String>
-    <s:String x:Key="StrongestWeakPoints">Targets</s:String>
+    <s:String x:Key="UnTriggeredPoints">Targets</s:String>
+    <s:String x:Key="StrongestWeakPoints">Strongest</s:String>
+    <s:String x:Key="TriggeredWeakPoints">Triggered</s:String>
     <s:String x:Key="RangePoints">Detect Range</s:String>
+    <s:String x:Key="RodPoints">Rod Range</s:String>
     <s:String x:Key="BeforeChartPointsTitle">Previous</s:String>
     <s:String x:Key="AfterChartPointsTitle">Current</s:String>
     <s:String x:Key="RadarType">Type</s:String>
@@ -172,8 +177,8 @@
     <s:String x:Key="CustomCommand">Command</s:String>
     
     <s:String x:Key="WriteCLIRainCommand">Rain Config</s:String>
-    <s:String x:Key="WriteCLIRangeMax">Max</s:String>
-    <s:String x:Key="WriteCLIRangeMin">Min</s:String>
+    <s:String x:Key="WriteCLIRangeMax">Rod Region Max</s:String>
+    <s:String x:Key="WriteCLIRangeMin">Rod Region Min</s:String>
     <s:String x:Key="WriteCLIRangeCommand">Rod Region Config</s:String>
     <s:String x:Key="WorkAnomalousCommand">Get Anomalous Reason</s:String>
 
@@ -206,10 +211,64 @@
 
     <s:String x:Key="Connect">Connect</s:String>
     <s:String x:Key="Disconnect">Disconnect</s:String>
-    <s:String x:Key="Unregist">Unregist</s:String>
+    <s:String x:Key="UnRegist">Unregist</s:String>
+    <s:String x:Key="UnAdjust">Unadjust</s:String>
+    <s:String x:Key="UnStudy">Unstudy</s:String>
     <s:String x:Key="Ready">Ready</s:String>
     <s:String x:Key="Connecting">Connecting</s:String>
     <s:String x:Key="Connectied">Connectied</s:String>
     <s:String x:Key="Disconnecting">Disconnecting</s:String>
     <s:String x:Key="Disconnected">Disconnected</s:String>
+    <s:String x:Key="StopShowPointsFirst">Stop Show Points First!</s:String>
+    <s:String x:Key="NoTargets">No Targets</s:String>
+
+    <s:String x:Key="PointFlag">PointFlag</s:String>
+    <s:String x:Key="TargetFlag">TargetFlag</s:String>
+    <s:String x:Key="PoleFlag">PoleFlag</s:String>
+    <s:String x:Key="PoleDirectionTarget">PoleDirectionTarget</s:String>
+    <s:String x:Key="CarFlag">CarFlag</s:String>
+    <s:String x:Key="Maintain">Maintain</s:String>
+    <s:String x:Key="TargetRelevance">TargetRelevance</s:String>
+    <s:String x:Key="RelayState">RelayState</s:String>
+    <s:String x:Key="UpCount">UpCount</s:String>
+    <s:String x:Key="MissCount">MissCount</s:String>
+    <s:String x:Key="DplMapVariance">DplMapVariance</s:String>
+    <s:String x:Key="MaxFenceRelevance">MaxFenceRelevance</s:String>
+    <s:String x:Key="RangeVariance">RangeVariance</s:String>
+
+    <s:String x:Key="TargetThreshold">TargetThreshold</s:String>
+    <s:String x:Key="StudyCorrelation">StudyCorrelation</s:String>
+    <s:String x:Key="MatchCorrelation">MatchCorrelation</s:String>
+    <s:String x:Key="StayMultiple">StayMultiple</s:String>
+    <s:String x:Key="RelatePoint">RelatePoint</s:String>
+    <s:String x:Key="StayCorrelation">StayCorrelation</s:String>
+    <s:String x:Key="StudyMultiple">StudyMultiple</s:String>
+
+    <s:String x:Key="RadarState">Radar State</s:String>
+    <s:String x:Key="FlowCount">Current Flow</s:String>
+
+    <s:String x:Key="GetDevelopParam">Get</s:String>
+    <s:String x:Key="SetDevelopParam">Set</s:String>
+
+    <s:String x:Key="PeakAverage">PeakAverage</s:String>
+    <s:String x:Key="StrongestPosition">Offset</s:String>
+
+    <s:String x:Key="ConfigDelaySuccess">Set Delay Success</s:String>
+    <s:String x:Key="ConfigDelayFail">Set Delay Fail</s:String>
+    <s:String x:Key="ConfigRodAreaSuccess">Set Rod Area Success</s:String>
+    <s:String x:Key="ConfigRodAreaFail">Set Rod Area Fail</s:String>
+    <s:String x:Key="ConfigThresholdSuccess">Set Threshold Success</s:String>
+    <s:String x:Key="ConfigThresholdFail">Set Threshold Fail</s:String>
+
+    <s:String x:Key="GetPoints">Points</s:String>
+    <s:String x:Key="GetStrongestPoint">Strongest</s:String>
+    <s:String x:Key="CancelGet">Stop</s:String>
+
+    <s:String x:Key="FuncGetPoints">Show All Points</s:String>
+    <s:String x:Key="FuncGetStrongestPoint">Show Strongest Point</s:String>
+    <s:String x:Key="FuncCancelGet">Stop Show Points</s:String>
+
+    <s:String x:Key="DataSave">Save Data</s:String>
+    <s:String x:Key="SearchResultFullToFile">Data Too Large, Save To File：</s:String>
+    <s:String x:Key="BarrierScene">Barrier Scene</s:String>
 </ResourceDictionary>

@@ -188,6 +188,7 @@ namespace MbitGate.control
                 if(value)
                     Type = SerialReceiveType.Bytes;
             } }
+        internal bool CheckFuncCode { get; set; }
         public SerialManager(SerialReceiveType type = SerialReceiveType.Chars)
         {
             _serial = new System.IO.Ports.SerialPort();
@@ -418,7 +419,7 @@ namespace MbitGate.control
 
         private bool CheckFunctionCode(ushort func)
         {
-            return preHexCommand==null?false:CommHexProtocolDecoder.CheckFunctionCode(ref preHexCommand, func);
+            return CheckFuncCode?(preHexCommand==null?false:CommHexProtocolDecoder.CheckFunctionCode(ref preHexCommand, func)):true;
         }
 
         private void OnHexResultCRCFail()
@@ -526,9 +527,10 @@ namespace MbitGate.control
                     if(ToTranslate)
                     {
                         preHexCommand = translater.Translate(content);
+                        preWaitMilliseconds = milliseconds;
                         if(preHexCommand == null)
                         {
-                            StringDataReceivedHandler?.Invoke(ErrorString.Error + ErrorString.FunctionError);
+                            StringDataReceivedHandler?.Invoke(ErrorString.Error + ErrorString.TranslateError);
                         }
                         else
                             Write(preHexCommand, milliseconds, toStartTime);

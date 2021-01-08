@@ -55,9 +55,18 @@ namespace MbitGate.helper
         public const ushort FUNCTION_IT_GET_SYSTEM_TIME = 0x010A;
         public const ushort FUNCTION_IT_SET_SYSTEM_TIME = 0x0109;
         public const ushort FUNCTION_IT_CLEAR_RECORD = 0x010B;
+        public const ushort FUNCTION_IT_GET_ROD_DIRECTION = 0x010C;
+        public const ushort FUNCTION_IT_SET_ROD_DIRECTION = 0x010D;
         public const ushort FUNCTION_IT_OUT_DATA_POINT = 0x010E;
         public const ushort FUNCTION_IT_SEARCH = 0x0104;
         public const ushort FUNCTION_IT_RESET = 0x0105;
+        public const ushort FUNCTION_IT_SWITCH = 0x0113;
+        public const ushort FUNCTION_IT_HEART = 0x0114;
+        public const ushort FUNCTION_IT_POINTS_STATE = 0x0115;
+        public const ushort FUNCTION_IT_POINTS_DATA = 0x0116;
+        public const ushort FUNCTION_IT_RADAR_STATE = 0x0117;
+        public const ushort FUNCTION_IT_POINTS_STRONGEST = 0x0118;
+        public const ushort FUNCTION_IT_POINTS_STRONGEST_STATE = 0x0119;
 
         public const ushort FUNCTION_UPDATE_TEST = 0x00F0;
         public const ushort FUNCTION_UPDATE_ERASE = 0x00F1;
@@ -166,7 +175,11 @@ namespace MbitGate.helper
             }
             else
             {
+#if DEBUG
                 throw new Exception("Frame Decode Error");
+#else
+                System.Console.Write("Frame Decode Error");
+#endif
             }
         }
 
@@ -275,7 +288,6 @@ namespace MbitGate.helper
                         data.TryDequeue(out tmp);
                     }
                 }
-
             }
         }
 
@@ -310,7 +322,12 @@ namespace MbitGate.helper
             }
             else
             {
+#if DEBUG
                 throw new Exception("Frame Decode Error");
+#else
+                System.Console.WriteLine("Frame Decode Error");
+                return null;
+#endif
             }
         }
 
@@ -411,32 +428,32 @@ namespace MbitGate.helper
                                         data[7] = (byte)(float.Parse(cmds[7]));
                                         data[8] = (byte)(float.Parse(cmds[8]));
                                         data[9] = byte.Parse(cmds[9]);
-                                        data[10] = byte.Parse(cmds[10]);
+                                        data[10] = (byte)(float.Parse(cmds[10])*10);
                                         Array.Copy(BitConverter.GetBytes(short.Parse(cmds[11])), 0, data, 11, 2);
                                         data[13] = (cmds[12] == "0") ? (byte)0x00 : (byte)0x0A;
                                     }
                                     break;
                                 case SerialArguments.RodDirection:
                                     {
-                                        data = new byte[3] { 0x07, 0x00, 0x00 };
-                                        data[2] = byte.Parse(cmds[2]);
+                                        data = new byte[1] { 0x00 };
+                                        data[0] = byte.Parse(cmds[2]);
+                                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_TARGET_0, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_IT_SET_ROD_DIRECTION, data);
                                     }
-                                    break;
                                 case SerialArguments.RodArea:
                                     {
                                         data = new byte[8] { 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[2]) * 100), 0, data, 2, 2);
-                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[3]) * 100), 0, data, 2, 2);
-                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[4]) * 100), 0, data, 2, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[2])*100)), 0, data, 2, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[3]) * 100)), 0, data, 2*2, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[4]))), 0, data, 2*3, 2);
                                     }
                                     break;
                                 case SerialArguments.TriggerBox:
                                     {
                                         data = new byte[] { 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[2])*100)), 0, data, 2, 2);
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[3])*100)), 0, data, 2*2, 2);
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[4])*100)), 0, data, 2*3, 2);
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[5])*100)), 0, data, 2*4, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[2])*100)), 0, data, 2, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[3])*100)), 0, data, 2*2, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[4])*100)), 0, data, 2*3, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[5])*100)), 0, data, 2*4, 2);
                                     }
                                     break;
                                 case SerialArguments.Direction:
@@ -448,10 +465,10 @@ namespace MbitGate.helper
                                 case SerialArguments.ClassifyBox:
                                     {
                                         data = new byte[] { 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[2]) * 100)), 0, data, 2*1, 2);
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[3]) * 100)), 0, data, 2*2, 2);
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[4]) * 100)), 0, data, 2*3, 2);
-                                        Array.Copy(BitConverter.GetBytes((int)(float.Parse(cmds[5]) * 100)), 0, data, 2*4, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[2]) * 100)), 0, data, 2*1, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[3]) * 100)), 0, data, 2*2, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[4]) * 100)), 0, data, 2*3, 2);
+                                        Array.Copy(BitConverter.GetBytes((short)(float.Parse(cmds[5]) * 100)), 0, data, 2*4, 2);
                                     }
                                     break;
                                 case SerialArguments.CarNumber:
@@ -470,6 +487,18 @@ namespace MbitGate.helper
                                     {
                                         data = new byte[] { 0x15, 0x00, 0x00, 0x00 };
                                         Array.Copy(BitConverter.GetBytes(short.Parse(cmds[2])), 0, data, 2, 2);
+                                    }
+                                    break;
+                                case SerialArguments.ThresholdParas:
+                                    {
+                                        data = new byte[] {0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[2])), 0, data, 2, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[3])*100), 0, data, 4, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[4])*100), 0, data, 6, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[5])), 0, data, 8, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[6])), 0, data, 10, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[7])), 0, data, 12, 2);
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[8])*100), 0, data, 14, 2);
                                     }
                                     break;
                             }
@@ -502,9 +531,8 @@ namespace MbitGate.helper
                                     break;
                                 case SerialArguments.RodDirection:
                                     {
-                                        data = new byte[2] { 0x07, 0x00};
+                                        return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_TARGET_0, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_IT_GET_ROD_DIRECTION, new byte[] { });
                                     }
-                                    break;
                                 case SerialArguments.RodArea:
                                     {
                                         data = new byte[2] { 0x03, 0x00};
@@ -624,6 +652,10 @@ namespace MbitGate.helper
                             SUB_FUNCTION_CODE = data[0];
                             return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_TARGET_0, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_IT_FALSEALARMORDER, data);
                         }
+                    case SerialRadarCommands.Switch:
+                        {
+                            return CommHexProtocolDecoder.Code(CommHexProtocolDecoder.ADDRESS_TARGET_0, CommHexProtocolDecoder.SUCCESS, CommHexProtocolDecoder.FUNCTION_IT_SWITCH, new byte[] { 0x01 });
+                        }
                 }
                 return null;
             }
@@ -709,6 +741,14 @@ namespace MbitGate.helper
                                 case 0x04:
                                     result = SerialRadarReply.StudyEnd;
                                     break;
+                                case 0x00:
+                                    break;
+                                case 0x0D:
+                                    break;
+                                case 0x15:
+                                    break;
+                                case 0x16:
+                                    break;
                                 default:
                                     switch (data.Item4[0])
                                     {
@@ -771,6 +811,9 @@ namespace MbitGate.helper
                                 case 0x02:
                                     result = SerialArguments.DelayTimeParam + " " + BitConverter.ToInt32(data.Item4, 0);
                                     break;
+                                case 0x03:
+                                    result = SerialArguments.RodArea + " " + BitConverter.ToInt32(data.Item4, 0) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 4) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 8);
+                                    break;
                                 default:
                                     switch (data.Item4[0])
                                     {
@@ -817,8 +860,32 @@ namespace MbitGate.helper
                         case CommHexProtocolDecoder.FUNCTION_COMMON_SENSOR_START:
                             break;
                         case CommHexProtocolDecoder.FUNCTION_COMMON_SOFTRESET:
+                            result = SerialRadarReply.Start;
                             break;
                         case CommHexProtocolDecoder.FUNCTION_IT_RESET:
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_POINTS_STRONGEST_STATE:
+                            result = SerialRadarCommands.StrongestPointStatus + " PeakAverage:" + BitConverter.ToInt16(data.Item4, 0) + "  Position:" + data.Item4[2];
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_RADAR_STATE:
+                            result = SerialRadarCommands.RadarStatus + " PointFlag:" + (data.Item4[0] & 0x01) + " TargetFlag:" + (data.Item4[0] & 0x02) + " PoleFlag:" + (data.Item4[0] & 0x04) + " PoleDirectionTarget:" + (data.Item4[0] & 0x08) + " CarFlag:" + (data.Item4[0] & 0x10) + " Maintain:" + (data.Item4[0] & 0x20) + " TargetRelevance:" + (data.Item4[0] & 0x40) + " RelayState:" + (data.Item4[0] & 0x80) + " UpCount:" + data.Item4[1] + " MissCount:" + data.Item4[2] + " DplMapVariance:" + BitConverter.ToInt16(data.Item4, 4) + " MaxFenceRelevance:" + BitConverter.ToInt16(data.Item4, 6);
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_POINTS_DATA:
+                            result = SerialRadarCommands.AllPoints + " ID:" + data.Item4[0] + " X:" + (((((data.Item4[3] & 0x03) << 8) + data.Item4[1])*1.0f / 4.0f - 128.0f) / 20.0f).ToString("F2") + " Y:" + (((((data.Item4[3] & 0x30) << 8) + data.Item4[2])*1.0f / 4.0f) / 20.0f).ToString("F2") + " V:" + ((data.Item4[4] - 128) * 0.4).ToString("F2") + " Peak:" + BitConverter.ToInt16(data.Item4, 5) + " TriggerRange:" + ((data.Item4[7] & 0x80)>>7) + " TriggerThreshold:" + ((data.Item4[7] & 0x40)>>6) + " TriggerStrongest:" + ((data.Item4[7] & 0x02) >> 1) + " TriggerAction:" + (data.Item4[7] & 0x01);
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_POINTS_STRONGEST:
+                            result = SerialRadarCommands.Strongest + " ID:" + data.Item4[0] + " X:" + (((((data.Item4[3] & 0x03) << 8) + data.Item4[1])*1.0f/ 4.0f - 128.0f) / 20.0f).ToString("F2") + " Y:" + (((((data.Item4[3] & 0x30) << 8) + data.Item4[2])*1.0f / 4.0f) / 20.0f).ToString("F2") + " V:" + ((data.Item4[4] - 128) * 0.4).ToString("F2") + " Peak:" + BitConverter.ToInt16(data.Item4, 5) + " TriggerRange:" + ((data.Item4[7] & 0x80) >> 7) + " TriggerThreshold:" + ((data.Item4[7] & 0x40) >> 6) + " TriggerStrongest:" + ((data.Item4[7] & 0x02) >> 1) + " TriggerAction:" + (data.Item4[7] & 0x01);
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_POINTS_STATE:
+                            result = SerialRadarCommands.PointStatus + " NO.:" + data.Item4[0] + " Number:" + data.Item4[1] + " Relay:" + data.Item4[7];
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_HEART:
+                            result =  SerialRadarCommands.Heart + " No.:" + data.Item4[0] + " Registered:" + ((data.Item4[1] & 0x80)>>7) + " Adjusted:" + ((data.Item4[1] & 0x40)>>6) + " Studyed:" + ((data.Item4[1] & 0x20)>>5) + " Relay:" + (data.Item4[1] & 0x01) + " GateType:" + (data.Item4[2]&0x80) + " Direction:" + (data.Item4[2]&0x20);
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_SWITCH:
+                            break;
+                        case CommHexProtocolDecoder.FUNCTION_IT_GET_ROD_DIRECTION:
+                            result = SerialArguments.RodDirection + " " + data.Item4[0];
                             break;
                     }
                 }
@@ -830,7 +897,12 @@ namespace MbitGate.helper
             }
             catch (Exception)
             {
-                throw new Exception("Data Decode Error");
+#if DEBUG
+                throw new Exception("Translate Data Decode Error");
+#else
+                System.Console.WriteLine("Translate Data Decode Error");
+                return ErrorString.Error + ErrorString.TranslateError;
+#endif
             }
         }
         internal string TranslateErrorCode(ushort func, byte err)

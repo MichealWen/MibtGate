@@ -10,7 +10,7 @@
         xmlns:MetroDialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i ="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:LiveChart="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        Title="{StaticResource MainWindowTitle}" MinHeight="600" MinWidth="1024" Height="600" Width="1024"
+        Title="{StaticResource MainWindowTitle}" MinHeight="620" MinWidth="1024" Height="620" Width="1024"
         WindowStartupLocation="CenterScreen" EnableDWMDropShadow="True" FontFamily="Microsoft YaHei" Closed="MetroWindow_Closed" Loaded="MetroWindow_Loaded">
     <Grid x:Name="MainWin">
         <Grid.Resources>
@@ -79,44 +79,144 @@
                     <ColumnDefinition Width="630*"/>
                     <ColumnDefinition Width="200*"/>
                 </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Right" Margin="0 0 20 0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Path Data="M1,21H23L12,2" Fill="DeepSkyBlue" />
+                        <TextBlock Text="{DynamicResource TriggeredWeakPoints}" FontSize="17" Foreground="DeepSkyBlue"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Path Data="M1,21H23L12,2" Fill="SandyBrown" />
+                        <TextBlock Text="{DynamicResource StrongestWeakPoints}" FontSize="17" Foreground="SandyBrown"/>
+                    </StackPanel>
+                </StackPanel>
                 <Border BorderThickness="3" BorderBrush="AliceBlue">
                     <LiveChart:CartesianChart Grid.Column="0"  DataTooltip="{x:Null}" Hoverable="False" DisableAnimations="True" MouseDoubleClick="Chart_Double_Click">
                         <LiveChart:CartesianChart.Series>
-                            <LiveChart:ScatterSeries x:Name="TargetsChart" Values="{Binding StrongestWeakPoints}"  PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource StrongestWeakPoints}" DataLabels="False" StrokeThickness="5">
+                            <LiveChart:ScatterSeries x:Name="WeakPointsSeries" Values="{Binding WeakPoints}"  PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource UnTriggeredPoints}" DataLabels="False" StrokeThickness="5">
                                 <LiveChart:ScatterSeries.DataLabelsTemplate>
                                     <DataTemplate>
                                         <!--<StackPanel Orientation="Horizontal">
                                             --><!--<TextBlock Text="{Binding Point.X}"/>
                                             <TextBlock Text="{Binding Point.Y}"/>--><!--
                                         </StackPanel>-->
-                                        <Label Content="{Binding Point.Instance.Message}"/>
+                                        <Label Content="{Binding Point.Instance.Message}" FontSize="12"/>
                                     </DataTemplate>
                                 </LiveChart:ScatterSeries.DataLabelsTemplate>
                             </LiveChart:ScatterSeries>
                             <LiveChart:ScatterSeries Values="{Binding RemovedWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource SeriesRemovedWeakPoints}"  StrokeThickness="5"  Stroke="Red"/>
-                            <LiveChart:StepLineSeries Values="{Binding RangePoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.None}" Title="{DynamicResource RangePoints}"  StrokeThickness="5"  Stroke="Orange"/>
+                            <LiveChart:ScatterSeries x:Name="StrongestPointSeries" Values="{Binding StrongestWeakPoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Diamond}"  Title="{DynamicResource StrongestWeakPoints}" DataLabels="False" StrokeThickness="5" MinPointShapeDiameter="15">
+                                <LiveChart:ScatterSeries.DataLabelsTemplate>
+                                    <DataTemplate>
+                                        <!--<StackPanel Orientation="Horizontal">
+                                            -->
+                                        <!--<TextBlock Text="{Binding Point.X}"/>
+                                            <TextBlock Text="{Binding Point.Y}"/>-->
+                                        <!--
+                                        </StackPanel>-->
+                                        <Label Content="{Binding Point.Instance.Message}" FontSize="12"/>
+                                    </DataTemplate>
+                                </LiveChart:ScatterSeries.DataLabelsTemplate>
+                            </LiveChart:ScatterSeries>
+                            <!--<LiveChart:ScatterSeries x:Name="TriggeredPointSeries" Values="{Binding TriggeredWeakPoint}" PointGeometry="{x:Static LiveChart:DefaultGeometries.Square}"  Title="{DynamicResource TriggeredWeakPoints}" DataLabels="False" StrokeThickness="5">
+                                <LiveChart:ScatterSeries.DataLabelsTemplate>
+                                    <DataTemplate>
+                                        --><!--<StackPanel Orientation="Horizontal">
+                                            -->
+                                        <!--<TextBlock Text="{Binding Point.X}"/>
+                                            <TextBlock Text="{Binding Point.Y}"/>-->
+                                        <!--
+                                        </StackPanel>--><!--
+                                        <Label Content="{Binding Point.Instance.Message}" FontSize="12/>
+                                    </DataTemplate>
+                                </LiveChart:ScatterSeries.DataLabelsTemplate>
+                            </LiveChart:ScatterSeries>-->
+                            <LiveChart:LineSeries Values="{Binding RangePoints}" PointGeometry="{x:Static LiveChart:DefaultGeometries.None}" Title="{DynamicResource RangePoints}"  StrokeThickness="3"  Stroke="OrangeRed" LineSmoothness="0"/>
+                            <LiveChart:LineSeries Values="{Binding RodRangePoints}" PointGeometry="{x:Null}" Title="{DynamicResource RodPoints}"  StrokeThickness="3"  Stroke="OrangeRed" LineSmoothness="0"/>
                         </LiveChart:CartesianChart.Series>
                         <LiveChart:CartesianChart.AxisX >
-                            <LiveChart:Axis MinValue="-5"  MaxValue="5" />
+                            <LiveChart:Axis MinValue="-5"  MaxValue="5"  FontSize="18"/>
                         </LiveChart:CartesianChart.AxisX>
                         <LiveChart:CartesianChart.AxisY>
-                            <LiveChart:Axis MinValue="0"  MaxValue="7"/>
+                            <LiveChart:Axis MinValue="0"  MaxValue="7" FontSize="18"/>
                         </LiveChart:CartesianChart.AxisY>
                     </LiveChart:CartesianChart>
                 </Border>
-                <Border BorderThickness="3" BorderBrush="AliceBlue" Grid.Column="1">
+                <Border BorderThickness="3" BorderBrush="AliceBlue" Grid.Column="1" Visibility="{Binding IsChecked, ElementName=ic_tab_develop, Converter={StaticResource RevertCheckedVisibilityConverter}}">
                     <StackPanel >
                         <Border BorderThickness="1" BorderBrush="AliceBlue">
-                            <StackPanel Orientation="Horizontal" >
-                                <TextBlock Text="当前流量统计" FontSize="16" FontWeight="Bold" Margin="0 0 10 0" Foreground="#02a8f3"/>
-                                <TextBlock Text="10"  FontSize="16" FontWeight="Bold" Foreground="#02a8f3"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource FlowCount}" FontSize="16" FontWeight="Bold" Margin="0 0 10 0" Foreground="#02a8f3"/>
+                                <TextBlock Text="{Binding UpRecords.Count}"  FontSize="16" FontWeight="Bold" Foreground="#02a8f3"/>
                             </StackPanel>
                         </Border>
-                        <ListBox >
-                            <ListBoxItem Content="抬杆     2020-11-11  11:11:11"/>
-                            <ListBoxItem Content="抬杆     2020-11-11  11:11:11"/>
-                            <ListBoxItem Content="抬杆     2020-11-11  11:11:11"/>
-                        </ListBox>
+                        <ListBox ItemsSource="{Binding UpRecords}"/>
+                    </StackPanel>
+                </Border>
+                <Border BorderThickness="3" BorderBrush="AliceBlue" Grid.Column="1">
+                    <Border.Visibility>
+                        <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
+                            <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
+                            <Binding Path="Root"/>
+                        </MultiBinding>
+                    </Border.Visibility>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3 3" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
+                        <TextBlock Text="{DynamicResource  RadarState}" FontSize="16" FontWeight="Bold" Margin="0 0 10 0" Foreground="#02a8f3"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource PointFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0" />
+                            <TextBlock Text="{Binding PointFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource TargetFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding TargetFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource PoleFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding PoleFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource PoleDirectionTarget}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding PoleDirectionTarget}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource CarFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding CarFlag}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource Maintain}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding Maintain}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource TargetRelevance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding TargetRelevance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource RelayState}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding RelayState}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource UpCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding UpCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource MissCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding MissCount}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource DplMapVariance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding DplMapVariance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource MaxFenceRelevance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding MaxFenceRelevance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource PeakAverage}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding PeakAverage}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 2">
+                            <TextBlock Text="{StaticResource StrongestPosition}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="{Binding StrongestPosition}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 <Border BorderThickness="2" BorderBrush="AliceBlue" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
@@ -150,9 +250,13 @@
                         </Image.Triggers>-->
                     </Image>
                 </Canvas>
-                <LiveChart:CartesianChart Grid.Row="1"  DataTooltip="{x:Null}" x:Name="testchart" VisualElements="{Binding Visuals}">
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 20 0">
+                    <TextBlock Text="{DynamicResource BarrierScene}" FontSize="17" FontWeight="Bold" Foreground="DeepSkyBlue"/>
+                </StackPanel>
+                <LiveChart:CartesianChart Grid.Row="1"  DataTooltip="{x:Null}" VisualElements="{Binding Visuals}">
+                    <!--VisualElements="{Binding Visuals}"-->
                     <!--<LiveChart:CartesianChart.VisualElements>
-                        --><!--<LiveChart:VisualElement x:Name="Moto" X="0" Y="-0.2">
+                        <LiveChart:VisualElement x:Name="Moto" X="0" Y="-0.2">
                             <LiveChart:VisualElement.UIElement>
                                 <Path Fill="Red" Data="M17.42,10L13.41,6H9V8H12.59L14.59,10H6.5C4,10 2,12 2,14.5C2,17 4,19 6.5,19C8.72,19 10.56,17.38 10.92,15.27L13.04,14C13,14.17 13,14.33 13,14.5C13,17 15,19 17.5,19C20,19 22,17 22,14.5C22,12 20,10 17.5,10M8.84,15.26C8.5,16.27 7.58,17 6.47,17C5.09,17 3.97,15.88 3.97,14.5C3.97,13.12 5.09,12 6.47,12C7.59,12 8.5,12.74 8.84,13.75H6V15.25L8.84,15.26M17.47,17C16.09,17 14.97,15.88 14.97,14.5C14.97,13.12 16.09,12 17.47,12A2.5,2.5 0 0,1 19.97,14.5A2.5,2.5 0 0,1 17.47,17Z" Stretch="Fill"  Width="82" Height="42"/>
                             </LiveChart:VisualElement.UIElement>
@@ -171,22 +275,22 @@
                             <LiveChart:VisualElement.UIElement>
                                 <Path Fill="Red" Data="M16,6H10.5V10H1V15H3A3,3 0 0,0 6,18A3,3 0 0,0 9,15H15A3,3 0 0,0 18,18A3,3 0 0,0 21,15H23V12C23,10.89 22.11,10 21,10H19L16,6M12,7.5H15.5L17.46,10H12V7.5M6,13.5A1.5,1.5 0 0,1 7.5,15A1.5,1.5 0 0,1 6,16.5A1.5,1.5 0 0,1 4.5,15A1.5,1.5 0 0,1 6,13.5M18,13.5A1.5,1.5 0 0,1 19.5,15A1.5,1.5 0 0,1 18,16.5A1.5,1.5 0 0,1 16.5,15A1.5,1.5 0 0,1 18,13.5Z" Stretch="Fill"  Width="82" Height="42"/>
                             </LiveChart:VisualElement.UIElement>
-                        </LiveChart:VisualElement>-->
-                        <!--<LiveChart:VisualElement x:Name="Person" X="0.0" Y="0.0">
+                        </LiveChart:VisualElement>
+                        <LiveChart:VisualElement x:Name="Person" X="0.0" Y="0.0">
                             <LiveChart:VisualElement.UIElement>
                                 <Path Fill="Red" Data="M 38,17.4167C 33.6278,17.4167 30.0833,20.9611 30.0833,25.3333C 30.0833,29.7056 33.6278,33.25 38,33.25C 42.3723,33.25 45.9167,29.7056 45.9167,25.3333C 45.9167,20.9611 42.3722,17.4167 38,17.4167 Z M 30.0833,44.3333L 29.4774,58.036C 32.2927,59.4011 35.4528,60.1667 38.7917,60.1667C 41.5308,60.1667 44.1496,59.6515 46.5564,58.7126L 45.9167,44.3333C 46.9722,44.8611 49.0834,49.0833 49.0834,49.0833C 49.0834,49.0833 50.1389,50.6667 50.6667,57L 55.4166,55.4167L 53.8333,47.5C 53.8333,47.5 50.6667,36.4167 44.3332,36.4168L 31.6666,36.4168C 25.3333,36.4167 22.1667,47.5 22.1667,47.5L 20.5833,55.4166L 25.3333,56.9999C 25.8611,50.6666 26.9167,49.0832 26.9167,49.0832C 26.9167,49.0832 29.0278,44.8611 30.0833,44.3333 Z " Stretch="Fill"  Width="42" Height="22"/>
                             </LiveChart:VisualElement.UIElement>
-                        </LiveChart:VisualElement>-->
-                        <!--<LiveChart:VisualElement X="0.3" Y="0.3" Width="1" Height="1">
+                        </LiveChart:VisualElement>
+                        <LiveChart:VisualElement X="0.3" Y="0.3" Width="1" Height="1">
                             <LiveChart:VisualElement.UIElement>
                                 <Image  Source="/DAHUA_ITS_A08;component/image/mbit.ico"/>
                             </LiveChart:VisualElement.UIElement>
-                        </LiveChart:VisualElement>-->
-                        <!--<LiveChart:VisualElement x:Name="SportCar" X="{Binding TargetPositionX,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}" Y="{Binding TargetPositionY,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}">
+                        </LiveChart:VisualElement>
+                        <LiveChart:VisualElement x:Name="SportCar" X="{Binding TargetPositionX,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}" Y="{Binding TargetPositionY,UpdateSourceTrigger=PropertyChanged,NotifyOnSourceUpdated=True}">
                             <LiveChart:VisualElement.UIElement>
                                 <Path Fill="Red" Data="M480 960h64v-256l-32-128-32 128v256zM544-64h-64v256l32 128 32-128v-256zM1024 480v-64h-256l-128 32 128 32h256zM0 416v64h256l128-32-128-32h-256zM512 800c194.404 0 352-157.596 352-352s-157.596-352-352-352c-194.404 0-352 157.596-352 352 0.364 194.258 157.742 351.636 351.965 352zM512 896c-247.424 0-448-200.576-448-448s200.576-448 448-448c247.424 0 448 200.576 448 448s-200.576 448-448 448v0z" Stretch="Fill"  Width="16" Height="16"/>
                             </LiveChart:VisualElement.UIElement>
-                        </LiveChart:VisualElement>--><!--
+                        </LiveChart:VisualElement>
                     </LiveChart:CartesianChart.VisualElements>-->
                     <!--<LiveChart:CartesianChart.Series>
                         <LiveChart:LineSeries Values="{Binding Values1}" StrokeThickness="4" StrokeDashArray="2"
@@ -206,7 +310,7 @@
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Point.X}"/>
-                                        <TextBlock Text="{Binding Point.Instance.Message}" FontSize="20"/>
+                                        <TextBlock Text="{Binding Point.Instance.Message}" FontSize="12"/>
                                         <TextBlock Text="{Binding Point.Y}"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -239,36 +343,101 @@
                 <Image Source="{Binding GateTypePosition, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="1" Grid.Column="1"/>
             </Grid>
             <Border Grid.Column="1" BorderBrush="AliceBlue" BorderThickness="5">
+                <Border.Visibility>
+                    <MultiBinding Converter="{StaticResource AndCheckedMultiVisibilityConverter}">
+                        <Binding Path="IsChecked" ElementName="ic_tab_develop"/>
+                        <Binding Path="Root"/>
+                    </MultiBinding>
+                </Border.Visibility>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="6 10" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource Delay}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox Text="{Binding Delay}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <!--<StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 8">
+                        <TextBlock Text="{StaticResource Threshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox x:Name="Thresold" Text="{Binding Threshold}" Width="100" FontFamily="Microsoft YaHei"  FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}"/>
+                    </StackPanel>-->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource WriteCLIRangeMax}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 0"/>
+                        <TextBox Text="{Binding  RodRangeMax}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource WriteCLIRangeMin}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 0"/>
+                        <TextBox Text="{Binding  RodRangeMin}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource RangeVariance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 0"/>
+                        <TextBox Text="{Binding  RangeVariance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource TargetThreshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox  Text="{Binding TargetThreshold}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource StudyCorrelation}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,13,0"/>
+                        <TextBox Text="{Binding StudyCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource MatchCorrelation}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,13,0"/>
+                        <TextBox  Text="{Binding MatchCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource StayMultiple}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox  Text="{Binding StayMultiple}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource RelatePoint}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox Text="{Binding RelatePoint}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource StayCorrelation}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox  Text="{Binding StayCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
+                        <TextBlock Text="{StaticResource StudyMultiple}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBox  Text="{Binding StudyMultiple}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <CheckBox IsChecked="{Binding DataSave}" Content="{DynamicResource DataSave}" FontSize="14" Foreground="#333333"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource GetDevelopParam}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetDevParamCmd}"  ToolTip="{StaticResource FuncGetDevParam}"/>
+                        <Button Content="{StaticResource SetDevelopParam}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding SetDevParamCmd}"  Margin="20 0 0 0"  ToolTip="{StaticResource FuncSetDevParam}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1" BorderBrush="AliceBlue" BorderThickness="5" Visibility="{Binding IsChecked, ElementName=ic_tab_develop, Converter={StaticResource RevertCheckedVisibilityConverter}}">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="6 10" IsEnabled="{Binding ConnectState, Converter={StaticResource ConnectState2Enable}}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource FrontMaxDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,25,0"/>
                         <TextBox x:Name="FrontMaxDistance" Text="{Binding MaxDistance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
                         <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0 0 0 10">
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource FrontMinDistance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                         <TextBox x:Name="FrontMinDistance" Text="{Binding MinDistance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
                         <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
                         <TextBlock Text="{StaticResource GateType}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,33,0"/>
                         <ComboBox  ItemsSource="{Binding GateTypes}"  FontSize="14"  Width="140" Foreground="#333333" Text="{Binding Gate}" IsEditable="True" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource LRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,20,0"/>
                         <TextBox x:Name="LRange" Text="{Binding LRange}" Width="120" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsLeftRangeEditable}"/>
                         <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 10">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource RRange}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,20,0"/>
                         <TextBox x:Name="RRange" Text="{Binding RRange}" Width="120" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" IsEnabled="{Binding IsRightRangeEditable}"/>
                         <TextBlock Text="{StaticResource UnitM}" FontSize="18" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0 0 0 10">
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource Threshold}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,5,0"/>
                         <ComboBox  ItemsSource="{Binding ThresholdTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="140" Foreground="#333333" Text="{Binding Threshold}"   IsEditable="True"  GotFocus="ComboxThreshold_GetFocus" LostFocus="ComboxThreshold_LostFocus"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Left" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
                         <TextBlock Text="{StaticResource Record}"  FontFamily="Microsoft YaHei" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,32,0"/>
                         <ComboBox  ItemsSource="{Binding RecordTypes}"  FontFamily="Microsoft YaHei" FontSize="14"  Width="140" Foreground="#333333" Text="{Binding Record}"   IsEditable="True" />
                     </StackPanel>
@@ -282,9 +451,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
                         <Button Content="{StaticResource Reboot}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RebootCmd}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}"/>
-                        <Button Content="过闸机" Width="60"  Style="{StaticResource Style_Button_Ok}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}" Click="Test_Click"/>
+                        <!--<Button Content="过闸机" Width="60"  Style="{StaticResource Style_Button_Ok}" Margin="0 0 20 0"  ToolTip="{StaticResource FuncReboot}" Click="Test_Click"/>-->
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                    <!--<StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
                         <Button Content="{StaticResource ConfirmAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetWeakPointsCmd}"  ToolTip="{StaticResource FuncConfirmAlarm}"/>
                         <Button Content="{StaticResource CancelAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelGetWeakPointsCmd}"  Margin="5 0" ToolTip="{StaticResource FuncCancelAlarm}"/>
                     </StackPanel>
@@ -292,6 +461,11 @@
                         <Button Content="{StaticResource RemoveAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RemoveWeakPointsCmd}" ToolTip="{StaticResource FuncRemoveAlarm}"/>
                         <Button Content="{StaticResource RegetAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding RegetWeakPointsCmd}" Margin="5 0" ToolTip="{StaticResource FuncRegetAlarm}"/>
                         <Button Content="{StaticResource CancelRemoveAlarm}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelRemoveWeakPointsCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelRemoveAlarm}"/>
+                    </StackPanel>-->
+                    <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
+                        <Button Content="{StaticResource GetPoints}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetPointsCmd}" ToolTip="{StaticResource FuncGetPoints}"/>
+                        <Button Content="{StaticResource GetStrongestPoint}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding GetStrongestPointCmd}" Margin="5 0" ToolTip="{StaticResource FuncGetStrongestPoint}"/>
+                        <Button Content="{StaticResource CancelGet}" Width="60"  Style="{StaticResource Style_Button_Ok}" Command="{Binding CancelGetCmd}" Margin="0 0"  ToolTip="{StaticResource FuncCancelGet}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -306,7 +480,7 @@
                 <TextBlock Text="{Binding ConnectState, Converter={StaticResource ConnectState2String}}" FontSize="16"  Foreground="#FFFFFF" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Grid.Column="1">
-                <Rectangle VerticalAlignment="Stretch" Fill="DarkGray" Width="5"/>
+                <Rectangle VerticalAlignment="Stretch" Fill="Black" Width="5"/>
                 <Label Content="雷达版本号:" FontSize="16"  Foreground="#FFFFFF"/>
                 <TextBlock Text="{Binding Version}" FontSize="16"  Foreground="#FFFFFF" MouseDown="VersionTextBox_MouseDown" Margin="0 5 0 0"/>
             </StackPanel>

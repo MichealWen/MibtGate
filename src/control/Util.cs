@@ -115,6 +115,13 @@ namespace MbitGate.control
         public const string AlarmOrder2 = "falseAlarmOrder 2";
         public const string AlarmOrder3 = "falseAlarmOrder 3";
         public const string AlarmOrder4 = "falseAlarmOrder 4";
+        public const string Switch = "Switch";
+        public const string Heart = "Heart";
+        public const string Strongest = "StrongestPoint";
+        public const string AllPoints = "PointsData";
+        public const string PointStatus = "PointStatus";
+        public const string StrongestPointStatus = "StrongestPointStatus";
+        public const string RadarStatus = "RadarStatus";
     }
 
     public class ExtraSerialRadarCommands
@@ -197,6 +204,7 @@ namespace MbitGate.control
         public const string DataWriteError = "Write Data";
         public const string BinCRCError = "Bin File CRC";
         public const string BinFreshError = "Bin Data Copy";
+        public const string TranslateError = "Translate Fail";
 
         public const string CommonAddress = "Address Error";
         public const string CommonFunction = "Function Error";
@@ -286,6 +294,14 @@ namespace MbitGate.control
         public static string Configing = Application.Current.Resources["Configing"].ToString();
         public static string RebootFail = Application.Current.Resources["RebootFail"].ToString();
         public static string Rebooting = Application.Current.Resources["Rebooting"].ToString();
+
+        public static string ConfigDelaySuccess = Application.Current.Resources["ConfigDelaySuccess"].ToString();
+        public static string ConfigDelayFail = Application.Current.Resources["ConfigDelayFail"].ToString();
+        public static string ConfigRodAreaSuccess = Application.Current.Resources["ConfigRodAreaSuccess"].ToString();
+        public static string ConfigRodAreaFail = Application.Current.Resources["ConfigRodAreaFail"].ToString();
+        public static string ConfigThresholdSuccess = Application.Current.Resources["ConfigThresholdSuccess"].ToString();
+        public static string ConfigThresholdFail = Application.Current.Resources["ConfigThresholdFail"].ToString();
+        public static string SearchResultFullToFile = Application.Current.Resources["SearchResultFullToFile"].ToString(); 
     }
 
     public class GateType
@@ -310,9 +326,9 @@ namespace MbitGate.control
         {
             if (value == "0")
                 return Straight;
-            else if (value == "2")
+            else if (value == "20")
                 return Advertising;
-            else if (value == "1")
+            else if (value == "10")
                 return Fence;
             else
                 return value;
@@ -321,16 +337,16 @@ namespace MbitGate.control
         {
             if(position == "0")
             {
-                if (gate == "2" || gate == Advertising)
+                if (gate == "20" || gate == Advertising)
                     return AdvertisingLeft;
-                else if (gate == "1" || gate == Fence)
+                else if (gate == "10" || gate == Fence)
                     return FenceLeft;
             }
             else if(position == "1")
             {
-                if (gate == "2" || gate == Advertising)
+                if (gate == "20" || gate == Advertising)
                     return AdvertisingRight;
-                else if (gate == "1" || gate == Fence)
+                else if (gate == "10" || gate == Fence)
                     return FenceRight;
             }
             return gate + "|" + position;

@@ -53,10 +53,10 @@ namespace MbitGate.views
         {
             ic_tab_connect.IsChecked = false;
             ic_tab_update.IsChecked = false;
-            ic_tab_develop.IsChecked = true;
             ic_tab_search.IsChecked = false;
             ic_tab_comparison.IsChecked = false;
-            mainVModel.ToRoot();
+            if(ic_tab_develop.IsChecked == true)
+                mainVModel.ToRoot();
         }
 
         private void Update_Choose_Click(object sender, RoutedEventArgs e)
@@ -129,7 +129,8 @@ namespace MbitGate.views
 
         private void Chart_Double_Click(object sender, MouseButtonEventArgs e)
         {
-            TargetsChart.DataLabels = !TargetsChart.DataLabels;
+            WeakPointsSeries.DataLabels = !WeakPointsSeries.DataLabels;
+            StrongestPointSeries.DataLabels = !StrongestPointSeries.DataLabels;
         }
     }
 
@@ -293,7 +294,7 @@ namespace MbitGate.views
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             ConnectType type = (ConnectType)value;
-            if (type == ConnectType.Connected)
+            if (type == ConnectType.Connected || type == ConnectType.UnAdjust || type == ConnectType.UnStudy || type == ConnectType.UnAdjustStudy)
                 return true;
             else
                 return false;
@@ -313,7 +314,16 @@ namespace MbitGate.views
             switch(type)
             {
                 case ConnectType.UnRegist:
-                    state = Application.Current.Resources["Unregist"].ToString();
+                    state = Application.Current.Resources["UnRegist"].ToString();
+                    break;
+                case ConnectType.UnAdjust:
+                    state = Application.Current.Resources["UnAdjust"].ToString();
+                    break;
+                case ConnectType.UnAdjustStudy:
+                    state = Application.Current.Resources["UnAdjust"].ToString() + "|" + Application.Current.Resources["UnStudy"].ToString();
+                    break;
+                case ConnectType.UnStudy:
+                    state = Application.Current.Resources["UnStudy"].ToString();
                     break;
                 case ConnectType.Ready:
                     state = Application.Current.Resources["Ready"].ToString();
