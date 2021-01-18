@@ -422,15 +422,15 @@ namespace MbitGate.helper
                                         data[1] = 0x00;
                                         data[2] = byte.Parse(cmds[2]);
                                         data[3] = byte.Parse(cmds[3]);
-                                        data[4] = (byte)(float.Parse(cmds[4]));
-                                        data[5] = (byte)(float.Parse(cmds[5]));
+                                        data[4] = (byte)(float.Parse(cmds[4])*10);
+                                        data[5] = (byte)(float.Parse(cmds[5])*10);
                                         data[6] = byte.Parse(cmds[6]);
                                         data[7] = (byte)(float.Parse(cmds[7]));
-                                        data[8] = (byte)(float.Parse(cmds[8]));
+                                        data[8] = (byte)(float.Parse(cmds[8])*10);
                                         data[9] = byte.Parse(cmds[9]);
                                         data[10] = (byte)(float.Parse(cmds[10])*10);
-                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[11])), 0, data, 11, 2);
-                                        data[13] = (cmds[12] == "0") ? (byte)0x00 : (byte)0x0A;
+                                        Array.Copy(BitConverter.GetBytes(short.Parse(cmds[11])*10), 0, data, 11, 2);
+                                        data[13] = (byte)(float.Parse(cmds[12]) * 10);
                                     }
                                     break;
                                 case SerialArguments.RodDirection:
@@ -806,7 +806,7 @@ namespace MbitGate.helper
                                     result = SerialArguments.ThresholdParas + ":" + BitConverter.ToInt32(data.Item4, 0) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 4) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 8) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 12) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 16) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 20) * 0.01f + " " + BitConverter.ToInt32(data.Item4, 24) * 0.01f;
                                     break;
                                 case 0x01:
-                                    result = SerialArguments.FilterParam + " " + (BitConverter.ToInt32(data.Item4, 0) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 4) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 8) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 12) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 16) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 20) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 24) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 28) * 1.0f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 32) * 1.0f).ToString("F0") + " " + (BitConverter.ToInt32(data.Item4, 36) * 1.0f).ToString("F0") + " " + (BitConverter.ToInt32(data.Item4, 40) * 0.1f).ToString("F0");
+                                    result = SerialArguments.FilterParam + " " + (BitConverter.ToInt32(data.Item4, 0) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 4) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 8) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 12) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 16) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 20) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 24) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 28) * 0.1f).ToString("F2") + " " + (BitConverter.ToInt32(data.Item4, 32) * 0.1f).ToString("F0") + " " + (BitConverter.ToInt32(data.Item4, 36) * 0.1f).ToString("F0") + " " + (BitConverter.ToInt32(data.Item4, 40) * 0.1f).ToString("F0");
                                     break;
                                 case 0x02:
                                     result = SerialArguments.DelayTimeParam + " " + BitConverter.ToInt32(data.Item4, 0);
@@ -865,7 +865,7 @@ namespace MbitGate.helper
                         case CommHexProtocolDecoder.FUNCTION_IT_RESET:
                             break;
                         case CommHexProtocolDecoder.FUNCTION_IT_POINTS_STRONGEST_STATE:
-                            result = SerialRadarCommands.StrongestPointStatus + " PeakAverage:" + BitConverter.ToInt16(data.Item4, 0) + "  Position:" + data.Item4[2];
+                            result = SerialRadarCommands.StrongestPointStatus + " PeakAverage:" + BitConverter.ToUInt16(data.Item4, 0) + "  Position:" + data.Item4[2];
                             break;
                         case CommHexProtocolDecoder.FUNCTION_IT_RADAR_STATE:
                             result = SerialRadarCommands.RadarStatus + " PointFlag:" + (data.Item4[0] & 0x01) + " TargetFlag:" + (data.Item4[0] & 0x02) + " PoleFlag:" + (data.Item4[0] & 0x04) + " PoleDirectionTarget:" + (data.Item4[0] & 0x08) + " CarFlag:" + (data.Item4[0] & 0x10) + " Maintain:" + (data.Item4[0] & 0x20) + " TargetRelevance:" + (data.Item4[0] & 0x40) + " RelayState:" + (data.Item4[0] & 0x80) + " UpCount:" + data.Item4[1] + " MissCount:" + data.Item4[2] + " DplMapVariance:" + BitConverter.ToInt16(data.Item4, 4) + " MaxFenceRelevance:" + BitConverter.ToInt16(data.Item4, 6);

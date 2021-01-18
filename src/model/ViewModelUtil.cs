@@ -1269,7 +1269,7 @@ namespace MbitGate.model
                 {
                     if (IsGettingStrongestPoints)
                         await AsyncWork(() => ToCancelGetPoints());
-                    await AsyncWork(() => { ToSet(); });
+                    await AsyncWork(() => { ToSet(); }, true, 6000);
                 }
             };
 
@@ -1329,6 +1329,11 @@ namespace MbitGate.model
                             if (IsGettingStrongestPoints)
                                 await AsyncWork(() => ToCancelGetPoints());
                             await AsyncWork(() => ToReset(), true, 6000);
+                            if (serial.ToTranslate)
+                            {
+                                await TaskEx.Delay(2000);
+                                await AsyncWork(() => { ToHeartBeat(); }, false, -1);
+                            }
                         });
                 }
             };
@@ -1340,6 +1345,11 @@ namespace MbitGate.model
                     if (IsGettingStrongestPoints)
                         await AsyncWork(() => ToCancelGetPoints());
                     await AsyncWork(() => ToStudy(), true, -1);
+                    if (serial.ToTranslate)
+                    {
+                        await TaskEx.Delay(2000);
+                        await AsyncWork(() => { ToHeartBeat(); }, false, -1);
+                    }
                 }
             };
 
@@ -2707,7 +2717,7 @@ namespace MbitGate.model
         private async void ToCancelGetPoints()
         {
             ToCommunicate(SerialRadarCommands.Output + " 0");
-            await TaskEx.Delay(1000);
+            await TaskEx.Delay(100);
             WeakPoints.Clear();
             StrongestWeakPoints.Clear();
             IsGettingStrongestPoints = false;
@@ -3042,12 +3052,16 @@ namespace MbitGate.model
                         await TaskEx.Delay(300);
                         serial.EndStr = SerialRadarReply.Start;
                         serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
-                        //mutex.Set();
                     }
                     else if (msg.Contains(SerialRadarReply.Start))
                     {
                         mutex.Set();
                         ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
+                        if (serial.ToTranslate)
+                        {
+                            await TaskEx.Delay(2000);
+                            await AsyncWork(() => { ToHeartBeat(); }, false, -1);
+                        }
                     }
                 }
                 else if (msg.Contains(SerialRadarReply.Error))
@@ -3250,7 +3264,7 @@ namespace MbitGate.model
                     _progressViewModel.Message = Tips.Studying + ":    " + msg.Trim('\n', '\r');
                 }
             };
-            serial.WriteLine(SerialRadarCommands.Output + " 4", 5000);
+            serial.WriteLine(SerialRadarCommands.Output + " 4",  -1);
             ExtraOnceWorkToDo = async () => {
                 await AsyncWork(() => {
                     serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
@@ -4458,7 +4472,7 @@ namespace MbitGate.model
             Version = null;
             if (serial != null)
             {
-                serial.close();
+                serial.dispose();
             }
         }
 

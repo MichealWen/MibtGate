@@ -172,7 +172,6 @@ namespace MbitGate.control
         CommStringProtocolDecoder stringDecoder;
         Translater translater;
         Timer overTimer = null;
-        Timer consumerTimer = null;
         ConcurrentQueue<byte> ReplayBytesQueue;
         string preStrCommand;
         byte[] preHexCommand;
@@ -223,11 +222,9 @@ namespace MbitGate.control
             preHexCommand = null;
             repeat = 0;
 
-            consumerTimer = new System.Timers.Timer(3);
-            consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
-            consumerTimer.Start();
+            System.Threading.Tasks.Task.Factory.StartNew(() => { DecodeLoop(4); });
 
-            hexDecoder.MaxCantDecodeCount = (300 / 3) - 10;  /*300 = overTimer.Interval   3=consumerTimer.Interval*/
+            hexDecoder.MaxCantDecodeCount = ((300 / 4) + 10) < 0 ? 1 : ((300/4) + 10);  /*300 = overTimer.Interval   4=consumerTimer.Interval*/
         }
 
         //十六进制与字符串统一回复出口
@@ -273,11 +270,8 @@ namespace MbitGate.control
             preHexCommand = null;
             repeat = 0;
 
-            consumerTimer = new System.Timers.Timer(3);
-            consumerTimer.Elapsed += ToDecodeTimer_Elapsed;
-            consumerTimer.Start();
-
-            hexDecoder.MaxCantDecodeCount = (300/3) - 10;  /*300 = overTimer.Interval   3=consumerTimer.Interval*/
+            System.Threading.Tasks.Task.Factory.StartNew(() => { DecodeLoop(4); });
+            hexDecoder.MaxCantDecodeCount = ((300 / 4) + 10) < 0 ? 1 : ((300 / 4) + 10);   /*300 = overTimer.Interval   4=consumerTimer.Interval*/
         }
 
         public string EndStr { 
@@ -326,9 +320,20 @@ namespace MbitGate.control
             }
         }
 
-        private void ToDecodeTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        bool toStopDecode = false;
+        private void DecodeLoop(short intervalMillisecondsf)
         {
-            hexDecoder.Decode(ref ReplayBytesQueue);
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+            long ticks = 0;
+            while (!toStopDecode)
+            {
+                if(watch.ElapsedMilliseconds >= ticks+ intervalMillisecondsf)
+                {
+                    ticks = watch.ElapsedMilliseconds;
+                    hexDecoder.Decode(ref ReplayBytesQueue);
+                }
+            }
         }
 
         private void OverTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -602,7 +607,11 @@ namespace MbitGate.control
             }
             catch{ }
         }
-
+        public void dispose()
+        {
+            close();
+            toStopDecode = true;
+        }
         internal void ClearBuffer()
         {
             lock(ReplayBytesQueue)
