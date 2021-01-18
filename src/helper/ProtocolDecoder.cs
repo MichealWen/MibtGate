@@ -715,7 +715,7 @@ namespace MbitGate.helper
                             {
                                 result += BitConverter.ToInt16(data.Item4, i) + "-" + data.Item4[i + 2] + "-" + data.Item4[i + 3] + "   " + data.Item4[i + 4] + ":" + data.Item4[i + 5] + ":" + data.Item4[i + 6] + "\tRelay:" + data.Item4[i + 7] + "\n";
                             }
-                            break;
+                            return result;
                         case CommHexProtocolDecoder.FUNCTION_IT_CLEAR_RECORD:
                             result = data.Item4[0] == 0x00 ? "Success" : "Fail";
                             break;
