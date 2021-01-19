@@ -331,7 +331,8 @@ namespace MbitGate.control
                 if(watch.ElapsedMilliseconds >= ticks+ intervalMillisecondsf)
                 {
                     ticks = watch.ElapsedMilliseconds;
-                    hexDecoder.Decode(ref ReplayBytesQueue);
+                    if(ReplayBytesQueue.Count > 0)
+                        hexDecoder.Decode(ref ReplayBytesQueue);
                 }
             }
         }
@@ -458,6 +459,8 @@ namespace MbitGate.control
                     return false;
                 if (_serial.IsOpen == false)
                     _serial.Open();
+                if(toStopDecode)
+                    System.Threading.Tasks.Task.Factory.StartNew(() => { DecodeLoop(4); });
                 return true;
             }
             catch (Exception e)
@@ -595,11 +598,8 @@ namespace MbitGate.control
         {
             try
             {
-                if(_serial != null)
-                {
-                    _serial.Close();
-                    _serial.Dispose();
-                }
+                _serial?.Close();
+                ClearBuffer();
                 StringDataReceivedHandler = null;
                 BytesFrameDataReceivedHandler = null;
                 BytesDecodedDataReceivedHandler = null;

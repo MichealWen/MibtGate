@@ -268,7 +268,7 @@
     <s:String x:Key="FuncGetStrongestPoint">Show Strongest Point</s:String>
     <s:String x:Key="FuncCancelGet">Stop Show Points</s:String>
 
-    <s:String x:Key="DataSave">Save Data</s:String>
+    <s:String x:Key="DataSave">Save Points Data</s:String>
     <s:String x:Key="SearchResultFullToFile">Data Too Large, Save To File：</s:String>
     <s:String x:Key="BarrierScene">Barrier Scene</s:String>
 </ResourceDictionary>

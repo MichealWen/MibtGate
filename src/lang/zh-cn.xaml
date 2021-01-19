@@ -268,7 +268,7 @@
     <s:String x:Key="FuncGetStrongestPoint">显示最强目标点云信息</s:String>
     <s:String x:Key="FuncCancelGet">停止显示目标点云信息</s:String>
 
-    <s:String x:Key="DataSave">保存数据</s:String>
+    <s:String x:Key="DataSave">保存点云数据</s:String>
     <s:String x:Key="SearchResultFullToFile">数据量过大，已保存到文件：</s:String>
     <s:String x:Key="BarrierScene">闸机场景</s:String>
 </ResourceDictionary>

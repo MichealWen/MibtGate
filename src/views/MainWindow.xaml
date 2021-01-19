@@ -360,43 +360,43 @@
                     </StackPanel>-->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource WriteCLIRangeMax}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 0"/>
-                        <TextBox Text="{Binding  RodRangeMax}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox Text="{Binding  RodRangeMax}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="5"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource WriteCLIRangeMin}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 0"/>
-                        <TextBox Text="{Binding  RodRangeMin}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox Text="{Binding  RodRangeMin}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="5"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource RangeVariance}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 0"/>
-                        <TextBox Text="{Binding  RangeVariance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3" />
+                        <TextBox Text="{Binding  RangeVariance}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="6" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource TargetThreshold}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBox  Text="{Binding TargetThreshold}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox  Text="{Binding TargetThreshold}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource StudyCorrelation}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,13,0"/>
-                        <TextBox Text="{Binding StudyCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox Text="{Binding StudyCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource MatchCorrelation}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,13,0"/>
-                        <TextBox  Text="{Binding MatchCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox  Text="{Binding MatchCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource StayMultiple}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBox  Text="{Binding StayMultiple}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox  Text="{Binding StayMultiple}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource RelatePoint}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBox Text="{Binding RelatePoint}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox Text="{Binding RelatePoint}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource StayCorrelation}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBox  Text="{Binding StayCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox  Text="{Binding StayCorrelation}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10">
                         <TextBlock Text="{StaticResource StudyMultiple}" FontSize="14" Foreground="#9d9d9d" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBox  Text="{Binding StudyMultiple}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="3"/>
+                        <TextBox  Text="{Binding StudyMultiple}" Width="100" FontSize="14" Foreground="#333333" Style="{StaticResource STYLE_CommonTextBox}" MaxLength="4"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0 0 0 10" Visibility="{Binding IsHoldRadarType, Converter={StaticResource bool2VisibilityConverter}}">
                         <CheckBox IsChecked="{Binding DataSave}" Content="{DynamicResource DataSave}" FontSize="14" Foreground="#333333"/>
