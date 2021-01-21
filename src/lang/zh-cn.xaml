@@ -260,7 +260,7 @@
     <s:String x:Key="ConfigThresholdSuccess">设置阀值成功</s:String>
     <s:String x:Key="ConfigThresholdFail">设置阀值失败</s:String>
 
-    <s:String x:Key="GetPoints">显示目标</s:String>
+    <s:String x:Key="GetPoints">显示点云</s:String>
     <s:String x:Key="GetStrongestPoint">最强目标</s:String>
     <s:String x:Key="CancelGet">停止显示</s:String>
 

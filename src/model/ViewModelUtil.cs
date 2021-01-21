@@ -2635,8 +2635,8 @@ namespace MbitGate.model
                 serial.Rate = (int)ConnectModel.CustomRate;
                 serial.Type = SerialReceiveType.Chars;
                 serial.CompareEndString = true;
+                serial.CheckFuncCode = true;
                 serial.EndStr = SerialRadarReply.Done;
-                serial.CheckFuncCode = false;
                 serial.ClearBuffer();
                 if (!serial.IsOpen && !serial.open())
                 {
@@ -2733,6 +2733,7 @@ namespace MbitGate.model
         }
         private void ToCommunicate(string cmd)
         {
+            serial.CheckFuncCode = false;
             serial.StringDataReceivedHandler = msg =>
             {
                 if(msg.Contains(SerialRadarCommands.Heart))
@@ -3038,7 +3039,7 @@ namespace MbitGate.model
                         if (IsFencePositionTypeVisible && gate != control.GateType.Straight)
                         {
                             lastOperation = SerialArguments.RodDirection;
-                            await TaskEx.Delay(100);
+                            await TaskEx.Delay(800);
                             serial.WriteLine(SerialRadarCommands.WriteCLI + " " + SerialArguments.RodDirection + " " + control.FencePositionType.GetValue(gate));
                         }
                         else
@@ -3047,7 +3048,8 @@ namespace MbitGate.model
                             await TaskEx.Delay(300);
                             serial.EndStr = SerialRadarReply.Start;
                             serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
-                            //mutex.Set();
+                            mutex.Set();
+                            ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
                         }
                     }
                     else if (lastOperation == SerialArguments.RodDirection)
@@ -3056,6 +3058,8 @@ namespace MbitGate.model
                         await TaskEx.Delay(300);
                         serial.EndStr = SerialRadarReply.Start;
                         serial.WriteLine(SerialRadarCommands.SoftReset, 300, false);
+                        mutex.Set();
+                        ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
                     }
                     else if (msg.Contains(SerialRadarReply.Start))
                     {
@@ -3077,10 +3081,10 @@ namespace MbitGate.model
                 else if (msg.Contains(SerialRadarReply.Start))
                 {
                     mutex.Set();
-                    ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
+                    //ShowConfirmWindow(Tips.ConfigSuccess, string.Empty);
                 }
             };
-            serial.WriteLine(SerialRadarCommands.SensorStop);
+            serial.WriteLine(SerialRadarCommands.SensorStop, 600);
         }
 
         const double SampleRate = 0.045;
@@ -3091,7 +3095,6 @@ namespace MbitGate.model
         private void ToGetAfterPoints()
         {
             serial.EndStr = SerialRadarReply.Done;
-            serial.CheckFuncCode = true;
             serial.StringDataReceivedHandler = msg =>
             {
                 var collection = System.Text.RegularExpressions.Regex.Matches(msg, @"-?\d+(\.\d+)?");
@@ -3497,7 +3500,6 @@ namespace MbitGate.model
         private void ToGet()
         {
             string lastOperation = SerialRadarCommands.ReadCLI;
-            serial.CheckFuncCode = true;
             serial.StringDataReceivedHandler = async msg =>
             {
                 if (msg.Contains(SerialRadarReply.Done))
@@ -3570,7 +3572,6 @@ namespace MbitGate.model
         private void ToGetDevParams()
         {
             string lastOperation = SerialArguments.DelayTimeParam;
-            serial.CheckFuncCode = true;
             serial.StringDataReceivedHandler = async msg => { 
                 if(msg.Contains(SerialRadarReply.Done))
                 {
@@ -3745,6 +3746,7 @@ namespace MbitGate.model
                         if(DelayVisible)
                         {
                             finished = true;
+                            await TaskEx.Delay(800);
                             await AsyncWork(() => ToSetDelayAndFencePosition(), true, 6000);
                         }
                         else
@@ -4555,6 +4557,7 @@ namespace MbitGate.model
                 if (IsGettingStrongestPoints)
                     await AsyncWork(() => ToCancelGetPoints());
                 Version = null;
+                serial?.close();
                 ConnectState = ConnectType.Disconnected;
             }
            
