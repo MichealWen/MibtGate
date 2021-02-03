@@ -90,7 +90,7 @@
                     </StackPanel>
                 </StackPanel>
                 <Border BorderThickness="3" BorderBrush="AliceBlue">
-                    <LiveChart:CartesianChart Grid.Column="0"  DataTooltip="{x:Null}" Hoverable="False" DisableAnimations="True" MouseDoubleClick="Chart_Double_Click">
+                    <LiveChart:CartesianChart Grid.Column="0"  DataTooltip="{x:Null}" Hoverable="False" DisableAnimations="True" MouseDoubleClick="Chart_Double_Click" Zoom="Xy">
                         <LiveChart:CartesianChart.Series>
                             <LiveChart:ScatterSeries x:Name="WeakPointsSeries" Values="{Binding WeakPoints}"  PointGeometry="{x:Static LiveChart:DefaultGeometries.Triangle}" Title="{DynamicResource UnTriggeredPoints}" DataLabels="False" StrokeThickness="5">
                                 <LiveChart:ScatterSeries.DataLabelsTemplate>
@@ -134,10 +134,14 @@
                             <LiveChart:LineSeries Values="{Binding RodRangePoints}" PointGeometry="{x:Null}" Title="{DynamicResource RodPoints}"  StrokeThickness="3"  Stroke="OrangeRed" LineSmoothness="0"/>
                         </LiveChart:CartesianChart.Series>
                         <LiveChart:CartesianChart.AxisX >
-                            <LiveChart:Axis MinValue="-5"  MaxValue="5"  FontSize="18"/>
+                            <LiveChart:Axis Name="X" MinValue="-5"  MaxValue="5"  FontSize="18">
+                                <LiveChart:Axis.Separator>
+                                    <LiveChart:Separator Step="1"></LiveChart:Separator>
+                                </LiveChart:Axis.Separator>
+                            </LiveChart:Axis>
                         </LiveChart:CartesianChart.AxisX>
                         <LiveChart:CartesianChart.AxisY>
-                            <LiveChart:Axis MinValue="0"  MaxValue="7" FontSize="18"/>
+                            <LiveChart:Axis Name="Y" MinValue="0"  MaxValue="7" FontSize="18"/>
                         </LiveChart:CartesianChart.AxisY>
                     </LiveChart:CartesianChart>
                 </Border>

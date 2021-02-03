@@ -131,6 +131,8 @@ namespace MbitGate.views
         {
             WeakPointsSeries.DataLabels = !WeakPointsSeries.DataLabels;
             StrongestPointSeries.DataLabels = !StrongestPointSeries.DataLabels;
+            X.MaxValue = 5; X.MinValue = -5;
+            Y.MaxValue = 7; Y.MinValue = 0;
         }
     }
 

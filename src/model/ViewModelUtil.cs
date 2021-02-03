@@ -1328,7 +1328,7 @@ namespace MbitGate.model
                         {
                             if (IsGettingStrongestPoints)
                                 await AsyncWork(() => ToCancelGetPoints());
-                            await AsyncWork(() => ToReset(), true, 6000);
+                            await AsyncWork(() => ToReset(), true, 15000);
                             if (serial.ToTranslate)
                             {
                                 await TaskEx.Delay(2000);
@@ -2190,6 +2190,7 @@ namespace MbitGate.model
         {
             string lastOperation = SerialRadarCommands.SearchTime;
             string dataPath = @".\data\" + DateTime.Now.ToString("ITS_RecordSearchResult_yyyy年MM月dd日_HH时_mm分_ss秒") + ".csv";
+            searchResultFileWriter?.Close();
             searchResultFileWriter = new System.IO.StreamWriter(dataPath);
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
             {
@@ -2334,6 +2335,7 @@ namespace MbitGate.model
                 OnPropertyChanged("InvertSearchCount");
             }
             string dataPath = @".\data\" + DateTime.Now.ToString("ITS_RecordSearchResult_yyyy年MM月dd日_HH时_mm分_ss秒") + ".csv";
+            searchResultFileWriter?.Close();
             searchResultFileWriter = new System.IO.StreamWriter(dataPath);
             string lastOperation = SerialRadarCommands.SearchTime;
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
@@ -2851,6 +2853,7 @@ namespace MbitGate.model
                         StrongestWeakPoints[index].Speed = double.Parse(collection[3].Value);
                         StrongestWeakPoints[index].Peak = int.Parse(collection[4].Value);
                         StrongestWeakPoints[index].Triggered = (collection[8].Value == "1");
+                        StrongestWeakPoints[index].Strongest = (collection[7].Value == "1");
                         TargetPositionX = StrongestWeakPoints[index].X;
                         TargetPositionY = StrongestWeakPoints[index].Y;
                         Application.Current.Dispatcher.BeginInvoke((Action)(() => {
@@ -2861,7 +2864,7 @@ namespace MbitGate.model
                     }
                     else
                     {
-                        StrongestWeakPoints.Add(new TargetPoint() { ID = 0, X = double.Parse(collection[1].Value), Y= double.Parse(collection[2].Value), Speed= double.Parse(collection[3].Value), Peak= int.Parse(collection[4].Value), Triggered = (collection[8].Value == "1") });
+                        StrongestWeakPoints.Add(new TargetPoint() { ID = 0, X = double.Parse(collection[1].Value), Y= double.Parse(collection[2].Value), Speed= double.Parse(collection[3].Value), Peak= int.Parse(collection[4].Value), Triggered = (collection[8].Value == "1"), Strongest = (collection[7].Value == "1") });
                     }
                 }
                 else if (msg.Contains(SerialRadarCommands.PointStatus))
